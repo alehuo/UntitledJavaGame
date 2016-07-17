@@ -17,11 +17,15 @@ public class Player implements Entity {
     private String name;
     private Direction direction = Direction.DOWN;
     private boolean walking = false;
+    private final int max_width;
+    private final int max_height;
 
-    public Player(String name) {
+    public Player(String name, int max_width, int max_height) {
         this.name = name;
         x = 0;
         y = 0;
+        this.max_width = max_width;
+        this.max_height = max_height;
     }
 
     @Override
@@ -35,19 +39,27 @@ public class Player implements Entity {
     }
 
     public void goUp() {
-        y -= step;
+        if (y - step >= 0) {
+            y -= step;
+        }
     }
 
     public void goDown() {
-        y += step;
+        if (y + step <= max_height) {
+            y += step;
+        }
     }
 
     public void goLeft() {
-        x -= step;
+        if (x - step >= 0) {
+            x -= step;
+        }
     }
 
     public void goRight() {
-        x += step;
+        if (x + step <= max_width) {
+            x += step;
+        }
     }
 
     public void setX(int x) {

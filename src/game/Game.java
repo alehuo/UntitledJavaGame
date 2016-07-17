@@ -21,17 +21,17 @@ import levels.Level;
  * @author Aleksi Huotala
  */
 public class Game extends Canvas implements Runnable {
-    
+
     private static final long serialVersionUID = 1L;
-    
+
     public static final int WINDOW_WIDTH = 1280;
     //16:9 aspect ratio
     public static final int WINDOW_HEIGHT = WINDOW_WIDTH / 16 * 9;
-    public static final int SCALE = 4;
+    public static final int SCALE = 2;
     public static final String NAME = "Untitled Game";
-    
+
     private final JFrame frame;
-    
+
     public boolean running = false;
     public int tickCount = 0;
 
@@ -44,7 +44,7 @@ public class Game extends Canvas implements Runnable {
     //Font
     private final FontHandler fontHandler = new FontHandler("spriteSheet.png");
     //Player
-    private final Player player = new Player("Aleksi");
+    private final Player player = new Player("Aleksi", WINDOW_WIDTH, WINDOW_HEIGHT);
     //Animaations
     private final AnimationTicker animationTicker = new AnimationTicker();
     private final Animation water;
@@ -55,10 +55,10 @@ public class Game extends Canvas implements Runnable {
     private final Animation playerWalkingRight;
 
     //Input handler
-    private PlayerInputHandler inputHandler = new PlayerInputHandler(player);
-    
+    private final PlayerInputHandler inputHandler = new PlayerInputHandler(player);
+
     public Game() {
-        
+
         this.setMinimumSize(new Dimension(WINDOW_WIDTH, WINDOW_HEIGHT));
         this.setMaximumSize(new Dimension(WINDOW_WIDTH, WINDOW_HEIGHT));
         this.setPreferredSize(new Dimension(WINDOW_WIDTH, WINDOW_HEIGHT));
@@ -94,7 +94,7 @@ public class Game extends Canvas implements Runnable {
         //Set player x and y
         player.setX(160);
         player.setY(180);
-        
+
         frame = new JFrame(NAME);
         frame.addKeyListener(inputHandler);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -103,36 +103,36 @@ public class Game extends Canvas implements Runnable {
         frame.pack();
         frame.setResizable(false);
         frame.setLocationRelativeTo(null);
-        
+
         frame.setVisible(true);
     }
-    
+
     public void init() {
-        
+
     }
-    
+
     private synchronized void start() {
         running = true;
         new Thread(this).start();
     }
-    
+
     private synchronized void stop() {
         running = false;
     }
-    
+
     @Override
     public void run() {
         long lastTime = System.nanoTime();
         double nsPerTick = 1000000000D / 120D;
-        
+
         int frames = 0;
         int ticks = 0;
-        
+
         long lastTimer = System.currentTimeMillis();
         double delta = 0;
-        
+
         init();
-        
+
         while (running) {
             long now = System.nanoTime();
             delta += (now - lastTime) / nsPerTick;
@@ -153,13 +153,13 @@ public class Game extends Canvas implements Runnable {
                     ex.printStackTrace();
                 }
             }
-            
+
             if (shouldRender) {
                 //Render a new frame
                 frames++;
                 render();
             }
-            
+
             if (System.currentTimeMillis() - lastTimer >= 1000) {
                 lastTimer += 1000;
                 frame.setTitle(NAME + " (" + frames + " frames, " + ticks + " ticks)");
@@ -168,7 +168,7 @@ public class Game extends Canvas implements Runnable {
             }
         }
     }
-    
+
     public void tick() {
         tickCount++;
         animationTicker.tick();
@@ -196,9 +196,9 @@ public class Game extends Canvas implements Runnable {
         } else {
             player.setWalkingState(false);
         }
-        
+
     }
-    
+
     public void render() {
         BufferStrategy bs = getBufferStrategy();
         if (bs == null) {
@@ -206,11 +206,11 @@ public class Game extends Canvas implements Runnable {
             createBufferStrategy(3);
             return;
         }
-        
+
         Graphics g = bs.getDrawGraphics();
-        
+
         g.drawImage(image, 0, 0, getWidth(), getHeight(), null);
-        
+
         for (int i = 10; i <= 30; i++) {
             for (int a = 10; a <= 30; a++) {
                 water.nextFrame(g, i * 16, a * 16);
@@ -226,7 +226,7 @@ public class Game extends Canvas implements Runnable {
         fontHandler.drawText(g, "y " + player.getY(), 20, 36);
         //Work in progress
         fontHandler.drawText(g, "Work in progress", 20, 56);
-        
+
         switch (player.getDirection()) {
             case DOWN:
                 if (player.getWalkingState() == true) {
@@ -257,12 +257,11 @@ public class Game extends Canvas implements Runnable {
                 }
                 break;
         }
-        
         g.dispose();
         bs.show();
-        
+
     }
-    
+
     public static void main(String[] args) {
         new Game().start();
     }

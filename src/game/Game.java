@@ -21,53 +21,47 @@ import levels.Level;
  * @author Aleksi Huotala
  */
 public class Game extends Canvas implements Runnable {
-
+    
     private static final long serialVersionUID = 1L;
-
-    public static final int WIDTH = 128;
+    
+    public static final int WINDOW_WIDTH = 1280;
     //16:9 aspect ratio
-    public static final int HEIGHT = WIDTH / 16 * 9;
-    public static final int SCALE = 8;
+    public static final int WINDOW_HEIGHT = WINDOW_WIDTH / 16 * 9;
+    public static final int SCALE = 4;
     public static final String NAME = "Untitled Game";
-
+    
     private final JFrame frame;
-
+    
     public boolean running = false;
     public int tickCount = 0;
-    public int frames = 0;
 
     //Pohja
-    private BufferedImage image = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
+    private final BufferedImage image = new BufferedImage(WINDOW_WIDTH, WINDOW_HEIGHT, BufferedImage.TYPE_INT_RGB);
     //Sprite sheet
-    private SpriteSheet spriteSheet = new SpriteSheet("spriteSheet.png", SCALE);
-    //Pikselidata
-    private int[] pixels = ((DataBufferInt) image.getRaster().getDataBuffer()).getData();
-    //Fontti
-    private FontHandler fontHandler = new FontHandler("spriteSheet.png");
-    //Pelaaja
-    private Player player = new Player("Aleksi");
-    //Animaatiot
-    private AnimationTicker animationTicker = new AnimationTicker();
-    private Animation water;
-    private Animation lava;
-    private Animation playerWalkingUp;
-    private Animation playerWalkingDown;
-    private Animation playerWalkingLeft;
-    private Animation playerWalkingRight;
-    //Taso
-    private Level level;
-    //Syötteenlukija
+    private final SpriteSheet spriteSheet = new SpriteSheet("spriteSheet.png", SCALE);
+    //Pixel data
+    private final int[] pixels = ((DataBufferInt) image.getRaster().getDataBuffer()).getData();
+    //Font
+    private final FontHandler fontHandler = new FontHandler("spriteSheet.png");
+    //Player
+    private final Player player = new Player("Aleksi");
+    //Animaations
+    private final AnimationTicker animationTicker = new AnimationTicker();
+    private final Animation water;
+    private final Animation lava;
+    private final Animation playerWalkingUp;
+    private final Animation playerWalkingDown;
+    private final Animation playerWalkingLeft;
+    private final Animation playerWalkingRight;
+
+    //Input handler
     private PlayerInputHandler inputHandler = new PlayerInputHandler(player);
-
-//    private SpriteSheet spriteSheet = new SpriteSheet("res/spriteSheet.png");
+    
     public Game() {
-
-        this.setMinimumSize(new Dimension(WIDTH * SCALE, HEIGHT * SCALE));
-        this.setMaximumSize(new Dimension(WIDTH * SCALE, HEIGHT * SCALE));
-        this.setPreferredSize(new Dimension(WIDTH * SCALE, HEIGHT * SCALE));
-
-        //Level
-        level = new Level("level1");
+        
+        this.setMinimumSize(new Dimension(WINDOW_WIDTH, WINDOW_HEIGHT));
+        this.setMaximumSize(new Dimension(WINDOW_WIDTH, WINDOW_HEIGHT));
+        this.setPreferredSize(new Dimension(WINDOW_WIDTH, WINDOW_HEIGHT));
 
         /**
          * Load sprites and animations here
@@ -84,10 +78,10 @@ public class Game extends Canvas implements Runnable {
         //Animations
         water = new Animation("Water", spriteSheet, 30, 1);
         lava = new Animation("Lava", spriteSheet, 120, 1);
-        playerWalkingUp = new Animation("PlayerWalkingUp", spriteSheet, 30, SCALE);
-        playerWalkingDown = new Animation("PlayerWalkingDown", spriteSheet, 30, SCALE);
-        playerWalkingLeft = new Animation("PlayerWalkingLeft", spriteSheet, 30, SCALE);
-        playerWalkingRight = new Animation("PlayerWalkingRight", spriteSheet, 30, SCALE);
+        playerWalkingUp = new Animation("PlayerWalkingUp", spriteSheet, 15, SCALE);
+        playerWalkingDown = new Animation("PlayerWalkingDown", spriteSheet, 15, SCALE);
+        playerWalkingLeft = new Animation("PlayerWalkingLeft", spriteSheet, 15, SCALE);
+        playerWalkingRight = new Animation("PlayerWalkingRight", spriteSheet, 15, SCALE);
 
         //Register animations to be tickable
         animationTicker.register(water);
@@ -100,7 +94,7 @@ public class Game extends Canvas implements Runnable {
         //Set player x and y
         player.setX(160);
         player.setY(180);
-
+        
         frame = new JFrame(NAME);
         frame.addKeyListener(inputHandler);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -109,36 +103,36 @@ public class Game extends Canvas implements Runnable {
         frame.pack();
         frame.setResizable(false);
         frame.setLocationRelativeTo(null);
-
+        
         frame.setVisible(true);
     }
-
+    
     public void init() {
-
+        
     }
-
+    
     private synchronized void start() {
         running = true;
         new Thread(this).start();
     }
-
+    
     private synchronized void stop() {
         running = false;
     }
-
+    
     @Override
     public void run() {
         long lastTime = System.nanoTime();
         double nsPerTick = 1000000000D / 120D;
-
+        
         int frames = 0;
         int ticks = 0;
-
+        
         long lastTimer = System.currentTimeMillis();
         double delta = 0;
-
+        
         init();
-
+        
         while (running) {
             long now = System.nanoTime();
             delta += (now - lastTime) / nsPerTick;
@@ -159,13 +153,13 @@ public class Game extends Canvas implements Runnable {
                     ex.printStackTrace();
                 }
             }
-
+            
             if (shouldRender) {
                 //Render a new frame
                 frames++;
                 render();
             }
-
+            
             if (System.currentTimeMillis() - lastTimer >= 1000) {
                 lastTimer += 1000;
                 frame.setTitle(NAME + " (" + frames + " frames, " + ticks + " ticks)");
@@ -174,32 +168,37 @@ public class Game extends Canvas implements Runnable {
             }
         }
     }
-
+    
     public void tick() {
         tickCount++;
         animationTicker.tick();
-        if (inputHandler.up) {
-            player.setDirection(Direction.UP);
-            player.setWalkingState(true);
-            player.goUp();
+        if (inputHandler.up || inputHandler.down || inputHandler.left || inputHandler.right) {
+            if (inputHandler.up) {
+                player.setDirection(Direction.UP);
+                player.setWalkingState(true);
+                player.goUp();
+            }
+            if (inputHandler.down) {
+                player.setDirection(Direction.DOWN);
+                player.setWalkingState(true);
+                player.goDown();
+            }
+            if (inputHandler.left) {
+                player.setDirection(Direction.LEFT);
+                player.setWalkingState(true);
+                player.goLeft();
+            }
+            if (inputHandler.right) {
+                player.setDirection(Direction.RIGHT);
+                player.setWalkingState(true);
+                player.goRight();
+            }
+        } else {
+            player.setWalkingState(false);
         }
-        if (inputHandler.down) {
-            player.setDirection(Direction.DOWN);
-            player.setWalkingState(true);
-            player.goDown();
-        }
-        if (inputHandler.left) {
-            player.setDirection(Direction.LEFT);
-            player.setWalkingState(true);
-            player.goLeft();
-        }
-        if (inputHandler.right) {
-            player.setDirection(Direction.RIGHT);
-            player.setWalkingState(true);
-            player.goRight();
-        }
+        
     }
-
+    
     public void render() {
         BufferStrategy bs = getBufferStrategy();
         if (bs == null) {
@@ -207,11 +206,11 @@ public class Game extends Canvas implements Runnable {
             createBufferStrategy(3);
             return;
         }
-
+        
         Graphics g = bs.getDrawGraphics();
-
+        
         g.drawImage(image, 0, 0, getWidth(), getHeight(), null);
-
+        
         for (int i = 10; i <= 30; i++) {
             for (int a = 10; a <= 30; a++) {
                 water.nextFrame(g, i * 16, a * 16);
@@ -227,45 +226,43 @@ public class Game extends Canvas implements Runnable {
         fontHandler.drawText(g, "y " + player.getY(), 20, 36);
         //Work in progress
         fontHandler.drawText(g, "Work in progress", 20, 56);
-        if (null != player.getDirection()) //Draw player
-        {
-            switch (player.getDirection()) {
-                case DOWN:
-                    if (player.getWalkingState() == true) {
-                        playerWalkingDown.nextFrame(g, player.getX(), player.getY());
-                    } else {
-                        spriteSheet.paint(g, 1, player.getX(), player.getY());
-                    }
-                    break;
-                case UP:
-                    if (player.getWalkingState() == true) {
-                        playerWalkingUp.nextFrame(g, player.getX(), player.getY());
-                    } else {
-                        spriteSheet.paint(g, 0, player.getX(), player.getY());
-                    }
-                    break;
-                case LEFT:
-                    if (player.getWalkingState() == true) {
-                        playerWalkingLeft.nextFrame(g, player.getX(), player.getY());
-                    } else {
-                        spriteSheet.paint(g, 3, player.getX(), player.getY());
-                    }
-                    break;
-                default:
-                    if (player.getWalkingState() == true) {
-                        playerWalkingRight.nextFrame(g, player.getX(), player.getY());
-                    } else {
-                        spriteSheet.paint(g, 2, player.getX(), player.getY());
-                    }
-                    break;
-            }
+        
+        switch (player.getDirection()) {
+            case DOWN:
+                if (player.getWalkingState() == true) {
+                    playerWalkingDown.nextFrame(g, player.getX(), player.getY());
+                } else {
+                    spriteSheet.paint(g, 1, player.getX(), player.getY());
+                }
+                break;
+            case UP:
+                if (player.getWalkingState() == true) {
+                    playerWalkingUp.nextFrame(g, player.getX(), player.getY());
+                } else {
+                    spriteSheet.paint(g, 0, player.getX(), player.getY());
+                }
+                break;
+            case LEFT:
+                if (player.getWalkingState() == true) {
+                    playerWalkingLeft.nextFrame(g, player.getX(), player.getY());
+                } else {
+                    spriteSheet.paint(g, 3, player.getX(), player.getY());
+                }
+                break;
+            default:
+                if (player.getWalkingState() == true) {
+                    playerWalkingRight.nextFrame(g, player.getX(), player.getY());
+                } else {
+                    spriteSheet.paint(g, 2, player.getX(), player.getY());
+                }
+                break;
         }
-
+        
         g.dispose();
         bs.show();
-
+        
     }
-
+    
     public static void main(String[] args) {
         new Game().start();
     }

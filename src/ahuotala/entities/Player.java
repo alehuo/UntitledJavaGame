@@ -68,7 +68,7 @@ public class Player implements Entity {
             //Offset the map here
             offsetY += step;
             realY -= step;
-            System.out.println("Cannot go up; Moving the map instead");
+//            System.out.println("Cannot go up; Moving the map instead");
         }
     }
 
@@ -80,7 +80,7 @@ public class Player implements Entity {
             //Offset the map here
             offsetY -= step;
             realY += step;
-            System.out.println("Cannot go down; Moving the map instead");
+//            System.out.println("Cannot go down; Moving the map instead");
         }
     }
 
@@ -92,7 +92,7 @@ public class Player implements Entity {
             //Offset the map here
             offsetX += step;
             realX -= step;
-            System.out.println("Cannot go left; Moving the map instead");
+//            System.out.println("Cannot go left; Moving the map instead");
         }
     }
 
@@ -104,7 +104,7 @@ public class Player implements Entity {
             //Offset the map here
             offsetX -= step;
             realX += step;
-            System.out.println("Cannot go right; Moving the map instead");
+//            System.out.println("Cannot go right; Moving the map instead");
         }
     }
 

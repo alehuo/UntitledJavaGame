@@ -65,6 +65,7 @@ public class Animation {
         try {
             File animFile = new File("src/ahuotala/graphics/animations/" + name + ".ani");
             Scanner sc = new Scanner(animFile);
+            int index = 0;
             while (sc.hasNextLine()) {
                 String line = sc.nextLine();
                 if (line.contains("#") || line.isEmpty()) {
@@ -77,7 +78,8 @@ public class Animation {
                 int width = Integer.parseInt(lineData[2]);
                 int height = Integer.parseInt(lineData[3]);
                 //Add the frame
-                frames.add(spritesheet.getSprite(x, y, width, height));
+                frames.add(spritesheet.getSprite("animation_" + name + "_frame" + index, x, y, width, height));
+                index++;
             }
             sc.close();
             this.framecount = frames.size();

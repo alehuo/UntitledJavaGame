@@ -9,6 +9,7 @@ import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import javax.imageio.ImageIO;
 
 /**
@@ -18,19 +19,14 @@ import javax.imageio.ImageIO;
 public class SpriteSheet {
 
     public String path;
-    public int width;
-    public int height;
     public int rows;
     public int columns;
     public int scale;
     public BufferedImage image;
-    public ArrayList<BufferedImage> sprites;
+    public HashMap<String, BufferedImage> sprites;
 
     public SpriteSheet(String path, int scale) {
 
-        //Leveys, korkeus
-        this.width = width;
-        this.height = height;
         this.scale = scale;
 
         //Yritetään ladata kuva
@@ -41,7 +37,7 @@ public class SpriteSheet {
         }
 
         //Alustetaan hajautustaulu
-        sprites = new ArrayList<>();
+        sprites = new HashMap<>();
 
     }
 
@@ -53,8 +49,8 @@ public class SpriteSheet {
      * @param x X-koord. johon kuva ladataan
      * @param y Y-koord. johon kuva ladataan
      */
-    public void paint(Graphics g, int index, int x, int y) {
-        BufferedImage tmpImg = sprites.get(index);
+    public void paint(Graphics g, String name, int x, int y) {
+        BufferedImage tmpImg = sprites.get(name);
         g.drawImage(tmpImg, x, y, scale * tmpImg.getWidth(), scale * tmpImg.getHeight(), null);
     }
 
@@ -67,12 +63,16 @@ public class SpriteSheet {
      * @param height Kuva-alueen korkeus
      * @return BufferedImage
      */
-    public BufferedImage getSprite(int x, int y, int width, int height) {
-        BufferedImage tmpImg = image.getSubimage(x, y, width, height);
-        if (!sprites.contains(tmpImg)) {
-            sprites.add(tmpImg);
+    public BufferedImage getSprite(String name, int x, int y, int width, int height) {
+
+        if (!sprites.containsKey(name)) {
+            BufferedImage tmpImg = image.getSubimage(x, y, width, height);
+            sprites.put(name, tmpImg);
+            return tmpImg;
+        } else {
+            return sprites.get(name);
         }
-        return tmpImg;
+
     }
 
     /**
@@ -83,10 +83,16 @@ public class SpriteSheet {
      * @param wH Kuva-alueen leveys ja korkeus
      * @return BufferedImage
      */
-    public BufferedImage getSprite(int x, int y, int widthHeight) {
-        BufferedImage tmpImg = image.getSubimage(x, y, widthHeight, widthHeight);
-        sprites.add(tmpImg);
-        return tmpImg;
+    public BufferedImage getSprite(String name, int x, int y, int widthheight) {
+
+        if (!sprites.containsKey(name)) {
+            BufferedImage tmpImg = image.getSubimage(x, y, widthheight, widthheight);
+            sprites.put(name, tmpImg);
+            return tmpImg;
+        } else {
+            return sprites.get(name);
+        }
+
     }
 
 }

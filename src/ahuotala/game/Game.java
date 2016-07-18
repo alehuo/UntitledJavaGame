@@ -11,6 +11,7 @@ import ahuotala.graphics.Animation;
 import ahuotala.graphics.AnimationTicker;
 import ahuotala.graphics.FontHandler;
 import ahuotala.graphics.SpriteSheet;
+import ahuotala.map.Map;
 import java.awt.*;
 import java.awt.image.*;
 import javax.swing.JFrame;
@@ -35,7 +36,7 @@ public class Game extends Canvas implements Runnable {
 
     public boolean running = false;
     public int tickCount = 0;
-    public double tickrate = 120D;
+    public double tickrate = 60D;
     //Pohja
     private final BufferedImage image = new BufferedImage(WINDOW_WIDTH, WINDOW_HEIGHT, BufferedImage.TYPE_INT_RGB);
     //Sprite sheet
@@ -46,7 +47,7 @@ public class Game extends Canvas implements Runnable {
     private final FontHandler fontHandler = new FontHandler("spriteSheet.png");
     //Player
     private final Player player = new Player("Aleksi", CENTERX, CENTERY);
-    //Animaations
+    //Animations
     private final AnimationTicker animationTicker = new AnimationTicker();
     private final Animation water;
     private final Animation lava;
@@ -54,7 +55,8 @@ public class Game extends Canvas implements Runnable {
     private final Animation playerWalkingDown;
     private final Animation playerWalkingLeft;
     private final Animation playerWalkingRight;
-
+    //Map
+    Map map = new Map("map1", spriteSheet, SCALE);
     //Input handler
     private final PlayerInputHandler inputHandler = new PlayerInputHandler(player);
 
@@ -68,13 +70,13 @@ public class Game extends Canvas implements Runnable {
          * Load sprites and animations here
          */
         //Pelaajan kuva (ylös), width & height = 16. Tälle indeksiksi 0
-        spriteSheet.getSprite(32, 32, 16);
+        spriteSheet.getSprite("player_up", 32, 32, 16);
         //Pelaajan kuva (alas), width & height = 16. Tälle indeksiksi 1
-        spriteSheet.getSprite(32, 16, 16);
+        spriteSheet.getSprite("player_down", 32, 16, 16);
         //Pelaajan kuva (vasen), width & height = 16. Tälle indeksiksi 2
-        spriteSheet.getSprite(32, 48, 16);
+        spriteSheet.getSprite("player_left", 32, 48, 16);
         //Pelaajan kuva (oikea), width & height = 16. Tälle indeksiksi 3
-        spriteSheet.getSprite(32, 64, 16);
+        spriteSheet.getSprite("player_right", 32, 64, 16);
 
         //Animations
         water = new Animation("Water", spriteSheet, 30, SCALE);
@@ -209,55 +211,47 @@ public class Game extends Canvas implements Runnable {
         Graphics g = bs.getDrawGraphics();
 
         g.drawImage(image, 0, 0, getWidth(), getHeight(), null);
+        map.renderMap(g, player.getOffsetX(), player.getOffsetY());
+        map.renderObject(g, 0, 0, "house");
 
-        for (int i = 0; i <= 40; i++) {
-            for (int a = 0; a <= 22; a++) {
-                water.nextFrame(g, i * 16 * SCALE, a * 16 * SCALE);
-            }
-        }
-//        for (int i = 31; i <= 40; i++) {
-//            for (int a = 10; a <= 30; a++) {
-//                lava.nextFrame(g, i * 16 * SCALE, a * 16 * SCALE);
-//            }
-//        }
-        g.setColor(Color.red);
-        g.fill3DRect(player.getX(), player.getY(), 16 * SCALE, 16 * SCALE, false);
         switch (player.getDirection()) {
             case DOWN:
                 if (player.getWalkingState() == true) {
                     playerWalkingDown.nextFrame(g, player.getX(), player.getY());
                 } else {
-                    spriteSheet.paint(g, 1, player.getX(), player.getY());
+                    spriteSheet.paint(g, "player_down", player.getX(), player.getY());
                 }
                 break;
             case UP:
                 if (player.getWalkingState() == true) {
                     playerWalkingUp.nextFrame(g, player.getX(), player.getY());
                 } else {
-                    spriteSheet.paint(g, 0, player.getX(), player.getY());
+                    spriteSheet.paint(g, "player_up", player.getX(), player.getY());
                 }
                 break;
             case LEFT:
                 if (player.getWalkingState() == true) {
                     playerWalkingLeft.nextFrame(g, player.getX(), player.getY());
                 } else {
-                    spriteSheet.paint(g, 3, player.getX(), player.getY());
+                    spriteSheet.paint(g, "player_right", player.getX(), player.getY());
                 }
                 break;
             default:
                 if (player.getWalkingState() == true) {
                     playerWalkingRight.nextFrame(g, player.getX(), player.getY());
                 } else {
-                    spriteSheet.paint(g, 2, player.getX(), player.getY());
+                    spriteSheet.paint(g, "player_left", player.getX(), player.getY());
                 }
                 break;
         }
 
         //X&Y
-        fontHandler.drawText(g, "x " + player.getX(), 20, 20);
+        fontHandler.drawText(g, "x  " + player.getX(), 20, 20);
         fontHandler.drawText(g, "y " + player.getY(), 20, 36);
+        fontHandler.drawText(g, "x real " + player.getRealX(), 20, 52);
+        fontHandler.drawText(g, "y real" + player.getRealY(), 20, 68);
         //Work in progress
-        fontHandler.drawText(g, "Work in progress", 20, 56);
+        fontHandler.drawText(g, "Work in progress", 20, 88);
 
         g.dispose();
         bs.show();

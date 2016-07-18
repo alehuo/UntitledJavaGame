@@ -208,16 +208,16 @@ public class Game extends Canvas implements Runnable {
 
         g.drawImage(image, 0, 0, getWidth(), getHeight(), null);
 
-        for (int i = 10; i <= 30; i++) {
-            for (int a = 10; a <= 30; a++) {
+        for (int i = 0; i <= 40; i++) {
+            for (int a = 0; a <= 22; a++) {
                 water.nextFrame(g, i * 16 * SCALE, a * 16 * SCALE);
             }
         }
-        for (int i = 31; i <= 40; i++) {
-            for (int a = 10; a <= 30; a++) {
-                lava.nextFrame(g, i * 16 * SCALE, a * 16 * SCALE);
-            }
-        }
+//        for (int i = 31; i <= 40; i++) {
+//            for (int a = 10; a <= 30; a++) {
+//                lava.nextFrame(g, i * 16 * SCALE, a * 16 * SCALE);
+//            }
+//        }
         //X&Y
         fontHandler.drawText(g, "x " + player.getX(), 20, 20);
         fontHandler.drawText(g, "y " + player.getY(), 20, 36);

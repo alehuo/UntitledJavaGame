@@ -164,6 +164,7 @@ public class Game extends Canvas implements Runnable,Tickable {
         }
     }
 
+    @Override
     public void tick() {
         tickCount++;
         animationTicker.tick();
@@ -187,6 +188,7 @@ public class Game extends Canvas implements Runnable,Tickable {
         //Other objects
         map.renderObject(g, -6, -80, "house");
 
+        //Player walking animation
         switch (player.getDirection()) {
             case DOWN:
                 if (player.getWalkingState() == true) {
@@ -224,9 +226,10 @@ public class Game extends Canvas implements Runnable,Tickable {
         //Work in progress text
         fontHandler.drawText(g, "Work in progress", 20, 88);
 
+        //Empty buffer
         g.dispose();
+        //Show frame
         bs.show();
-
     }
 
     public static void main(String[] args) {

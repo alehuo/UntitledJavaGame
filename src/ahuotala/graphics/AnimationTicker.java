@@ -24,6 +24,7 @@ public class AnimationTicker implements Tickable {
         animations.add(animation);
     }
 
+    @Override
     public void tick() {
         if (!animations.isEmpty()) {
             for (Animation animation : animations) {

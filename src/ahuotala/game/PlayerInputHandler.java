@@ -61,6 +61,7 @@ public class PlayerInputHandler implements KeyListener,Tickable {
         }
     }
 
+    @Override
     public void tick() {
         if (up || down || left || right) {
             if (up) {

@@ -5,7 +5,6 @@
  */
 package ahuotala.game;
 
-
 import ahuotala.entities.Direction;
 import ahuotala.entities.Player;
 import ahuotala.graphics.Animation;
@@ -76,8 +75,8 @@ public class Game extends Canvas implements Runnable {
         spriteSheet.getSprite(32, 64, 16);
 
         //Animations
-        water = new Animation("Water", spriteSheet, 30, 1);
-        lava = new Animation("Lava", spriteSheet, 120, 1);
+        water = new Animation("Water", spriteSheet, 30, SCALE);
+        lava = new Animation("Lava", spriteSheet, 120, SCALE);
         playerWalkingUp = new Animation("PlayerWalkingUp", spriteSheet, 15, SCALE);
         playerWalkingDown = new Animation("PlayerWalkingDown", spriteSheet, 15, SCALE);
         playerWalkingLeft = new Animation("PlayerWalkingLeft", spriteSheet, 15, SCALE);
@@ -92,8 +91,8 @@ public class Game extends Canvas implements Runnable {
         animationTicker.register(playerWalkingRight);
 
         //Set player x and y
-        player.setX(0);
-        player.setY(0);
+        player.setX(WINDOW_WIDTH / 2 - 16 * SCALE);
+        player.setY(WINDOW_HEIGHT / 2 - 16 * SCALE);
 
         frame = new JFrame(NAME);
         frame.addKeyListener(inputHandler);
@@ -195,7 +194,6 @@ public class Game extends Canvas implements Runnable {
         } else {
             player.setWalkingState(false);
         }
-
     }
 
     public void render() {
@@ -212,12 +210,12 @@ public class Game extends Canvas implements Runnable {
 
         for (int i = 10; i <= 30; i++) {
             for (int a = 10; a <= 30; a++) {
-                water.nextFrame(g, i * 16, a * 16);
+                water.nextFrame(g, i * 16 * SCALE, a * 16 * SCALE);
             }
         }
         for (int i = 31; i <= 40; i++) {
             for (int a = 10; a <= 30; a++) {
-                lava.nextFrame(g, i * 16, a * 16);
+                lava.nextFrame(g, i * 16 * SCALE, a * 16 * SCALE);
             }
         }
         //X&Y
@@ -226,7 +224,7 @@ public class Game extends Canvas implements Runnable {
         //Work in progress
         fontHandler.drawText(g, "Work in progress", 20, 56);
         g.setColor(Color.red);
-        g.fill3DRect(player.getX(), player.getY(), 32, 32, false);
+        g.fill3DRect(player.getX(), player.getY(), 16 * SCALE, 16 * SCALE, false);
         switch (player.getDirection()) {
             case DOWN:
                 if (player.getWalkingState() == true) {

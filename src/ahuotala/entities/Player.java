@@ -37,27 +37,27 @@ public class Player implements Entity {
     }
 
     public void goUp() {
-        if (y - step >= 0) {
-            y -= step;
-        }
+//        if (y - step >= 0) {
+        y -= step;
+//        }
     }
 
     public void goDown() {
-        if (y + step <= max_height) {
-            y += step;
-        }
+//        if (y + step <= max_height) {
+        y += step;
+//        }
     }
 
     public void goLeft() {
-        if (x - step >= 0) {
-            x -= step;
-        }
+//        if (x - step >= 0) {
+        x -= step;
+//        }
     }
 
     public void goRight() {
-        if (x + step <= max_width) {
-            x += step;
-        }
+//        if (x + step <= max_width) {
+        x += step;
+//        }
     }
 
     public void setX(int x) {

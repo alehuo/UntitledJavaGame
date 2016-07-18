@@ -36,7 +36,7 @@ public class Game extends Canvas implements Runnable {
 
     public boolean running = false;
     public int tickCount = 0;
-    public double tickrate = 60D;
+    public double tickrate = 120D;
     //Pohja
     private final BufferedImage image = new BufferedImage(WINDOW_WIDTH, WINDOW_HEIGHT, BufferedImage.TYPE_INT_RGB);
     //Sprite sheet
@@ -245,11 +245,9 @@ public class Game extends Canvas implements Runnable {
                 break;
         }
 
-        //X&Y
-        fontHandler.drawText(g, "x  " + player.getX(), 20, 20);
-        fontHandler.drawText(g, "y " + player.getY(), 20, 36);
-        fontHandler.drawText(g, "x real " + player.getRealX(), 20, 52);
-        fontHandler.drawText(g, "y real" + player.getRealY(), 20, 68);
+        //X&Y;
+        fontHandler.drawText(g, "x " + player.getRealX(), 20, 20);
+        fontHandler.drawText(g, "y " + player.getRealY(), 20, 36);
         //Work in progress
         fontHandler.drawText(g, "Work in progress", 20, 88);
 

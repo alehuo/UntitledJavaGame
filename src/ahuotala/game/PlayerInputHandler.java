@@ -5,6 +5,7 @@
  */
 package ahuotala.game;
 
+import ahuotala.entities.Direction;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import ahuotala.entities.Player;
@@ -13,7 +14,7 @@ import ahuotala.entities.Player;
  *
  * @author Aleksi Huotala
  */
-public class PlayerInputHandler implements KeyListener {
+public class PlayerInputHandler implements KeyListener,Tickable {
 
     private Player player;
     public boolean up = false, down = false, left = false, right = false;
@@ -57,6 +58,33 @@ public class PlayerInputHandler implements KeyListener {
             left = false;
         } else if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
             right = false;
+        }
+    }
+
+    public void tick() {
+        if (up || down || left || right) {
+            if (up) {
+                player.setDirection(Direction.UP);
+                player.setWalkingState(true);
+                player.goUp();
+            }
+            if (down) {
+                player.setDirection(Direction.DOWN);
+                player.setWalkingState(true);
+                player.goDown();
+            }
+            if (left) {
+                player.setDirection(Direction.LEFT);
+                player.setWalkingState(true);
+                player.goLeft();
+            }
+            if (right) {
+                player.setDirection(Direction.RIGHT);
+                player.setWalkingState(true);
+                player.goRight();
+            }
+        } else {
+            player.setWalkingState(false);
         }
     }
 }

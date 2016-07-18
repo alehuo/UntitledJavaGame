@@ -56,15 +56,20 @@ public class Map {
         }
     }
 
-    public void renderMap(Graphics g, int offsetX, int offsetY) {
+    public void renderMap(Graphics g, int offsetX, int offsetY, int playerX, int playerY) {
         this.offsetX = offsetX;
         this.offsetY = offsetY;
+        //Parse the map file line by line
         for (String line : lines) {
             String[] lineData = line.split(",");
 
             //Block per block, add things
             int x = Integer.parseInt(lineData[0]);
             int y = Integer.parseInt(lineData[1]);
+            //Performance optimization: don't load blocks we don't need
+            if (x < playerX - 400 || x > playerX + 400 || y < playerY - 250 || y > playerY + 250) {
+                continue;
+            }
             String blockType = lineData[2];
             if (lineData.length != 4) {
                 System.err.println("Invalid map block at x = " + x + ",y = " + y);

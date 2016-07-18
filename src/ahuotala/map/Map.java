@@ -61,15 +61,19 @@ public class Map {
         this.offsetY = offsetY;
         for (String line : lines) {
             String[] lineData = line.split(",");
-            if (lineData.length != 4) {
-                System.err.println("Error loading map; Missing parameters. Check your map file!");
-            }
+
             //Block per block, add things
             int x = Integer.parseInt(lineData[0]);
             int y = Integer.parseInt(lineData[1]);
             String blockType = lineData[2];
+            if (lineData.length != 4) {
+                System.err.println("Invalid map block at x = " + x + ",y = " + y);
+            }
             int isAnimated = Integer.parseInt(lineData[3]);
             if (isAnimated == 1) {
+                if (!animations.containsKey(blockType)) {
+                    System.err.println("Animation block '" + blockType + "' missing at x = " + x + ",y = " + y);
+                }
                 animations.get(blockType).nextFrame(g, x + offsetX, y + offsetY);
             } else {
                 g.drawImage(blocks.get(blockType), x + offsetX, y + offsetY, null);

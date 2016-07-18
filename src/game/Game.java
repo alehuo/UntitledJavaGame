@@ -14,7 +14,6 @@ import graphics.Animation;
 import graphics.AnimationTicker;
 import graphics.FontHandler;
 import graphics.SpriteSheet;
-import levels.Level;
 
 /**
  *
@@ -34,7 +33,7 @@ public class Game extends Canvas implements Runnable {
 
     public boolean running = false;
     public int tickCount = 0;
-
+    public double tickrate = 120D;
     //Pohja
     private final BufferedImage image = new BufferedImage(WINDOW_WIDTH, WINDOW_HEIGHT, BufferedImage.TYPE_INT_RGB);
     //Sprite sheet
@@ -123,7 +122,7 @@ public class Game extends Canvas implements Runnable {
     @Override
     public void run() {
         long lastTime = System.nanoTime();
-        double nsPerTick = 1000000000D / 120D;
+        double nsPerTick = 1000000000D / tickrate;
 
         int frames = 0;
         int ticks = 0;
@@ -138,7 +137,7 @@ public class Game extends Canvas implements Runnable {
             delta += (now - lastTime) / nsPerTick;
             lastTime = now;
             //Use false to limit fps to the number of ticks
-            boolean shouldRender = true;
+            boolean shouldRender = false;
             while (delta >= 1) {
                 //Tick
                 ticks++;

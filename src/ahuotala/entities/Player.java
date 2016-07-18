@@ -11,19 +11,23 @@ package ahuotala.entities;
  */
 public class Player implements Entity {
 
-    private int x = 0;
-    private int y = 0;
+    private int x;
+    private int y;
     private int step = 2;
     private String name;
     private Direction direction = Direction.DOWN;
     private boolean walking = false;
-    private final int max_width;
-    private final int max_height;
+    private final int radiusX;
+    private final int radiusY;
+    private final int cY;
+    private final int cX;
 
-    public Player(String name, int max_width, int max_height) {
+    public Player(String name, int cX, int cY) {
         this.name = name;
-        this.max_width = max_width;
-        this.max_height = max_height;
+        this.cY = cY;
+        this.cX = cX;
+        radiusX = (int) Math.floor(0.6 * cX);
+        radiusY = (int) Math.floor(0.52 * cY);
     }
 
     @Override
@@ -37,27 +41,39 @@ public class Player implements Entity {
     }
 
     public void goUp() {
-//        if (y - step >= 0) {
-        y -= step;
-//        }
+        if (y - step >= cY - radiusY) {
+            y -= step;
+        } else {
+            //Offset the map here
+            System.out.println("Cannot go up; Moving the map instead");
+        }
     }
 
     public void goDown() {
-//        if (y + step <= max_height) {
-        y += step;
-//        }
+        if (y + step <= cY + radiusY) {
+            y += step;
+        } else {
+            //Offset the map here
+            System.out.println("Cannot go down; Moving the map instead");
+        }
     }
 
     public void goLeft() {
-//        if (x - step >= 0) {
-        x -= step;
-//        }
+        if (x - step >= cX - radiusX) {
+            x -= step;
+        } else {
+            //Offset the map here
+            System.out.println("Cannot go left; Moving the map instead");
+        }
     }
 
     public void goRight() {
-//        if (x + step <= max_width) {
-        x += step;
-//        }
+        if (x + step <= cX + radiusX) {
+            x += step;
+        } else {
+            //Offset the map here
+            System.out.println("Cannot go right; Moving the map instead");
+        }
     }
 
     public void setX(int x) {

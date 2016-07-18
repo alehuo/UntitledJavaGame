@@ -24,7 +24,7 @@ public class Game extends Canvas implements Runnable {
 
     private static final long serialVersionUID = 1L;
 
-    public static final int WINDOW_WIDTH = 640;
+    public static final int WINDOW_WIDTH = 1280;
     //16:9 aspect ratio
     public static final int WINDOW_HEIGHT = WINDOW_WIDTH / 16 * 9;
     public static final int SCALE = 2;
@@ -56,7 +56,7 @@ public class Game extends Canvas implements Runnable {
     private final Animation playerWalkingLeft;
     private final Animation playerWalkingRight;
     //Map
-    Map map = new Map("map1", spriteSheet, SCALE);
+    Map map = new Map("map1", animationTicker, spriteSheet, SCALE);
     //Input handler
     private final PlayerInputHandler inputHandler = new PlayerInputHandler(player);
 
@@ -212,7 +212,7 @@ public class Game extends Canvas implements Runnable {
 
         g.drawImage(image, 0, 0, getWidth(), getHeight(), null);
         map.renderMap(g, player.getOffsetX(), player.getOffsetY());
-        map.renderObject(g, 0, 0, "house");
+        map.renderObject(g, -6, -80, "house");
 
         switch (player.getDirection()) {
             case DOWN:

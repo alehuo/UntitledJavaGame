@@ -22,11 +22,11 @@ public class MapGenerator {
         try {
             FileWriter fw = new FileWriter("src/ahuotala/map/map1.map");
             String tmp = "";
-            fw.write("# x,y,tile_1type (0 = grass, 1 = water , 2 = lava)\r\n");
+            fw.write("# x,y,tile_type,animation\r\n");
             fw.write("# Map 1\r\n");
             for (int x = -63; x <= 64; x++) {
                 for (int y = -63; y <= 64; y++) {
-                    fw.write(x * BLOCKSIZE + "," + y * BLOCKSIZE + ",grass\r\n");
+                    fw.write(x * BLOCKSIZE + "," + y * BLOCKSIZE + ",grass,0\r\n");
                 }
             }
             fw.close();

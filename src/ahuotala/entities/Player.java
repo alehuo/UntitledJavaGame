@@ -30,8 +30,8 @@ public class Player implements Entity {
         this.name = name;
         this.cY = cY;
         this.cX = cX;
-        radiusX = (int) Math.floor(0.6 * cX);
-        radiusY = (int) Math.floor(0.52 * cY);
+        radiusX = (int) Math.floor(0.2 * cX);
+        radiusY = (int) Math.floor(0.2 * cY);
     }
 
     @Override

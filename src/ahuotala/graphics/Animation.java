@@ -19,8 +19,6 @@ import java.util.Scanner;
 public class Animation {
 
     private ArrayList<BufferedImage> frames;
-    //Framecount
-    private int framecount;
     //Interval in frames
     private int interval;
     //Count
@@ -82,7 +80,6 @@ public class Animation {
                 index++;
             }
             sc.close();
-            this.framecount = frames.size();
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }

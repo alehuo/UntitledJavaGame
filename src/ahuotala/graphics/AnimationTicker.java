@@ -5,13 +5,14 @@
  */
 package ahuotala.graphics;
 
+import ahuotala.game.Tickable;
 import java.util.ArrayList;
 
 /**
  *
  * @author Aleksi
  */
-public class AnimationTicker {
+public class AnimationTicker implements Tickable {
 
     private ArrayList<Animation> animations;
 

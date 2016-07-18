@@ -5,7 +5,6 @@
  */
 package ahuotala.game;
 
-import ahuotala.entities.Direction;
 import ahuotala.entities.Player;
 import ahuotala.graphics.Animation;
 import ahuotala.graphics.AnimationTicker;
@@ -20,11 +19,11 @@ import javax.swing.JFrame;
  *
  * @author Aleksi Huotala
  */
-public class Game extends Canvas implements Runnable {
+public class Game extends Canvas implements Runnable,Tickable {
 
     private static final long serialVersionUID = 1L;
 
-    public static final int WINDOW_WIDTH = 1280;
+    public static final int WINDOW_WIDTH = 640;
     //16:9 aspect ratio
     public static final int WINDOW_HEIGHT = WINDOW_WIDTH / 16 * 9;
     public static final int SCALE = 2;
@@ -49,8 +48,6 @@ public class Game extends Canvas implements Runnable {
     private final Player player = new Player("Aleksi", CENTERX, CENTERY);
     //Animations
     private final AnimationTicker animationTicker = new AnimationTicker();
-    private final Animation water;
-    private final Animation lava;
     private final Animation playerWalkingUp;
     private final Animation playerWalkingDown;
     private final Animation playerWalkingLeft;
@@ -79,16 +76,12 @@ public class Game extends Canvas implements Runnable {
         spriteSheet.getSprite("player_right", 32, 64, 16);
 
         //Animations
-        water = new Animation("Water", spriteSheet, 30, SCALE);
-        lava = new Animation("Lava", spriteSheet, 120, SCALE);
         playerWalkingUp = new Animation("PlayerWalkingUp", spriteSheet, 15, SCALE);
         playerWalkingDown = new Animation("PlayerWalkingDown", spriteSheet, 15, SCALE);
         playerWalkingLeft = new Animation("PlayerWalkingLeft", spriteSheet, 15, SCALE);
         playerWalkingRight = new Animation("PlayerWalkingRight", spriteSheet, 15, SCALE);
 
         //Register animations to be tickable
-        animationTicker.register(water);
-        animationTicker.register(lava);
         animationTicker.register(playerWalkingUp);
         animationTicker.register(playerWalkingDown);
         animationTicker.register(playerWalkingLeft);
@@ -174,30 +167,7 @@ public class Game extends Canvas implements Runnable {
     public void tick() {
         tickCount++;
         animationTicker.tick();
-        if (inputHandler.up || inputHandler.down || inputHandler.left || inputHandler.right) {
-            if (inputHandler.up) {
-                player.setDirection(Direction.UP);
-                player.setWalkingState(true);
-                player.goUp();
-            }
-            if (inputHandler.down) {
-                player.setDirection(Direction.DOWN);
-                player.setWalkingState(true);
-                player.goDown();
-            }
-            if (inputHandler.left) {
-                player.setDirection(Direction.LEFT);
-                player.setWalkingState(true);
-                player.goLeft();
-            }
-            if (inputHandler.right) {
-                player.setDirection(Direction.RIGHT);
-                player.setWalkingState(true);
-                player.goRight();
-            }
-        } else {
-            player.setWalkingState(false);
-        }
+        inputHandler.tick();
     }
 
     public void render() {
@@ -210,8 +180,11 @@ public class Game extends Canvas implements Runnable {
 
         Graphics g = bs.getDrawGraphics();
 
+        //Black background
         g.drawImage(image, 0, 0, getWidth(), getHeight(), null);
-        map.renderMap(g, player.getOffsetX(), player.getOffsetY());
+        //Map
+        map.renderMap(g, player.getOffsetX(), player.getOffsetY(), player.getRealX(), player.getRealY());
+        //Other objects
         map.renderObject(g, -6, -80, "house");
 
         switch (player.getDirection()) {
@@ -245,10 +218,10 @@ public class Game extends Canvas implements Runnable {
                 break;
         }
 
-        //X&Y;
+        //X & Y coords
         fontHandler.drawText(g, "x " + player.getRealX(), 20, 20);
         fontHandler.drawText(g, "y " + player.getRealY(), 20, 36);
-        //Work in progress
+        //Work in progress text
         fontHandler.drawText(g, "Work in progress", 20, 88);
 
         g.dispose();

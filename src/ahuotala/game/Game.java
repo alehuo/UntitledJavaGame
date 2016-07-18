@@ -23,10 +23,12 @@ public class Game extends Canvas implements Runnable {
 
     private static final long serialVersionUID = 1L;
 
-    public static final int WINDOW_WIDTH = 1280;
+    public static final int WINDOW_WIDTH = 640;
     //16:9 aspect ratio
     public static final int WINDOW_HEIGHT = WINDOW_WIDTH / 16 * 9;
     public static final int SCALE = 2;
+    public static final int CENTERX = WINDOW_WIDTH / 2;
+    public static final int CENTERY = WINDOW_HEIGHT / 2;
     public static final String NAME = "Untitled Game";
 
     private final JFrame frame;
@@ -43,7 +45,7 @@ public class Game extends Canvas implements Runnable {
     //Font
     private final FontHandler fontHandler = new FontHandler("spriteSheet.png");
     //Player
-    private final Player player = new Player("Aleksi", WINDOW_WIDTH - 22, WINDOW_HEIGHT - 22);
+    private final Player player = new Player("Aleksi", CENTERX, CENTERY);
     //Animaations
     private final AnimationTicker animationTicker = new AnimationTicker();
     private final Animation water;
@@ -91,8 +93,8 @@ public class Game extends Canvas implements Runnable {
         animationTicker.register(playerWalkingRight);
 
         //Set player x and y
-        player.setX(WINDOW_WIDTH / 2 - 16 * SCALE);
-        player.setY(WINDOW_HEIGHT / 2 - 16 * SCALE);
+        player.setX(CENTERX);
+        player.setY(CENTERY);
 
         frame = new JFrame(NAME);
         frame.addKeyListener(inputHandler);
@@ -218,11 +220,6 @@ public class Game extends Canvas implements Runnable {
 //                lava.nextFrame(g, i * 16 * SCALE, a * 16 * SCALE);
 //            }
 //        }
-        //X&Y
-        fontHandler.drawText(g, "x " + player.getX(), 20, 20);
-        fontHandler.drawText(g, "y " + player.getY(), 20, 36);
-        //Work in progress
-        fontHandler.drawText(g, "Work in progress", 20, 56);
         g.setColor(Color.red);
         g.fill3DRect(player.getX(), player.getY(), 16 * SCALE, 16 * SCALE, false);
         switch (player.getDirection()) {
@@ -255,6 +252,13 @@ public class Game extends Canvas implements Runnable {
                 }
                 break;
         }
+
+        //X&Y
+        fontHandler.drawText(g, "x " + player.getX(), 20, 20);
+        fontHandler.drawText(g, "y " + player.getY(), 20, 36);
+        //Work in progress
+        fontHandler.drawText(g, "Work in progress", 20, 56);
+
         g.dispose();
         bs.show();
 

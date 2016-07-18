@@ -3,12 +3,19 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package entities;
+package ahuotala.entities;
 
 /**
  *
  * @author Aleksi
  */
-public enum Direction {
-    UP, DOWN, LEFT, RIGHT
+interface Entity {
+
+    int getX();
+
+    int getY();
+
+    void setX(int x);
+
+    void setY(int y);
 }

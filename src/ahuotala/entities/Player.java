@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package entities;
+package ahuotala.entities;
 
 /**
  *
@@ -11,8 +11,8 @@ package entities;
  */
 public class Player implements Entity {
 
-    private int x;
-    private int y;
+    private int x = 0;
+    private int y = 0;
     private int step = 2;
     private String name;
     private Direction direction = Direction.DOWN;
@@ -22,8 +22,6 @@ public class Player implements Entity {
 
     public Player(String name, int max_width, int max_height) {
         this.name = name;
-        x = 0;
-        y = 0;
         this.max_width = max_width;
         this.max_height = max_height;
     }

@@ -3,17 +3,18 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package game;
+package ahuotala.game;
 
-import entities.Direction;
+
+import ahuotala.entities.Direction;
+import ahuotala.entities.Player;
+import ahuotala.graphics.Animation;
+import ahuotala.graphics.AnimationTicker;
+import ahuotala.graphics.FontHandler;
+import ahuotala.graphics.SpriteSheet;
 import java.awt.*;
 import java.awt.image.*;
 import javax.swing.JFrame;
-import entities.Player;
-import graphics.Animation;
-import graphics.AnimationTicker;
-import graphics.FontHandler;
-import graphics.SpriteSheet;
 
 /**
  *
@@ -43,7 +44,7 @@ public class Game extends Canvas implements Runnable {
     //Font
     private final FontHandler fontHandler = new FontHandler("spriteSheet.png");
     //Player
-    private final Player player = new Player("Aleksi", WINDOW_WIDTH, WINDOW_HEIGHT);
+    private final Player player = new Player("Aleksi", WINDOW_WIDTH - 22, WINDOW_HEIGHT - 22);
     //Animaations
     private final AnimationTicker animationTicker = new AnimationTicker();
     private final Animation water;
@@ -91,8 +92,8 @@ public class Game extends Canvas implements Runnable {
         animationTicker.register(playerWalkingRight);
 
         //Set player x and y
-        player.setX(160);
-        player.setY(180);
+        player.setX(0);
+        player.setY(0);
 
         frame = new JFrame(NAME);
         frame.addKeyListener(inputHandler);
@@ -102,7 +103,6 @@ public class Game extends Canvas implements Runnable {
         frame.pack();
         frame.setResizable(false);
         frame.setLocationRelativeTo(null);
-
         frame.setVisible(true);
     }
 
@@ -225,7 +225,8 @@ public class Game extends Canvas implements Runnable {
         fontHandler.drawText(g, "y " + player.getY(), 20, 36);
         //Work in progress
         fontHandler.drawText(g, "Work in progress", 20, 56);
-
+        g.setColor(Color.red);
+        g.fill3DRect(player.getX(), player.getY(), 32, 32, false);
         switch (player.getDirection()) {
             case DOWN:
                 if (player.getWalkingState() == true) {

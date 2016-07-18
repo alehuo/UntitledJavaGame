@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package levels;
+package ahuotala.levels;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -21,7 +21,7 @@ public class Level {
     public Level(String name) {
         lines = new ArrayList<>();
         try {
-            File levelFile = new File("src/levels/" + name + ".lev");
+            File levelFile = new File("src/ahuotala/levels/" + name + ".lev");
             Scanner sc = new Scanner(levelFile);
             while (sc.hasNextLine()) {
                 String line = sc.nextLine();

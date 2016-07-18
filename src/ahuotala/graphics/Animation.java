@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package graphics;
+package ahuotala.graphics;
 
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
@@ -63,7 +63,7 @@ public class Animation {
     public void Load() {
         frames = new ArrayList<>();
         try {
-            File animFile = new File("src/graphics/animations/" + name + ".ani");
+            File animFile = new File("src/ahuotala/graphics/animations/" + name + ".ani");
             Scanner sc = new Scanner(animFile);
             while (sc.hasNextLine()) {
                 String line = sc.nextLine();

@@ -186,7 +186,7 @@ public class Game extends Canvas implements Runnable, Tickable {
         //Map
         map.renderMap(g, player.getOffsetX(), player.getOffsetY(), player.getRealX(), player.getRealY());
         //Other objects
-        map.renderObject(g, -6, -80, "house");
+        map.renderObject(g, 60, 60, "house");
 
         //Player walking animation
         switch (player.getDirection()) {

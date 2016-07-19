@@ -130,7 +130,7 @@ public class Map {
     }
 
     public void renderObject(Graphics g, int x, int y, String name) {
-        g.drawImage(tiles.get(name), x + offsetX, y + offsetY, null);
+        g.drawImage(tiles.get(name), x + offsetX, y + offsetY, tiles.get(name).getWidth() * scale, tiles.get(name).getHeight() * scale, null);
     }
 
 }

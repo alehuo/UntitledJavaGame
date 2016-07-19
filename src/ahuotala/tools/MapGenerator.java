@@ -16,7 +16,7 @@ import java.util.logging.Logger;
  */
 public class MapGenerator {
 
-    private static final int BLOCKSIZE = 16;
+    private static final int BLOCKSIZE = 32;
 
     public static void main(String[] args) {
         try {
@@ -24,8 +24,9 @@ public class MapGenerator {
             String tmp = "";
             fw.write("# x,y,tile_type,animation\r\n");
             fw.write("# Map 1\r\n");
-            for (int x = -63; x <= 64; x++) {
-                for (int y = -63; y <= 64; y++) {
+            //Center x = 20, y = 12 (320, 192)
+            for (int x = -44; x <= 84; x++) {
+                for (int y = -52; y <= 76; y++) {
                     fw.write(x * BLOCKSIZE + "," + y * BLOCKSIZE + ",grass,0\r\n");
                 }
             }

@@ -23,9 +23,10 @@ public class FontHandler {
     private BufferedImage fontImage = null;
     private String[] charMap = {"a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z", " ", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", ".", "!", "?", "-", ":", "_", "\"", "#", "@"};
     private BufferedImage[] charset = new BufferedImage[charMap.length];
-     
-    public FontHandler(String path) {
+    private double scale;
 
+    public FontHandler(String path, double scale) {
+        this.scale = scale;
         try {
             fontImage = ImageIO.read(FontHandler.class.getResourceAsStream(path));
         } catch (IOException e) {
@@ -47,7 +48,7 @@ public class FontHandler {
         int offset = 0;
         for (char character : chars) {
             int charIndex = Arrays.asList(charMap).indexOf(character + "");
-            g.drawImage(charset[charIndex], x + offset, y, null);
+            g.drawImage(charset[charIndex], x + offset, y, (int) Math.floor(16 * scale), (int) Math.floor(16 * scale), null);
             switch (charIndex) {
                 case 19:
                     offset += 13;

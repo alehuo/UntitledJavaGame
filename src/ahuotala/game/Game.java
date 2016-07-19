@@ -19,7 +19,7 @@ import javax.swing.JFrame;
  *
  * @author Aleksi Huotala
  */
-public class Game extends Canvas implements Runnable,Tickable {
+public class Game extends Canvas implements Runnable, Tickable {
 
     private static final long serialVersionUID = 1L;
 
@@ -43,7 +43,7 @@ public class Game extends Canvas implements Runnable,Tickable {
     //Pixel data
     private final int[] pixels = ((DataBufferInt) image.getRaster().getDataBuffer()).getData();
     //Font
-    private final FontHandler fontHandler = new FontHandler("spriteSheet.png");
+    private final FontHandler fontHandler = new FontHandler("spriteSheet.png", 1);
     //Player
     private final Player player = new Player("Aleksi", CENTERX, CENTERY);
     //Animations
@@ -55,7 +55,7 @@ public class Game extends Canvas implements Runnable,Tickable {
     //Map
     Map map = new Map("map1", animationTicker, spriteSheet, SCALE);
     //Input handler
-    private final PlayerInputHandler inputHandler = new PlayerInputHandler(player);
+    private final PlayerInputHandler inputHandler = new PlayerInputHandler(player, map);
 
     public Game() {
 
@@ -133,7 +133,7 @@ public class Game extends Canvas implements Runnable,Tickable {
             delta += (now - lastTime) / nsPerTick;
             lastTime = now;
             //Use false to limit fps to the number of ticks
-            boolean shouldRender = false;
+            boolean shouldRender = true;
             while (delta >= 1) {
                 //Tick
                 ticks++;
@@ -221,10 +221,8 @@ public class Game extends Canvas implements Runnable,Tickable {
         }
 
         //X & Y coords
-        fontHandler.drawText(g, "x " + player.getRealX(), 20, 20);
-        fontHandler.drawText(g, "y " + player.getRealY(), 20, 36);
-        //Work in progress text
-        fontHandler.drawText(g, "Work in progress", 20, 88);
+        fontHandler.drawText(g, "x " + player.getRealX(), 5, 5);
+        fontHandler.drawText(g, "y " + player.getRealY(), 5, 21);
 
         //Empty buffer
         g.dispose();

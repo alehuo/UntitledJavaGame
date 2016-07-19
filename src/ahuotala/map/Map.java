@@ -23,25 +23,29 @@ import java.util.Scanner;
 public class Map {
 
     private ArrayList<String> lines;
-    private HashMap<String, BufferedImage> blocks;
+    private HashMap<String, BufferedImage> tiles;
     private HashMap<String, Animation> animations;
     private int scale;
     private int offsetX = 0;
     private int offsetY = 0;
+    private int minX;
+    private int minY;
+    private int maxX;
+    private int maxY;
 
     public Map(String name, AnimationTicker ticker, SpriteSheet spriteSheet, int scale) {
         this.scale = scale;
-        blocks = new HashMap<>();
+        tiles = new HashMap<>();
         animations = new HashMap<>();
         lines = new ArrayList<>();
-        blocks.put("grass", spriteSheet.getSprite("grass", 32, 80, 16));
-        blocks.put("house", spriteSheet.getSprite("house", 32, 96, 48, 32));
-        blocks.put("water", spriteSheet.getSprite("water", 160, 0, 16));
-        animations.put("water_ani", new Animation("Water", spriteSheet, 30, 1));
+        tiles.put("grass", spriteSheet.getSprite("grass", 32, 80, 16));
+        tiles.put("house", spriteSheet.getSprite("house", 32, 96, 48, 32));
+        tiles.put("water", spriteSheet.getSprite("water", 160, 0, 16));
+        animations.put("water_ani", new Animation("Water", spriteSheet, 30, scale));
         ticker.register(animations.get("water_ani"));
         try {
-            File levelFile = new File("src/ahuotala/map/" + name + ".map");
-            Scanner sc = new Scanner(levelFile);
+            File mapFile = new File("src/ahuotala/map/" + name + ".map");
+            Scanner sc = new Scanner(mapFile);
             while (sc.hasNextLine()) {
                 String line = sc.nextLine();
                 //Skip comments
@@ -49,46 +53,84 @@ public class Map {
                     continue;
                 }
                 lines.add(line);
+                int x = Integer.parseInt(line.split(",")[0]);
+                int y = Integer.parseInt(line.split(",")[1]);
+                //Temp solution
+                if (x < minX) {
+                    minX = x;
+                }
+                if (x > maxX) {
+                    maxX = x;
+                }
+                if (y < minY) {
+                    minY = y;
+                }
+                if (y > maxY) {
+                    maxY = y;
+                }
             }
+            System.out.println("Loaded map file into memory.");
+            System.out.println("Min x:" + minX + ", min y:" + minY + ", max x:" + maxX + ", max y:" + maxY);
             sc.close();
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
     }
 
+    public int getMinX() {
+        return minX;
+    }
+
+    public int getMaxX() {
+        return maxX;
+    }
+
+    public int getMinY() {
+        return minY;
+    }
+
+    public int getMaxY() {
+        return maxY;
+    }
+
     public void renderMap(Graphics g, int offsetX, int offsetY, int playerX, int playerY) {
         this.offsetX = offsetX;
         this.offsetY = offsetY;
         //Parse the map file line by line
+        int tileCount = 0;
         for (String line : lines) {
             String[] lineData = line.split(",");
 
-            //Block per block, add things
+            //tile per tile, add things
             int x = Integer.parseInt(lineData[0]);
             int y = Integer.parseInt(lineData[1]);
-            //Performance optimization: don't load blocks we don't need
-            if (x < playerX - 400 || x > playerX + 400 || y < playerY - 250 || y > playerY + 250) {
+            //Performance optimization: don't load tiles we don't need
+            int radiusX = 440;
+            int radiusY = 250;
+            if (x < playerX - radiusX || x > playerX + radiusX || y < playerY - radiusY || y > playerY + radiusY) {
                 continue;
             }
-            String blockType = lineData[2];
+            String tileType = lineData[2];
             if (lineData.length != 4) {
-                System.err.println("Invalid map block at x = " + x + ",y = " + y);
+                System.err.println("Invalid tile at x = " + x + ",y = " + y);
             }
             int isAnimated = Integer.parseInt(lineData[3]);
             if (isAnimated == 1) {
-                if (!animations.containsKey(blockType)) {
-                    System.err.println("Animation block '" + blockType + "' missing at x = " + x + ",y = " + y);
+                if (!animations.containsKey(tileType)) {
+                    System.err.println("Animation tile '" + tileType + "' is missing at x = " + x + ",y = " + y);
                 }
-                animations.get(blockType).nextFrame(g, x + offsetX, y + offsetY);
+                animations.get(tileType).nextFrame(g, x + offsetX, y + offsetY);
             } else {
-                g.drawImage(blocks.get(blockType), x + offsetX, y + offsetY, null);
+                g.drawImage(tiles.get(tileType), x + offsetX, y + offsetY, tiles.get(tileType).getWidth() * scale, tiles.get(tileType).getHeight() * scale, null);
             }
-
+            tileCount++;
         }
+        double percentange = (tileCount * 1.0 / lines.size()) * 100 * 1.0;
+//        System.out.println(tileCount + " of " + lines.size() + " (" + percentange + "%) tiles rendered this round");
     }
 
     public void renderObject(Graphics g, int x, int y, String name) {
-        g.drawImage(blocks.get(name), x + offsetX, y + offsetY, null);
+        g.drawImage(tiles.get(name), x + offsetX, y + offsetY, null);
     }
 
 }

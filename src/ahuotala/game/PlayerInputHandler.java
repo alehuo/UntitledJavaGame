@@ -9,18 +9,21 @@ import ahuotala.entities.Direction;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import ahuotala.entities.Player;
+import ahuotala.map.Map;
 
 /**
  *
  * @author Aleksi Huotala
  */
-public class PlayerInputHandler implements KeyListener,Tickable {
+public class PlayerInputHandler implements KeyListener, Tickable {
 
     private Player player;
+    private Map map;
     public boolean up = false, down = false, left = false, right = false;
 
-    public PlayerInputHandler(Player player) {
+    public PlayerInputHandler(Player player, Map map) {
         this.player = player;
+        this.map = map;
     }
 
     @Override
@@ -64,22 +67,22 @@ public class PlayerInputHandler implements KeyListener,Tickable {
     @Override
     public void tick() {
         if (up || down || left || right) {
-            if (up) {
+            if (up && player.getRealY() > map.getMinY()) {
                 player.setDirection(Direction.UP);
                 player.setWalkingState(true);
                 player.goUp();
             }
-            if (down) {
+            if (down && player.getRealY() < map.getMaxY()) {
                 player.setDirection(Direction.DOWN);
                 player.setWalkingState(true);
                 player.goDown();
             }
-            if (left) {
+            if (left && player.getRealX() > map.getMinX()) {
                 player.setDirection(Direction.LEFT);
                 player.setWalkingState(true);
                 player.goLeft();
             }
-            if (right) {
+            if (right && player.getRealX() < map.getMaxX()) {
                 player.setDirection(Direction.RIGHT);
                 player.setWalkingState(true);
                 player.goRight();

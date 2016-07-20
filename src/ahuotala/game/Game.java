@@ -5,7 +5,7 @@
  */
 package ahuotala.game;
 
-import ahuotala.entities.Npc;
+import ahuotala.entities.InteractableNpc;
 import ahuotala.entities.NpcTicker;
 import ahuotala.entities.Player;
 import ahuotala.graphics.Animation;
@@ -61,7 +61,7 @@ public class Game extends Canvas implements Runnable, Tickable {
     //Player
     private final Player player = new Player("Aleksi");
     //NPC test
-    private final Npc npc = new Npc("Witch");
+    private final InteractableNpc npc = new InteractableNpc("Witch");
     /**
      * #######################
      */
@@ -118,9 +118,11 @@ public class Game extends Canvas implements Runnable, Tickable {
         //Set test NPC x and y
         npc.setX(160);
         npc.setY(300);
+        npc.setInteractionRadiusX(16);
+        npc.setInteractionRadiusY(16);
         //Register the new NPC to be tickable
         npcTicker.register(npc);
-        
+
         //Initialize our JFrame
         frame = new JFrame(NAME);
         frame.addKeyListener(inputHandler);
@@ -219,7 +221,13 @@ public class Game extends Canvas implements Runnable, Tickable {
         map.renderMap(g, player.getOffsetX(), player.getOffsetY(), player.getRealX(), player.getRealY());
         //Other objects
         map.renderObject(g, 90, 60, "house");
-
+        //NPCs here
+        npc.drawBoundaries(g, player.getOffsetX(), player.getOffsetY());
+        spriteSheet.paint(g, "player_down", npc.getX() + player.getOffsetX(), npc.getY() + player.getOffsetY());
+        npc.drawInteractionBoundaries(g, player.getOffsetX(), player.getOffsetY());
+        if (npc.isWithinInteractionDistance(player)) {
+            fontHandler.drawText(g, "Press E to talk with \"" + npc.getName() + "\"", 40, WINDOW_HEIGHT - 32);
+        }
         //Player walking animation
         switch (player.getDirection()) {
             case DOWN:
@@ -251,10 +259,6 @@ public class Game extends Canvas implements Runnable, Tickable {
                 }
                 break;
         }
-
-        //NPC
-        npc.drawBoundaries(g, player.getOffsetX(), player.getOffsetY());
-        spriteSheet.paint(g, "player_down", npc.getX() + player.getOffsetX(), npc.getY() + player.getOffsetY());
 
         //X & Y coords
         fontHandler.drawText(g, "x " + player.getRealX(), 5, 5);

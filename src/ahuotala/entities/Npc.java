@@ -62,6 +62,9 @@ public class Npc implements Entity, Tickable {
     }
 
     @Override
+    /**
+     * Use the tick() -method to add special features to npcs.
+     */
     public void tick() {
 //        For debug only
 //        moveTicks = true;

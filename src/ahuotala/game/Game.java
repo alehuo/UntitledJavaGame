@@ -6,6 +6,7 @@
 package ahuotala.game;
 
 import ahuotala.entities.Npc;
+import ahuotala.entities.NpcTicker;
 import ahuotala.entities.Player;
 import ahuotala.graphics.Animation;
 import ahuotala.graphics.AnimationTicker;
@@ -21,7 +22,7 @@ import javax.swing.JFrame;
  * @author Aleksi Huotala
  */
 public class Game extends Canvas implements Runnable, Tickable {
-    
+
     private static final long serialVersionUID = 1L;
 
     //Window width
@@ -51,7 +52,7 @@ public class Game extends Canvas implements Runnable, Tickable {
     //Image
     private final BufferedImage image = new BufferedImage(WINDOW_WIDTH, WINDOW_HEIGHT, BufferedImage.TYPE_INT_RGB);
     //Sprite sheet
-    public static final SpriteSheet spriteSheet = new SpriteSheet("spriteSheet.png");
+    public static SpriteSheet spriteSheet = new SpriteSheet("spriteSheet.png");
     //Font
     private final FontHandler fontHandler = new FontHandler("spriteSheet.png");
     /**
@@ -66,6 +67,9 @@ public class Game extends Canvas implements Runnable, Tickable {
      */
     //Animation ticker
     public static final AnimationTicker animationTicker = new AnimationTicker();
+    //NPC ticker
+    public static final NpcTicker npcTicker = new NpcTicker();
+
     //Animations
     private final Animation playerWalkingUp;
     private final Animation playerWalkingDown;
@@ -114,7 +118,10 @@ public class Game extends Canvas implements Runnable, Tickable {
         //Set test NPC x and y
         npc.setX(160);
         npc.setY(300);
+        //Register the new NPC to be tickable
+        npcTicker.register(npc);
         
+        //Initialize our JFrame
         frame = new JFrame(NAME);
         frame.addKeyListener(inputHandler);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -125,33 +132,33 @@ public class Game extends Canvas implements Runnable, Tickable {
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
     }
-    
+
     public void init() {
-        
+
     }
-    
+
     private synchronized void start() {
         running = true;
         new Thread(this).start();
     }
-    
+
     private synchronized void stop() {
         running = false;
     }
-    
+
     @Override
     public void run() {
         long lastTime = System.nanoTime();
         double nsPerTick = 1000000000D / tickrate;
-        
+
         int frames = 0;
         int ticks = 0;
-        
+
         long lastTimer = System.currentTimeMillis();
         double delta = 0;
-        
+
         init();
-        
+
         while (running) {
             long now = System.nanoTime();
             delta += (now - lastTime) / nsPerTick;
@@ -172,13 +179,13 @@ public class Game extends Canvas implements Runnable, Tickable {
                     ex.printStackTrace();
                 }
             }
-            
+
             if (shouldRender) {
                 //Render a new frame
                 frames++;
                 render();
             }
-            
+
             if (System.currentTimeMillis() - lastTimer >= 1000) {
                 lastTimer += 1000;
                 frame.setTitle(NAME + " (" + frames + " frames, " + ticks + " ticks)");
@@ -187,15 +194,15 @@ public class Game extends Canvas implements Runnable, Tickable {
             }
         }
     }
-    
+
     @Override
     public void tick() {
         tickCount++;
         animationTicker.tick();
         inputHandler.tick();
-        npc.tick();
+        npcTicker.tick();
     }
-    
+
     public void render() {
         BufferStrategy bs = getBufferStrategy();
         if (bs == null) {
@@ -203,7 +210,7 @@ public class Game extends Canvas implements Runnable, Tickable {
             createBufferStrategy(3);
             return;
         }
-        
+
         Graphics g = bs.getDrawGraphics();
 
         //Black background
@@ -258,7 +265,7 @@ public class Game extends Canvas implements Runnable, Tickable {
         //Show frame
         bs.show();
     }
-    
+
     public static void main(String[] args) {
         new Game().start();
     }

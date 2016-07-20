@@ -15,9 +15,9 @@ public class Player implements Entity {
 
     private int x;
     private int y;
-    private int realX;
-    private int realY;
-    private int step = 2;
+    public static int realX;
+    public static int realY;
+    private int step = 1;
     private String name;
     private Direction direction = Direction.DOWN;
     private boolean walking = false;
@@ -25,8 +25,8 @@ public class Player implements Entity {
     private final int radiusY;
     private final int cY;
     private final int cX;
-    private int offsetX = 0;
-    private int offsetY = 0;
+    public static int offsetX = 0;
+    public static int offsetY = 0;
 
     public Player(String name) {
         this.name = name;

@@ -27,8 +27,8 @@ public class Npc implements Entity, Tickable {
     private int randomDirection;
     private int moveAmount;
     private boolean moveTicks = false;
-    private int movingAreaX = 30;
-    private int movingAreaY = 30;
+    private int movingAreaX = 70;
+    private int movingAreaY = 70;
     private int startX;
     private int startY;
 
@@ -98,6 +98,45 @@ public class Npc implements Entity, Tickable {
                             System.out.println("NPC boundary (tried to move right)");
                         }
                         break;
+                    //Up and left
+                    case 4:
+                        if (x > startX - movingAreaX && y > startY - movingAreaY) {
+                            x -= step;
+                            y -= step;
+                        } else {
+                            System.out.println("NPC boundary (tried to move up and left)");
+                        }
+                        break;
+                    //Up and right
+                    case 5:
+                        if (x < startX + movingAreaX && y > startY - movingAreaY) {
+                            x += step;
+                            y -= step;
+                        } else {
+                            System.out.println("NPC boundary (tried to move up and right)");
+                        }
+                        break;
+                    //Down and left
+                    case 6:
+                        if (x > startX - movingAreaX && y < startY + movingAreaY) {
+                            x -= step;
+                            y += step;
+                        } else {
+                            System.out.println("NPC boundary (tried to move down and left)");
+                        }
+                        break;
+                    //Down and right
+                    case 7:
+                        if (x < startX + movingAreaX && y < startY + movingAreaY) {
+                            x += step;
+                            y += step;
+                        } else {
+                            System.out.println("NPC boundary (tried to move down and left)");
+                        }
+                        break;
+                    default:
+                        System.err.println("Error: Unknown moving direction");
+                        break;
                 }
                 moveAmount--;
             } else {
@@ -107,8 +146,8 @@ public class Npc implements Entity, Tickable {
         } else {
             if (count >= interval) {
                 interval = random.nextInt(400) + 200;
-                randomDirection = random.nextInt(4);
-                moveAmount = random.nextInt(22) + 13;
+                randomDirection = random.nextInt(7);
+                moveAmount = random.nextInt(15) + 19;
                 moveTicks = true;
                 System.out.println("New interval:" + interval);
                 System.out.println("NPC tick");

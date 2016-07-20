@@ -5,6 +5,7 @@
  */
 package ahuotala.game;
 
+import ahuotala.entities.Npc;
 import ahuotala.entities.Player;
 import ahuotala.graphics.Animation;
 import ahuotala.graphics.AnimationTicker;
@@ -41,11 +42,13 @@ public class Game extends Canvas implements Runnable, Tickable {
     //Sprite sheet
     private final SpriteSheet spriteSheet = new SpriteSheet("spriteSheet.png", SCALE);
     //Pixel data
-    private final int[] pixels = ((DataBufferInt) image.getRaster().getDataBuffer()).getData();
+//    private final int[] pixels = ((DataBufferInt) image.getRaster().getDataBuffer()).getData();
     //Font
     private final FontHandler fontHandler = new FontHandler("spriteSheet.png", 1);
     //Player
     private final Player player = new Player("Aleksi", CENTERX, CENTERY);
+    //NPC test
+    private final Npc npc = new Npc("Witch", 160, 300);
     //Animations
     private final AnimationTicker animationTicker = new AnimationTicker();
     private final Animation playerWalkingUp;
@@ -169,6 +172,7 @@ public class Game extends Canvas implements Runnable, Tickable {
         tickCount++;
         animationTicker.tick();
         inputHandler.tick();
+        npc.tick();
     }
 
     public void render() {
@@ -186,7 +190,7 @@ public class Game extends Canvas implements Runnable, Tickable {
         //Map
         map.renderMap(g, player.getOffsetX(), player.getOffsetY(), player.getRealX(), player.getRealY());
         //Other objects
-        map.renderObject(g, 60, 60, "house");
+        map.renderObject(g, 90, 60, "house");
 
         //Player walking animation
         switch (player.getDirection()) {
@@ -219,6 +223,8 @@ public class Game extends Canvas implements Runnable, Tickable {
                 }
                 break;
         }
+
+        spriteSheet.paint(g, "player_down", npc.getX() + player.getOffsetX(), npc.getY() + player.getOffsetY());
 
         //X & Y coords
         fontHandler.drawText(g, "x " + player.getRealX(), 5, 5);

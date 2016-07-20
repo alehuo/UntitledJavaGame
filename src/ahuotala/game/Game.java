@@ -32,7 +32,7 @@ public class Game extends Canvas implements Runnable, Tickable {
     //Tile scale
     public static final int SCALE = 2;
     //Font scale
-    public static final double FONTSCALE = 1;
+    public static final double FONTSCALE = 0.7;
     //Center x coordinate
     public static final int CENTERX = (int) Math.floor(WINDOW_WIDTH / 2);
     //Center y coordinate
@@ -55,6 +55,7 @@ public class Game extends Canvas implements Runnable, Tickable {
     public static SpriteSheet spriteSheet = new SpriteSheet("spriteSheet.png");
     //Font
     private final FontHandler fontHandler = new FontHandler("spriteSheet.png");
+    private Font currentFont;
     /**
      * ####################### Players and NPC's here #######################
      */
@@ -214,9 +215,13 @@ public class Game extends Canvas implements Runnable, Tickable {
         }
 
         Graphics g = bs.getDrawGraphics();
+        //Font
+        currentFont = g.getFont();
+        g.setFont(new Font(currentFont.getName(), Font.BOLD, 18));
 
         //Black background
         g.drawImage(image, 0, 0, getWidth(), getHeight(), null);
+
         //Map
         map.renderMap(g, player.getOffsetX(), player.getOffsetY(), player.getRealX(), player.getRealY());
         //Other objects
@@ -226,7 +231,7 @@ public class Game extends Canvas implements Runnable, Tickable {
         spriteSheet.paint(g, "player_down", npc.getX() + player.getOffsetX(), npc.getY() + player.getOffsetY());
         npc.drawInteractionBoundaries(g, player.getOffsetX(), player.getOffsetY());
         if (npc.isWithinInteractionDistance(player)) {
-            fontHandler.drawText(g, "Press E to talk with \"" + npc.getName() + "\"", 40, WINDOW_HEIGHT - 32);
+            g.drawString("Press E to talk with \"" + npc.getName() + "\"", 40, WINDOW_HEIGHT - 32);
         }
         //Player walking animation
         switch (player.getDirection()) {
@@ -261,8 +266,11 @@ public class Game extends Canvas implements Runnable, Tickable {
         }
 
         //X & Y coords
-        fontHandler.drawText(g, "x " + player.getRealX(), 5, 5);
-        fontHandler.drawText(g, "y " + player.getRealY(), 5, 21);
+        g.setColor(Color.white);
+        g.drawString("x " + player.getRealX(), 1, 15);
+        g.drawString("y " + player.getRealY(), 1, 31);
+//        fontHandler.drawText(g, "x " + player.getRealX(), 5, 5);
+//        fontHandler.drawText(g, "y " + player.getRealY(), 5, 21);
 
         //Empty buffer
         g.dispose();

@@ -5,12 +5,11 @@
  */
 package ahuotala.graphics;
 
+import ahuotala.game.Game;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import javax.imageio.ImageIO;
 
 /**
@@ -25,8 +24,8 @@ public class FontHandler {
     private BufferedImage[] charset = new BufferedImage[charMap.length];
     private double scale;
 
-    public FontHandler(String path, double scale) {
-        this.scale = scale;
+    public FontHandler(String path) {
+        this.scale = Game.FONTSCALE;
         try {
             fontImage = ImageIO.read(FontHandler.class.getResourceAsStream(path));
         } catch (IOException e) {

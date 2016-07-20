@@ -5,6 +5,7 @@
  */
 package ahuotala.map;
 
+import ahuotala.game.Game;
 import ahuotala.graphics.Animation;
 import ahuotala.graphics.AnimationTicker;
 import ahuotala.graphics.SpriteSheet;
@@ -33,16 +34,16 @@ public class Map {
     private int maxX;
     private int maxY;
 
-    public Map(String name, AnimationTicker ticker, SpriteSheet spriteSheet, int scale) {
-        this.scale = scale;
+    public Map(String name) {
+        this.scale = Game.SCALE;
         tiles = new HashMap<>();
         animations = new HashMap<>();
         lines = new ArrayList<>();
-        tiles.put("grass", spriteSheet.getSprite("grass", 32, 80, 16));
-        tiles.put("house", spriteSheet.getSprite("house", 32, 96, 48, 32));
-        tiles.put("water", spriteSheet.getSprite("water", 160, 0, 16));
-        animations.put("water_ani", new Animation("Water", spriteSheet, 30, scale));
-        ticker.register(animations.get("water_ani"));
+        tiles.put("grass", Game.spriteSheet.getSprite("grass", 32, 80, 16));
+        tiles.put("house", Game.spriteSheet.getSprite("house", 32, 96, 48, 32));
+        tiles.put("water", Game.spriteSheet.getSprite("water", 160, 0, 16));
+        animations.put("water_ani", new Animation("Water", Game.spriteSheet, 30));
+        Game.animationTicker.register(animations.get("water_ani"));
         try {
             File mapFile = new File("src/ahuotala/map/" + name + ".map");
             Scanner sc = new Scanner(mapFile);

@@ -21,47 +21,65 @@ import javax.swing.JFrame;
  * @author Aleksi Huotala
  */
 public class Game extends Canvas implements Runnable, Tickable {
-
+    
     private static final long serialVersionUID = 1L;
 
+    //Window width
     public static final int WINDOW_WIDTH = 640;
-    //16:9 aspect ratio
+    //Window height
     public static final int WINDOW_HEIGHT = WINDOW_WIDTH / 16 * 9;
+    //Tile scale
     public static final int SCALE = 2;
-    public static final int CENTERX = WINDOW_WIDTH / 2;
-    public static final int CENTERY = WINDOW_HEIGHT / 2;
+    //Font scale
+    public static final double FONTSCALE = 1;
+    //Center x coordinate
+    public static final int CENTERX = (int) Math.floor(WINDOW_WIDTH / 2);
+    //Center y coordinate
+    public static final int CENTERY = (int) Math.floor(WINDOW_HEIGHT / 2);
+    //Game name
     public static final String NAME = "Untitled Game";
 
+    //JFrame object
     private final JFrame frame;
 
+    //Game state
     public boolean running = false;
+    //Tick count
     public int tickCount = 0;
+    //Tickrate; amount of game updates per second
     public double tickrate = 120D;
-    //Pohja
+    //Image
     private final BufferedImage image = new BufferedImage(WINDOW_WIDTH, WINDOW_HEIGHT, BufferedImage.TYPE_INT_RGB);
     //Sprite sheet
-    private final SpriteSheet spriteSheet = new SpriteSheet("spriteSheet.png", SCALE);
-    //Pixel data
-//    private final int[] pixels = ((DataBufferInt) image.getRaster().getDataBuffer()).getData();
+    public static final SpriteSheet spriteSheet = new SpriteSheet("spriteSheet.png");
     //Font
-    private final FontHandler fontHandler = new FontHandler("spriteSheet.png", 1);
+    private final FontHandler fontHandler = new FontHandler("spriteSheet.png");
+    /**
+     * ####################### Players and NPC's here #######################
+     */
     //Player
-    private final Player player = new Player("Aleksi", CENTERX, CENTERY);
+    private final Player player = new Player("Aleksi");
     //NPC test
-    private final Npc npc = new Npc("Witch", 160, 300);
+    private final Npc npc = new Npc("Witch");
+    /**
+     * #######################
+     */
+    //Animation ticker
+    public static final AnimationTicker animationTicker = new AnimationTicker();
     //Animations
-    private final AnimationTicker animationTicker = new AnimationTicker();
     private final Animation playerWalkingUp;
     private final Animation playerWalkingDown;
     private final Animation playerWalkingLeft;
     private final Animation playerWalkingRight;
     //Map
-    Map map = new Map("map1", animationTicker, spriteSheet, SCALE);
+    Map map = new Map("map1");
     //Input handler
     private final PlayerInputHandler inputHandler = new PlayerInputHandler(player, map);
 
+    /**
+     * Constructor
+     */
     public Game() {
-
         this.setMinimumSize(new Dimension(WINDOW_WIDTH, WINDOW_HEIGHT));
         this.setMaximumSize(new Dimension(WINDOW_WIDTH, WINDOW_HEIGHT));
         this.setPreferredSize(new Dimension(WINDOW_WIDTH, WINDOW_HEIGHT));
@@ -69,20 +87,20 @@ public class Game extends Canvas implements Runnable, Tickable {
         /**
          * Load sprites and animations here
          */
-        //Pelaajan kuva (ylös), width & height = 16. Tälle indeksiksi 0
+        //Player picture (up)
         spriteSheet.getSprite("player_up", 32, 32, 16);
-        //Pelaajan kuva (alas), width & height = 16. Tälle indeksiksi 1
+        //Player picture (down)
         spriteSheet.getSprite("player_down", 32, 16, 16);
-        //Pelaajan kuva (vasen), width & height = 16. Tälle indeksiksi 2
+        //Player picture (left)
         spriteSheet.getSprite("player_left", 32, 48, 16);
-        //Pelaajan kuva (oikea), width & height = 16. Tälle indeksiksi 3
+        //Player picture (right)
         spriteSheet.getSprite("player_right", 32, 64, 16);
 
         //Animations
-        playerWalkingUp = new Animation("PlayerWalkingUp", spriteSheet, 15, SCALE);
-        playerWalkingDown = new Animation("PlayerWalkingDown", spriteSheet, 15, SCALE);
-        playerWalkingLeft = new Animation("PlayerWalkingLeft", spriteSheet, 15, SCALE);
-        playerWalkingRight = new Animation("PlayerWalkingRight", spriteSheet, 15, SCALE);
+        playerWalkingUp = new Animation("PlayerWalkingUp", spriteSheet, 15);
+        playerWalkingDown = new Animation("PlayerWalkingDown", spriteSheet, 15);
+        playerWalkingLeft = new Animation("PlayerWalkingLeft", spriteSheet, 15);
+        playerWalkingRight = new Animation("PlayerWalkingRight", spriteSheet, 15);
 
         //Register animations to be tickable
         animationTicker.register(playerWalkingUp);
@@ -93,7 +111,10 @@ public class Game extends Canvas implements Runnable, Tickable {
         //Set player x and y
         player.setX(CENTERX);
         player.setY(CENTERY);
-
+        //Set test NPC x and y
+        npc.setX(160);
+        npc.setY(300);
+        
         frame = new JFrame(NAME);
         frame.addKeyListener(inputHandler);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -104,33 +125,33 @@ public class Game extends Canvas implements Runnable, Tickable {
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
     }
-
+    
     public void init() {
-
+        
     }
-
+    
     private synchronized void start() {
         running = true;
         new Thread(this).start();
     }
-
+    
     private synchronized void stop() {
         running = false;
     }
-
+    
     @Override
     public void run() {
         long lastTime = System.nanoTime();
         double nsPerTick = 1000000000D / tickrate;
-
+        
         int frames = 0;
         int ticks = 0;
-
+        
         long lastTimer = System.currentTimeMillis();
         double delta = 0;
-
+        
         init();
-
+        
         while (running) {
             long now = System.nanoTime();
             delta += (now - lastTime) / nsPerTick;
@@ -151,13 +172,13 @@ public class Game extends Canvas implements Runnable, Tickable {
                     ex.printStackTrace();
                 }
             }
-
+            
             if (shouldRender) {
                 //Render a new frame
                 frames++;
                 render();
             }
-
+            
             if (System.currentTimeMillis() - lastTimer >= 1000) {
                 lastTimer += 1000;
                 frame.setTitle(NAME + " (" + frames + " frames, " + ticks + " ticks)");
@@ -166,7 +187,7 @@ public class Game extends Canvas implements Runnable, Tickable {
             }
         }
     }
-
+    
     @Override
     public void tick() {
         tickCount++;
@@ -174,7 +195,7 @@ public class Game extends Canvas implements Runnable, Tickable {
         inputHandler.tick();
         npc.tick();
     }
-
+    
     public void render() {
         BufferStrategy bs = getBufferStrategy();
         if (bs == null) {
@@ -182,7 +203,7 @@ public class Game extends Canvas implements Runnable, Tickable {
             createBufferStrategy(3);
             return;
         }
-
+        
         Graphics g = bs.getDrawGraphics();
 
         //Black background
@@ -224,6 +245,8 @@ public class Game extends Canvas implements Runnable, Tickable {
                 break;
         }
 
+        //NPC
+        npc.drawBoundaries(g, player.getOffsetX(), player.getOffsetY());
         spriteSheet.paint(g, "player_down", npc.getX() + player.getOffsetX(), npc.getY() + player.getOffsetY());
 
         //X & Y coords
@@ -235,7 +258,7 @@ public class Game extends Canvas implements Runnable, Tickable {
         //Show frame
         bs.show();
     }
-
+    
     public static void main(String[] args) {
         new Game().start();
     }

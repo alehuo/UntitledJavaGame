@@ -5,6 +5,7 @@
  */
 package ahuotala.graphics;
 
+import ahuotala.game.Game;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -30,10 +31,10 @@ public class Animation {
     //Name
     private String name;
 
-    public Animation(String name, SpriteSheet spritesheet, int interval, int scale) {
+    public Animation(String name, SpriteSheet spritesheet, int interval) {
         this.frames = new ArrayList<>();
         this.interval = interval;
-        this.scale = scale;
+        this.scale = Game.SCALE;
         this.spritesheet = spritesheet;
         this.name = name;
         this.Load();

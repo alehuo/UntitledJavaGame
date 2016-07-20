@@ -5,10 +5,10 @@
  */
 package ahuotala.graphics;
 
+import ahuotala.game.Game;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import javax.imageio.ImageIO;
 
@@ -25,9 +25,9 @@ public class SpriteSheet {
     public BufferedImage image;
     public HashMap<String, BufferedImage> sprites;
 
-    public SpriteSheet(String path, int scale) {
+    public SpriteSheet(String path) {
 
-        this.scale = scale;
+        this.scale = Game.SCALE;
 
         //Yritetään ladata kuva
         try {

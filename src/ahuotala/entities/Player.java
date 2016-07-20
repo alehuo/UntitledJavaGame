@@ -5,6 +5,8 @@
  */
 package ahuotala.entities;
 
+import ahuotala.game.Game;
+
 /**
  *
  * @author Aleksi Huotala
@@ -26,10 +28,10 @@ public class Player implements Entity {
     private int offsetX = 0;
     private int offsetY = 0;
 
-    public Player(String name, int cX, int cY) {
+    public Player(String name) {
         this.name = name;
-        this.cY = cY;
-        this.cX = cX;
+        this.cY = Game.CENTERY;
+        this.cX = Game.CENTERX;
         radiusX = (int) Math.floor(0.2 * cX);
         radiusY = (int) Math.floor(0.2 * cY);
     }

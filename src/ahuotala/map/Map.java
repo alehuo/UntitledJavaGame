@@ -9,6 +9,7 @@ import ahuotala.game.Game;
 import ahuotala.graphics.Animation;
 import ahuotala.graphics.AnimationTicker;
 import ahuotala.graphics.SpriteSheet;
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -42,7 +43,9 @@ public class Map {
         tiles.put("grass", Game.spriteSheet.getSprite("grass", 32, 80, 16));
         tiles.put("house", Game.spriteSheet.getSprite("house", 32, 96, 48, 32));
         tiles.put("water", Game.spriteSheet.getSprite("water", 160, 0, 16));
-        animations.put("water_ani", new Animation("Water", Game.spriteSheet, 30));
+        tiles.put("sand", Game.spriteSheet.getSprite("sand", 48, 80, 16));
+        tiles.put("rock", Game.spriteSheet.getSprite("rock", 64, 80, 16));
+        animations.put("water_ani", new Animation("Water", Game.spriteSheet, 60));
         Game.animationTicker.register(animations.get("water_ani"));
         try {
             File mapFile = new File("src/ahuotala/map/" + name + ".map");
@@ -106,8 +109,8 @@ public class Map {
             int x = Integer.parseInt(lineData[0]);
             int y = Integer.parseInt(lineData[1]);
             //Performance optimization: don't load tiles we don't need
-            int radiusX = 440;
-            int radiusY = 250;
+            int radiusX = (int) Math.ceil(0.72 * Game.WINDOW_WIDTH);
+            int radiusY = (int) Math.ceil(0.72 * Game.WINDOW_HEIGHT);
             if (x < playerX - radiusX || x > playerX + radiusX || y < playerY - radiusY || y > playerY + radiusY) {
                 continue;
             }
@@ -121,8 +124,11 @@ public class Map {
                     System.err.println("Animation tile '" + tileType + "' is missing at x = " + x + ",y = " + y);
                 }
                 animations.get(tileType).nextFrame(g, x + offsetX, y + offsetY);
+//                g.draw3DRect(x + offsetX, y + offsetY, animations.get(tileType).getWidth() * scale, animations.get(tileType).getHeight() * scale, false);
             } else {
+//                g.setColor(Color.red);
                 g.drawImage(tiles.get(tileType), x + offsetX, y + offsetY, tiles.get(tileType).getWidth() * scale, tiles.get(tileType).getHeight() * scale, null);
+//                g.draw3DRect(x + offsetX, y + offsetY, tiles.get(tileType).getWidth() * scale, tiles.get(tileType).getHeight() * scale, false);
             }
             tileCount++;
         }

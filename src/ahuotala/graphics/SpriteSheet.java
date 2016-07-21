@@ -80,13 +80,13 @@ public class SpriteSheet {
      *
      * @param x Kuvan x-koordinaatti [0,leveys]
      * @param y Kuvan y-koodrinaatti [0,korkeus]
-     * @param wH Kuva-alueen leveys ja korkeus
+     * @param widthHeight Kuva-alueen leveys ja korkeus
      * @return BufferedImage
      */
-    public BufferedImage getSprite(String name, int x, int y, int widthheight) {
+    public BufferedImage getSprite(String name, int x, int y, int widthHeight) {
 
         if (!sprites.containsKey(name)) {
-            BufferedImage tmpImg = image.getSubimage(x, y, widthheight, widthheight);
+            BufferedImage tmpImg = image.getSubimage(x, y, widthHeight, widthHeight);
             sprites.put(name, tmpImg);
             return tmpImg;
         } else {

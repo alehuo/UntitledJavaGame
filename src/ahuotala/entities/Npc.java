@@ -20,23 +20,26 @@ public class Npc implements Entity, Tickable {
     private int y = 0;
     private int interval = 600;
     private int count = 0;
-    private String name;
-    private int step = 2;
+    private final String name;
+    private final int step = 1;
 
     //Moving algorithm
-    private Random random;
-    private boolean move = true;
+    private final Random random;
     private int randomDirection;
     private int moveAmount;
     private boolean moveTicks = false;
-    private int movingAreaX = 70;
-    private int movingAreaY = 70;
+    private final int movingAreaX = 70;
+    private final int movingAreaY = 70;
     private int startX;
     private int startY;
 
     public Npc(String name) {
         this.name = name;
         random = new Random();
+    }
+
+    public String getName() {
+        return name;
     }
 
     @Override
@@ -152,7 +155,7 @@ public class Npc implements Entity, Tickable {
 
         } else {
             if (count >= interval) {
-                interval = random.nextInt(400) + 200;
+                interval = random.nextInt(400) + 50;
                 randomDirection = random.nextInt(7);
                 moveAmount = random.nextInt(15) + 19;
                 moveTicks = true;

@@ -30,6 +30,8 @@ public class Animation {
     private SpriteSheet spritesheet;
     //Name
     private String name;
+    //Index
+    private int index = 0;
 
     public Animation(String name, SpriteSheet spritesheet, int interval) {
         this.frames = new ArrayList<>();
@@ -40,10 +42,6 @@ public class Animation {
         this.Load();
     }
 
-    public void getFrame() {
-
-    }
-
     public void tick() {
         count++;
     }
@@ -52,8 +50,16 @@ public class Animation {
         if (count >= interval * frames.size()) {
             count = 0;
         }
-        int index = (int) Math.floor(count / interval);
+        index = (int) Math.floor(count / interval);
         g.drawImage(frames.get(index), x, y, frames.get(index).getWidth() * scale, frames.get(index).getHeight() * scale, null);
+    }
+
+    public int getWidth() {
+        return frames.get(index).getWidth();
+    }
+
+    public int getHeight() {
+        return frames.get(index).getHeight();
     }
 
     /**

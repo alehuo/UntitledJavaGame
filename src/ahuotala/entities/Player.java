@@ -6,6 +6,8 @@
 package ahuotala.entities;
 
 import ahuotala.game.Game;
+import ahuotala.graphics.Animation;
+import java.awt.Graphics;
 
 /**
  *
@@ -17,8 +19,8 @@ public class Player implements Entity {
     private int y;
     public static int realX;
     public static int realY;
-    private int step = 1;
-    private String name;
+    private final int step = 1;
+    private final String name;
     private Direction direction = Direction.DOWN;
     private boolean walking = false;
     private final int radiusX;
@@ -32,6 +34,8 @@ public class Player implements Entity {
         this.name = name;
         this.cY = Game.CENTERY;
         this.cX = Game.CENTERX;
+        realX = cX;
+        realY = cY;
         radiusX = (int) Math.floor(0.2 * cX);
         radiusY = (int) Math.floor(0.2 * cY);
     }
@@ -110,14 +114,14 @@ public class Player implements Entity {
         }
     }
 
+    @Override
     public void setX(int x) {
         this.x = x;
-        this.realX = x;
     }
 
+    @Override
     public void setY(int y) {
         this.y = y;
-        this.realY = y;
     }
 
     public void setDirection(Direction direction) {
@@ -140,5 +144,6 @@ public class Player implements Entity {
     public String toString() {
         return this.getX() + "," + this.getY();
     }
+
 
 }

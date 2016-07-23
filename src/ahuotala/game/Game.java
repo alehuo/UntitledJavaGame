@@ -10,7 +10,6 @@ import ahuotala.entities.NpcTicker;
 import ahuotala.entities.Player;
 import ahuotala.graphics.Animation;
 import ahuotala.graphics.AnimationTicker;
-import ahuotala.graphics.FontHandler;
 import ahuotala.graphics.SpriteSheet;
 import ahuotala.map.Map;
 import java.awt.*;
@@ -24,9 +23,9 @@ import javax.swing.JFrame;
 public class Game extends Canvas implements Runnable, Tickable {
 
     private static final long serialVersionUID = 1L;
-
+    public static final boolean DEBUG = false;
     //Window width
-    public static final int WINDOW_WIDTH = 640;
+    public static final int WINDOW_WIDTH = 1280;
     //Window height
     public static final int WINDOW_HEIGHT = WINDOW_WIDTH / 16 * 9;
     //Tile scale
@@ -54,7 +53,6 @@ public class Game extends Canvas implements Runnable, Tickable {
     //Sprite sheet
     public static SpriteSheet spriteSheet = new SpriteSheet("spriteSheet.png");
     //Font
-    private final FontHandler fontHandler = new FontHandler("spriteSheet.png");
     private Font currentFont;
     /**
      * ####################### Players and NPC's here #######################
@@ -62,7 +60,7 @@ public class Game extends Canvas implements Runnable, Tickable {
     //Player
     private final Player player = new Player("Aleksi");
     //NPC test
-    private final InteractableNpc npc = new InteractableNpc("Witch");
+    private final InteractableNpc npc = new InteractableNpc("TestNPC");
     /**
      * #######################
      */
@@ -131,7 +129,7 @@ public class Game extends Canvas implements Runnable, Tickable {
         frame.setLayout(new BorderLayout());
         frame.add(this, BorderLayout.CENTER);
         frame.pack();
-        frame.setResizable(false);
+        frame.setResizable(true);
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
     }
@@ -167,7 +165,7 @@ public class Game extends Canvas implements Runnable, Tickable {
             delta += (now - lastTime) / nsPerTick;
             lastTime = now;
             //Use false to limit fps to the number of ticks
-            boolean shouldRender = true;
+            boolean shouldRender = false;
             while (delta >= 1) {
                 //Tick
                 ticks++;
@@ -214,7 +212,9 @@ public class Game extends Canvas implements Runnable, Tickable {
             return;
         }
 
+        //Get draw graphics
         Graphics g = bs.getDrawGraphics();
+
         //Font
         currentFont = g.getFont();
         g.setFont(new Font(currentFont.getName(), Font.BOLD, 18));
@@ -224,15 +224,24 @@ public class Game extends Canvas implements Runnable, Tickable {
 
         //Map
         map.renderMap(g, player.getOffsetX(), player.getOffsetY(), player.getRealX(), player.getRealY());
+
         //Other objects
-        map.renderObject(g, 90, 60, "house");
+        map.renderObject(g, -100, -100, "house");
+        map.renderObject(g, 4, -100, "house");
+
         //NPCs here
-        npc.drawBoundaries(g, player.getOffsetX(), player.getOffsetY());
+        //Movement boundaries
+//        npc.drawBoundaries(g, player.getOffsetX(), player.getOffsetY());
+        //For debug; interaction boundaries
+//        npc.drawInteractionBoundaries(g, player.getOffsetX(), player.getOffsetY());
+        //Draw npc
         spriteSheet.paint(g, "player_down", npc.getX() + player.getOffsetX(), npc.getY() + player.getOffsetY());
-        npc.drawInteractionBoundaries(g, player.getOffsetX(), player.getOffsetY());
+
+        //If we are within interaction distance
         if (npc.isWithinInteractionDistance(player)) {
             g.drawString("Press E to talk with \"" + npc.getName() + "\"", 40, WINDOW_HEIGHT - 32);
         }
+
         //Player walking animation
         switch (player.getDirection()) {
             case DOWN:
@@ -279,6 +288,7 @@ public class Game extends Canvas implements Runnable, Tickable {
     }
 
     public static void main(String[] args) {
+        //Start the game
         new Game().start();
     }
 }

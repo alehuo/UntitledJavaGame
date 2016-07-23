@@ -6,6 +6,7 @@
 package ahuotala.entities;
 
 import ahuotala.game.Tickable;
+import ahuotala.game.World;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.util.Random;
@@ -27,6 +28,8 @@ public class InteractableNpc implements Entity, Interactable, Tickable {
     private final String name;
     //Movement step
     private final int step = 1;
+    //Direction
+    private Direction direction = Direction.DOWN;
 
     //Moving algorithm
     private final Random random;
@@ -42,7 +45,7 @@ public class InteractableNpc implements Entity, Interactable, Tickable {
     private int npcId;
 
     //Can the NPC move around?
-    private boolean canMove = false;
+    private boolean canMove = true;
     //Interaction radius
     private int rY;
     private int rX;
@@ -99,6 +102,7 @@ public class InteractableNpc implements Entity, Interactable, Tickable {
                         //Up
                         case 0:
                             if (y > startY - movingAreaY) {
+                                direction = Direction.UP;
                                 y -= step;
                             } else {
 //                            System.out.println("NPC boundary (tried to move up)");
@@ -107,6 +111,7 @@ public class InteractableNpc implements Entity, Interactable, Tickable {
                         //Down
                         case 1:
                             if (y < startY + movingAreaY) {
+                                direction = Direction.DOWN;
                                 y += step;
                             } else {
 //                            System.out.println("NPC boundary (tried to move down)");
@@ -115,6 +120,7 @@ public class InteractableNpc implements Entity, Interactable, Tickable {
                         //Left
                         case 2:
                             if (x > startX - movingAreaX) {
+                                direction = Direction.LEFT;
                                 x -= step;
                             } else {
 //                            System.out.println("NPC boundary (tried to move left)");
@@ -123,6 +129,7 @@ public class InteractableNpc implements Entity, Interactable, Tickable {
                         //Right
                         case 3:
                             if (x < startX + movingAreaX) {
+                                direction = Direction.RIGHT;
                                 x += step;
                             } else {
 //                            System.out.println("NPC boundary (tried to move right)");
@@ -131,6 +138,7 @@ public class InteractableNpc implements Entity, Interactable, Tickable {
                         //Up and left
                         case 4:
                             if (x > startX - movingAreaX && y > startY - movingAreaY) {
+                                direction = Direction.LEFT;
                                 x -= step;
                                 y -= step;
                             } else {
@@ -140,6 +148,7 @@ public class InteractableNpc implements Entity, Interactable, Tickable {
                         //Up and right
                         case 5:
                             if (x < startX + movingAreaX && y > startY - movingAreaY) {
+                                direction = Direction.RIGHT;
                                 x += step;
                                 y -= step;
                             } else {
@@ -149,6 +158,7 @@ public class InteractableNpc implements Entity, Interactable, Tickable {
                         //Down and left
                         case 6:
                             if (x > startX - movingAreaX && y < startY + movingAreaY) {
+                                direction = Direction.LEFT;
                                 x -= step;
                                 y += step;
                             } else {
@@ -158,6 +168,7 @@ public class InteractableNpc implements Entity, Interactable, Tickable {
                         //Down and right
                         case 7:
                             if (x < startX + movingAreaX && y < startY + movingAreaY) {
+                                direction = Direction.RIGHT;
                                 x += step;
                                 y += step;
                             } else {
@@ -196,7 +207,7 @@ public class InteractableNpc implements Entity, Interactable, Tickable {
     }
 
     public void drawBoundaries(Graphics g, int oX, int oY) {
-        g.setColor(Color.red);
+        g.setColor(Color.yellow);
         g.draw3DRect(startX - movingAreaX + oX, startY - movingAreaY + oY, 2 * movingAreaX + 32, 2 * movingAreaY + 32, false);
     }
 
@@ -233,6 +244,14 @@ public class InteractableNpc implements Entity, Interactable, Tickable {
     @Override
     public void setNpcId(int id) {
         this.npcId = id;
+    }
+
+    public Direction getDirection() {
+        return direction;
+    }
+
+    public boolean getWalkingState() {
+        return moveTicks;
     }
 
     @Override

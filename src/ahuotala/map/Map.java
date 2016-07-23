@@ -7,8 +7,6 @@ package ahuotala.map;
 
 import ahuotala.game.Game;
 import ahuotala.graphics.Animation;
-import ahuotala.graphics.AnimationTicker;
-import ahuotala.graphics.SpriteSheet;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
@@ -34,6 +32,7 @@ public class Map {
     private int minY;
     private int maxX;
     private int maxY;
+    private boolean debug = Game.DEBUG;
 
     public Map(String name) {
         this.scale = Game.SCALE;
@@ -124,16 +123,24 @@ public class Map {
                     System.err.println("Animation tile '" + tileType + "' is missing at x = " + x + ",y = " + y);
                 }
                 animations.get(tileType).nextFrame(g, x + offsetX, y + offsetY);
-//                g.draw3DRect(x + offsetX, y + offsetY, animations.get(tileType).getWidth() * scale, animations.get(tileType).getHeight() * scale, false);
+                if (debug) {
+                    g.draw3DRect(x + offsetX, y + offsetY, animations.get(tileType).getWidth() * scale, animations.get(tileType).getHeight() * scale, false);
+                }
+
             } else {
-//                g.setColor(Color.red);
                 g.drawImage(tiles.get(tileType), x + offsetX, y + offsetY, tiles.get(tileType).getWidth() * scale, tiles.get(tileType).getHeight() * scale, null);
-//                g.draw3DRect(x + offsetX, y + offsetY, tiles.get(tileType).getWidth() * scale, tiles.get(tileType).getHeight() * scale, false);
+                if (debug) {
+                    g.setColor(Color.red);
+                    g.draw3DRect(x + offsetX, y + offsetY, tiles.get(tileType).getWidth() * scale, tiles.get(tileType).getHeight() * scale, false);
+                }
+
             }
             tileCount++;
         }
-        double percentange = (tileCount * 1.0 / lines.size()) * 100 * 1.0;
-//        System.out.println(tileCount + " of " + lines.size() + " (" + percentange + "%) tiles rendered this round");
+        if (debug) {
+            System.out.println(tileCount + " of " + lines.size() + " tiles rendered this round");
+        }
+
     }
 
     public void renderObject(Graphics g, int x, int y, String name) {

@@ -23,6 +23,7 @@ public class Player implements Entity, Tickable {
     private Direction direction = Direction.DOWN;
     private boolean walking = false;
     private boolean jumping = false;
+    private boolean canJump = true;
     private boolean swimming = false;
     private final int radiusX;
     private final int radiusY;
@@ -169,12 +170,24 @@ public class Player implements Entity, Tickable {
         this.walking = walking;
     }
 
+    public void SetJumpingState(boolean jumping) {
+        this.jumping = jumping;
+    }
+
+    public void setSwimmingState(boolean swimming) {
+        this.swimming = swimming;
+    }
+
     public boolean isWalking() {
         return walking;
     }
 
     public boolean isSwimming() {
         return swimming;
+    }
+
+    public boolean canJump() {
+        return canJump;
     }
 
     @Override
@@ -191,19 +204,23 @@ public class Player implements Entity, Tickable {
         //Slow the player down if we are walking on a sand
         switch (currentTile) {
             case "sand":
+                canJump = true;
                 swimming = false;
                 step = 2;
                 break;
             case "water_ani":
                 swimming = true;
+                canJump = false;
+                jumping = false;
                 step = 1;
                 break;
             default:
+                canJump = true;
                 swimming = false;
                 step = 3;
                 break;
         }
-        if (jumping) {
+        if (jumping && canJump) {
             if (jumpTicks == 40) {
                 realY -= 20;
             }

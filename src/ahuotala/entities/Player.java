@@ -6,18 +6,19 @@
 package ahuotala.entities;
 
 import ahuotala.game.Game;
+import ahuotala.game.Tickable;
 
 /**
  *
  * @author Aleksi Huotala
  */
-public class Player implements Entity {
+public class Player implements Entity, Tickable {
 
     private int x;
     private int y;
     public static int realX;
     public static int realY;
-    private final int step = 1;
+    private int step = 1;
     private final String name;
     private Direction direction = Direction.DOWN;
     private boolean walking = false;
@@ -25,12 +26,15 @@ public class Player implements Entity {
     private final int radiusY;
     private final int cY;
     private final int cX;
-    public static int offsetX = 0;
-    public static int offsetY = 0;
+    public int offsetX = Game.CENTERX;
+    public int offsetY = Game.CENTERY;
+    public String currentTile = "";
 
     public Player(String name) {
         this.name = name;
+        //Center Y
         this.cY = Game.CENTERY;
+        //Center X
         this.cX = Game.CENTERX;
         realX = cX;
         realY = cY;
@@ -65,61 +69,83 @@ public class Player implements Entity {
     }
 
     public void goUp() {
-        if (y - step >= cY - radiusY) {
-            y -= step;
-            realY -= step;
-        } else {
-            //Offset the map here
-            offsetY += step;
-            realY -= step;
+        y -= step;
+        offsetY += step;
+//        if (y - step >= cY - radiusY) {
+//            y -= step;
+//            realY -= step;
+//        } else {
+//            //Offset the map here
+//            offsetY += step;
+//            realY -= step;
 //            System.out.println("Cannot go up; Moving the map instead");
-        }
+//        }
     }
 
     public void goDown() {
-        if (y + step <= cY + radiusY) {
-            y += step;
-            realY += step;
-        } else {
-            //Offset the map here
-            offsetY -= step;
-            realY += step;
-//            System.out.println("Cannot go down; Moving the map instead");
-        }
+        y += step;
+        offsetY -= step;
+//        if (y + step <= cY + radiusY) {
+//            y += step;
+//            realY += step;
+//        } else {
+//            //Offset the map here
+//            offsetY -= step;
+//            realY += step;
+////            System.out.println("Cannot go down; Moving the map instead");
+//        }
     }
 
     public void goLeft() {
-        if (x - step >= cX - radiusX) {
-            x -= step;
-            realX -= step;
-        } else {
-            //Offset the map here
-            offsetX += step;
-            realX -= step;
-//            System.out.println("Cannot go left; Moving the map instead");
-        }
+        x -= step;
+        offsetX += step;
+//        if (x - step >= cX - radiusX) {
+//            x -= step;
+//            realX -= step;
+//        } else {
+//            //Offset the map here
+//            offsetX += step;
+//            realX -= step;
+////            System.out.println("Cannot go left; Moving the map instead");
+//        }
     }
 
     public void goRight() {
-        if (x + step <= cX + radiusX) {
-            x += step;
-            realX += step;
-        } else {
-            //Offset the map here
-            offsetX -= step;
-            realX += step;
-//            System.out.println("Cannot go right; Moving the map instead");
-        }
+        x += step;
+        offsetX -= step;
+//        if (x + step <= cX + radiusX) {
+//            x += step;
+//            realX += step;
+//        } else {
+//            //Offset the map here
+//            offsetX -= step;
+//            realX += step;
+////            System.out.println("Cannot go right; Moving the map instead");
+//        }
     }
 
     @Override
     public void setX(int x) {
+        offsetX = cX - x;
         this.x = x;
     }
 
     @Override
     public void setY(int y) {
+        offsetY = cY - y;
         this.y = y;
+    }
+
+    public void setCurrentTile(String tile) {
+        currentTile = tile;
+    }
+
+    public String getCurrentTile(String tile) {
+        return currentTile;
+    }
+
+    public void setStep(int step) {
+        this.step = step;
     }
 
     public void setDirection(Direction direction) {
@@ -141,6 +167,26 @@ public class Player implements Entity {
     @Override
     public String toString() {
         return this.getX() + "," + this.getY();
+    }
+
+    public void jump() {
+        System.out.println("Player jumped");
+    }
+
+    @Override
+    public void tick() {
+        //Slow the player down if we are walking on a sand
+        switch (currentTile) {
+            case "sand":
+                step = 2;
+                break;
+            case "water_ani":
+                step = 1;
+                break;
+            default:
+                step = 3;
+                break;
+        }
     }
 
 }

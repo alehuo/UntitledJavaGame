@@ -31,7 +31,6 @@ public class SpriteSheet {
 
         //Yritetään ladata kuva
         try {
-            System.out.println(SpriteSheet.class.getResourceAsStream(path));
             image = ImageIO.read(SpriteSheet.class.getResourceAsStream(path));
         } catch (IOException e) {
             e.printStackTrace();
@@ -45,8 +44,8 @@ public class SpriteSheet {
     /**
      * Metodi, jolla piirretään näyttöön haluttu kuva
      *
-     * @param g Grafiikka-olio
-     * @param index Indeksi
+     * @param g Grafiikka
+     * @param name Nimi
      * @param x X-koord. johon kuva ladataan
      * @param y Y-koord. johon kuva ladataan
      */
@@ -58,6 +57,7 @@ public class SpriteSheet {
     /**
      * Metodi, jolla ladataan pikkukuva muistiin isommasta kuvasta
      *
+     * @param name
      * @param x Kuvan x-koordinaatti [0,leveys]
      * @param y Kuvan y-koodrinaatti [0,korkeus]
      * @param width Kuva-alueen leveys
@@ -79,6 +79,7 @@ public class SpriteSheet {
     /**
      * Metodi, jolla ladataan pikkukuva muistiin isommasta kuvasta
      *
+     * @param name
      * @param x Kuvan x-koordinaatti [0,leveys]
      * @param y Kuvan y-koodrinaatti [0,korkeus]
      * @param widthHeight Kuva-alueen leveys ja korkeus

@@ -128,9 +128,10 @@ public class Game extends Canvas implements Runnable, Tickable {
         frame.setLayout(new BorderLayout());
         frame.add(this, BorderLayout.CENTER);
         frame.pack();
-        frame.setResizable(true);
+        frame.setResizable(false);
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
+        frame.requestFocusInWindow();
     }
 
     public void init() {

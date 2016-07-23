@@ -65,15 +65,19 @@ public class Game extends Canvas implements Runnable, Tickable {
      * #######################
      */
     //Animation ticker
-    public static final AnimationTicker animationTicker = new AnimationTicker();
+    public static final AnimationTicker ANIMATIONTICKER = new AnimationTicker();
     //NPC ticker
-    public static final NpcTicker npcTicker = new NpcTicker();
+    public static final NpcTicker NPCTICKER = new NpcTicker();
 
     //Animations
     private final Animation playerWalkingUp;
     private final Animation playerWalkingDown;
     private final Animation playerWalkingLeft;
     private final Animation playerWalkingRight;
+    private final Animation playerSwimmingUp;
+    private final Animation playerSwimmingDown;
+    private final Animation playerSwimmingLeft;
+    private final Animation playerSwimmingRight;
     //Map
     Map map = new Map("map1");
     //Input handler
@@ -97,18 +101,35 @@ public class Game extends Canvas implements Runnable, Tickable {
         spriteSheet.getSprite("player_left", 32, 48, 16);
         //Player picture (right)
         spriteSheet.getSprite("player_right", 32, 64, 16);
+        //Swimming:
+        //Player picture (up)
+        spriteSheet.getSprite("player_swimming_up", 80, 32, 16);
+        //Player picture (down)
+        spriteSheet.getSprite("player_swimming_down", 80, 16, 16);
+        //Player picture (left)
+        spriteSheet.getSprite("player_swimming_left", 80, 64, 16);
+        //Player picture (right)
+        spriteSheet.getSprite("player_swimming_right", 80, 48, 16);
 
         //Animations
         playerWalkingUp = new Animation("PlayerWalkingUp", spriteSheet, 15);
         playerWalkingDown = new Animation("PlayerWalkingDown", spriteSheet, 15);
         playerWalkingLeft = new Animation("PlayerWalkingLeft", spriteSheet, 15);
         playerWalkingRight = new Animation("PlayerWalkingRight", spriteSheet, 15);
+        playerSwimmingUp = new Animation("PlayerSwimmingUp", spriteSheet, 30);
+        playerSwimmingDown = new Animation("PlayerSwimmingDown", spriteSheet, 30);
+        playerSwimmingLeft = new Animation("PlayerSwimmingLeft", spriteSheet, 30);
+        playerSwimmingRight = new Animation("PlayerSwimmingRight", spriteSheet, 30);
 
         //Register animations to be tickable
-        animationTicker.register(playerWalkingUp);
-        animationTicker.register(playerWalkingDown);
-        animationTicker.register(playerWalkingLeft);
-        animationTicker.register(playerWalkingRight);
+        ANIMATIONTICKER.register(playerWalkingUp);
+        ANIMATIONTICKER.register(playerWalkingDown);
+        ANIMATIONTICKER.register(playerWalkingLeft);
+        ANIMATIONTICKER.register(playerWalkingRight);
+        ANIMATIONTICKER.register(playerSwimmingUp);
+        ANIMATIONTICKER.register(playerSwimmingDown);
+        ANIMATIONTICKER.register(playerSwimmingLeft);
+        ANIMATIONTICKER.register(playerSwimmingRight);
 
         //Set player x and y
         player.setX(96);
@@ -119,7 +140,7 @@ public class Game extends Canvas implements Runnable, Tickable {
         npc.setInteractionRadiusX(16);
         npc.setInteractionRadiusY(16);
         //Register the new NPC to be tickable
-        npcTicker.register(npc);
+        NPCTICKER.register(npc);
 
         //Initialize our JFrame
         frame = new JFrame(NAME);
@@ -199,9 +220,9 @@ public class Game extends Canvas implements Runnable, Tickable {
     @Override
     public void tick() {
         tickCount++;
-        animationTicker.tick();
+        ANIMATIONTICKER.tick();
         inputHandler.tick();
-        npcTicker.tick();
+        NPCTICKER.tick();
         player.tick();
     }
 
@@ -251,32 +272,58 @@ public class Game extends Canvas implements Runnable, Tickable {
         //Player walking animation
         switch (player.getDirection()) {
             case DOWN:
-                if (player.getWalkingState() == true) {
-                    playerWalkingDown.nextFrame(g, playerX, playerY);
+                if (player.isWalking()) {
+                    if (player.isSwimming()) {
+                        playerSwimmingDown.nextFrame(g, playerX, playerY);
+                    } else {
+                        playerWalkingDown.nextFrame(g, playerX, playerY);
+                    }
+                } else if (player.isSwimming()) {
+                    spriteSheet.paint(g, "player_swimming_down", playerX, playerY);
                 } else {
                     spriteSheet.paint(g, "player_down", playerX, playerY);
                 }
                 break;
             case UP:
-                if (player.getWalkingState() == true) {
-                    playerWalkingUp.nextFrame(g, playerX, playerY);
+                if (player.isWalking()) {
+                    if (player.isSwimming()) {
+                        playerSwimmingUp.nextFrame(g, playerX, playerY);
+                    } else {
+                        playerWalkingUp.nextFrame(g, playerX, playerY);
+                    }
+                } else if (player.isSwimming()) {
+                    spriteSheet.paint(g, "player_swimming_up", playerX, playerY);
                 } else {
                     spriteSheet.paint(g, "player_up", playerX, playerY);
                 }
                 break;
             case LEFT:
-                if (player.getWalkingState() == true) {
-                    playerWalkingLeft.nextFrame(g, playerX, playerY);
+                if (player.isWalking()) {
+                    if (player.isSwimming()) {
+                        playerSwimmingLeft.nextFrame(g, playerX, playerY);
+                    } else {
+                        playerWalkingLeft.nextFrame(g, playerX, playerY);
+                    }
+                } else if (player.isSwimming()) {
+                    spriteSheet.paint(g, "player_swimming_right", playerX, playerY);
                 } else {
                     spriteSheet.paint(g, "player_right", playerX, playerY);
                 }
                 break;
-            default:
-                if (player.getWalkingState() == true) {
-                    playerWalkingRight.nextFrame(g, playerX, playerY);
+            case RIGHT:
+                if (player.isWalking()) {
+                    if (player.isSwimming()) {
+                        playerSwimmingRight.nextFrame(g, playerX, playerY);
+                    } else {
+                        playerWalkingRight.nextFrame(g, playerX, playerY);
+                    }
+                } else if (player.isSwimming()) {
+                    spriteSheet.paint(g, "player_swimming_left", playerX, playerY);
                 } else {
                     spriteSheet.paint(g, "player_left", playerX, playerY);
                 }
+                break;
+            default:
                 break;
         }
 

@@ -243,6 +243,12 @@ public class Player implements Entity, Tickable {
                 jumping = false;
                 step = 1;
                 break;
+            case "lava_ani":
+                swimming = true;
+                canJump = false;
+                jumping = false;
+                step = 1;
+                break;
             default:
                 canJump = true;
                 swimming = false;

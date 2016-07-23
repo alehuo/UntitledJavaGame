@@ -313,7 +313,7 @@ public class Game extends Canvas implements Runnable, Tickable {
                         playerWalkingLeft.nextFrame(g, playerX, playerY);
                     }
                 } else if (player.isSwimming()) {
-                    spriteSheet.paint(g, "player_swimming_right", playerX, playerY);
+                    spriteSheet.paint(g, "player_swimming_left", playerX, playerY);
                 } else {
                     spriteSheet.paint(g, "player_right", playerX, playerY);
                 }
@@ -326,7 +326,7 @@ public class Game extends Canvas implements Runnable, Tickable {
                         playerWalkingRight.nextFrame(g, playerX, playerY);
                     }
                 } else if (player.isSwimming()) {
-                    spriteSheet.paint(g, "player_swimming_left", playerX, playerY);
+                    spriteSheet.paint(g, "player_swimming_right", playerX, playerY);
                 } else {
                     spriteSheet.paint(g, "player_left", playerX, playerY);
                 }

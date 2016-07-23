@@ -47,7 +47,9 @@ public class Map {
         tiles.put("sand", Game.spriteSheet.getSprite("sand", 48, 80, 16));
         tiles.put("rock", Game.spriteSheet.getSprite("rock", 64, 80, 16));
         animations.put("water_ani", new Animation("Water", Game.spriteSheet, 60));
+        animations.put("lava_ani", new Animation("Lava", Game.spriteSheet, 60));
         Game.ANIMATIONTICKER.register(animations.get("water_ani"));
+        Game.ANIMATIONTICKER.register(animations.get("lava_ani"));
         try {
             URL url = getClass().getResource(name + ".map");
             File mapFile = new File(url.getPath());

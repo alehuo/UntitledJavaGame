@@ -5740,9 +5740,9 @@
 0,288,grass,0
 0,320,grass,0
 0,352,grass,0
-0,384,grass,0
-0,416,grass,0
-0,448,grass,0
+0,384,lava_ani,1
+0,416,lava_ani,1
+0,448,lava_ani,1
 0,480,grass,0
 0,512,grass,0
 0,544,grass,0
@@ -5869,9 +5869,9 @@
 32,288,grass,0
 32,320,grass,0
 32,352,grass,0
-32,384,grass,0
-32,416,grass,0
-32,448,grass,0
+32,384,lava_ani,1
+32,416,lava_ani,1
+32,448,lava_ani,1
 32,480,grass,0
 32,512,grass,0
 32,544,grass,0

@@ -51,7 +51,7 @@ public class PlayerInputHandler implements KeyListener, Tickable {
                 right = true;
                 break;
             case KeyEvent.VK_SPACE:
-                jump = true;
+                player.jump();
                 break;
             default:
                 break;
@@ -111,8 +111,8 @@ public class PlayerInputHandler implements KeyListener, Tickable {
         } else {
             player.setWalkingState(false);
         }
-        if (jump) {
-            player.jump();
-        }
+//        if (jump) {
+//            player.jump();
+//        }
     }
 }

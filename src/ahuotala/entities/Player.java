@@ -16,24 +16,34 @@ public class Player implements Entity, Tickable {
 
     private int x;
     private int y;
+
     public static int realX;
     public static int realY;
+
+    //Base stepping speed
     private int step = 1;
+
     private final String name;
+    private int health = 5;
+
     private Direction direction = Direction.DOWN;
+
     private boolean walking = false;
     private boolean jumping = false;
     private boolean canJump = true;
     private boolean swimming = false;
+
     private final int radiusX;
     private final int radiusY;
+
     private final int cY;
     private final int cX;
+
     public int offsetX = Game.CENTERX;
     public int offsetY = Game.CENTERY;
+
     public String currentTile = "";
-    private int renderY;
-    private int renderX;
+
     private int jumpTicks = 40;
 
     public Player(String name) {
@@ -72,6 +82,20 @@ public class Player implements Entity, Tickable {
 
     public int getOffsetY() {
         return offsetY;
+    }
+
+    public void damagePlayer(int health) {
+        if (health >= 0) {
+            this.health -= health;
+        }
+    }
+
+    public void increaseHealth(int health) {
+        this.health += health;
+    }
+
+    public int getHealth() {
+        return health;
     }
 
     public void goUp() {

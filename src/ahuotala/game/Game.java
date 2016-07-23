@@ -21,7 +21,7 @@ import javax.swing.JFrame;
  * @author Aleksi Huotala
  */
 public class Game extends Canvas implements Runnable, Tickable {
-
+    
     private static final long serialVersionUID = 1L;
     public static final boolean DEBUG = false;
     //Window width
@@ -78,6 +78,8 @@ public class Game extends Canvas implements Runnable, Tickable {
     private final Animation playerSwimmingDown;
     private final Animation playerSwimmingLeft;
     private final Animation playerSwimmingRight;
+    private final Animation playerLowHealth;
+
     //Map
     Map map = new Map("map1");
     //Input handler
@@ -110,6 +112,10 @@ public class Game extends Canvas implements Runnable, Tickable {
         spriteSheet.getSprite("player_swimming_left", 80, 64, 16);
         //Player picture (right)
         spriteSheet.getSprite("player_swimming_right", 80, 48, 16);
+        //Full heart
+        spriteSheet.getSprite("full_heart", 112, 16, 16);
+        //Half heart
+        spriteSheet.getSprite("half_a_heart", 128, 16, 16);
 
         //Animations
         playerWalkingUp = new Animation("PlayerWalkingUp", spriteSheet, 15);
@@ -120,7 +126,7 @@ public class Game extends Canvas implements Runnable, Tickable {
         playerSwimmingDown = new Animation("PlayerSwimmingDown", spriteSheet, 30);
         playerSwimmingLeft = new Animation("PlayerSwimmingLeft", spriteSheet, 30);
         playerSwimmingRight = new Animation("PlayerSwimmingRight", spriteSheet, 30);
-
+        playerLowHealth = new Animation("PlayerLowHealth", spriteSheet, 40);
         //Register animations to be tickable
         ANIMATIONTICKER.register(playerWalkingUp);
         ANIMATIONTICKER.register(playerWalkingDown);
@@ -130,6 +136,7 @@ public class Game extends Canvas implements Runnable, Tickable {
         ANIMATIONTICKER.register(playerSwimmingDown);
         ANIMATIONTICKER.register(playerSwimmingLeft);
         ANIMATIONTICKER.register(playerSwimmingRight);
+        ANIMATIONTICKER.register(playerLowHealth);
 
         //Set player x and y
         player.setX(96);
@@ -154,33 +161,33 @@ public class Game extends Canvas implements Runnable, Tickable {
         frame.setVisible(true);
         frame.requestFocusInWindow();
     }
-
+    
     public void init() {
-
+        
     }
-
+    
     private synchronized void start() {
         running = true;
         new Thread(this).start();
     }
-
+    
     private synchronized void stop() {
         running = false;
     }
-
+    
     @Override
     public void run() {
         long lastTime = System.nanoTime();
         double nsPerTick = 1000000000D / tickrate;
-
+        
         int frames = 0;
         int ticks = 0;
-
+        
         long lastTimer = System.currentTimeMillis();
         double delta = 0;
-
+        
         init();
-
+        
         while (running) {
             long now = System.nanoTime();
             delta += (now - lastTime) / nsPerTick;
@@ -201,13 +208,13 @@ public class Game extends Canvas implements Runnable, Tickable {
                     ex.printStackTrace();
                 }
             }
-
+            
             if (shouldRender) {
                 //Render a new frame
                 frames++;
                 render();
             }
-
+            
             if (System.currentTimeMillis() - lastTimer >= 1000) {
                 lastTimer += 1000;
                 frame.setTitle(NAME + " (" + frames + " frames, " + ticks + " ticks)");
@@ -216,7 +223,7 @@ public class Game extends Canvas implements Runnable, Tickable {
             }
         }
     }
-
+    
     @Override
     public void tick() {
         tickCount++;
@@ -225,7 +232,7 @@ public class Game extends Canvas implements Runnable, Tickable {
         NPCTICKER.tick();
         player.tick();
     }
-
+    
     public void render() {
         BufferStrategy bs = getBufferStrategy();
         if (bs == null) {
@@ -333,13 +340,30 @@ public class Game extends Canvas implements Runnable, Tickable {
         g.drawString("y " + player.getY(), 1, 31);
 //        fontHandler.drawText(g, "x " + player.getRealX(), 5, 5);
 //        fontHandler.drawText(g, "y " + player.getRealY(), 5, 21);
+        //Player health
+        int playerFullHearts = (int) Math.floor(player.getHealth() / 20);
+        int playerHalfHearts = (int) Math.floor((player.getHealth() - playerFullHearts * 20) / 10);
+        System.out.println(playerHalfHearts);
+        int heartX = CENTERX;
+        int heartY = 5;
+        if (playerFullHearts == 0 && playerHalfHearts == 0 && player.getHealth() > 0) {
+            playerLowHealth.nextFrame(g, heartX, heartY);
+        } else {
+            for (int hearts = 0; hearts < playerFullHearts; hearts++) {
+                spriteSheet.paint(g, "full_heart", heartX, heartY);
+                heartX += 26;
+            }
+            if (playerHalfHearts > 0) {
+                spriteSheet.paint(g, "half_a_heart", heartX, heartY);
+            }
+        }
 
         //Empty buffer
         g.dispose();
         //Show frame
         bs.show();
     }
-
+    
     public static void main(String[] args) {
         //Start the game
         new Game().start();

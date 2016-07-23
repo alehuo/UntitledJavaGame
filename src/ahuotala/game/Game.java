@@ -347,7 +347,7 @@ public class Game extends Canvas implements Runnable, Tickable {
         //Player health system
         int playerFullHearts = (int) Math.floor(player.getHealth() / 20);
         int playerHalfHearts = (int) Math.floor((player.getHealth() - playerFullHearts * 20) / 10);
-        int heartX = CENTERX - 64;
+        int heartX = CENTERX - 256;
         int heartY = 5;
         if (playerFullHearts == 0 && playerHalfHearts == 0 && player.getHealth() > 0) {
             playerLowHealth.nextFrame(g, heartX, heartY);

@@ -45,6 +45,8 @@ public class Player implements Entity, Tickable {
 
     public String currentTile = "";
 
+    private int playerTicks = 0;
+
     private int jumpTicks = 40;
 
     public Player(String name) {
@@ -248,6 +250,9 @@ public class Player implements Entity, Tickable {
                 canJump = false;
                 jumping = false;
                 step = 1;
+                if (playerTicks % 40 == 0 && health > 0) {
+                    this.damagePlayer(10);
+                }
                 break;
             default:
                 canJump = true;
@@ -268,6 +273,10 @@ public class Player implements Entity, Tickable {
                 jumping = false;
             }
         }
+        if (playerTicks == 100) {
+            playerTicks = 0;
+        }
+        playerTicks++;
     }
 
 }

@@ -22,6 +22,8 @@ public class Player implements Entity, Tickable {
     private final String name;
     private Direction direction = Direction.DOWN;
     private boolean walking = false;
+    private boolean jumping = false;
+    private boolean swimming = false;
     private final int radiusX;
     private final int radiusY;
     private final int cY;
@@ -29,6 +31,9 @@ public class Player implements Entity, Tickable {
     public int offsetX = Game.CENTERX;
     public int offsetY = Game.CENTERY;
     public String currentTile = "";
+    private int renderY;
+    private int renderX;
+    private int jumpTicks = 40;
 
     public Player(String name) {
         this.name = name;
@@ -164,13 +169,21 @@ public class Player implements Entity, Tickable {
         this.walking = walking;
     }
 
+    public boolean isWalking() {
+        return walking;
+    }
+
+    public boolean isSwimming() {
+        return swimming;
+    }
+
     @Override
     public String toString() {
         return this.getX() + "," + this.getY();
     }
 
     public void jump() {
-        System.out.println("Player jumped");
+        jumping = true;
     }
 
     @Override
@@ -178,14 +191,30 @@ public class Player implements Entity, Tickable {
         //Slow the player down if we are walking on a sand
         switch (currentTile) {
             case "sand":
+                swimming = false;
                 step = 2;
                 break;
             case "water_ani":
+                swimming = true;
                 step = 1;
                 break;
             default:
+                swimming = false;
                 step = 3;
                 break;
+        }
+        if (jumping) {
+            if (jumpTicks == 40) {
+                realY -= 20;
+            }
+            if (jumpTicks > 30) {
+                realY += 2;
+                jumpTicks--;
+            }
+            if (jumpTicks == 30) {
+                jumpTicks = 40;
+                jumping = false;
+            }
         }
     }
 

@@ -47,7 +47,7 @@ public class Game extends Canvas implements Runnable, Tickable {
     //Tick count
     public int tickCount = 0;
     //Tickrate; amount of game updates per second
-    public double tickrate = 120D;
+    public double tickrate = 60D;
     //Image
     private final BufferedImage image = new BufferedImage(WINDOW_WIDTH, WINDOW_HEIGHT, BufferedImage.TYPE_INT_RGB);
     //Sprite sheet
@@ -111,11 +111,11 @@ public class Game extends Canvas implements Runnable, Tickable {
         animationTicker.register(playerWalkingRight);
 
         //Set player x and y
-        player.setX(CENTERX);
-        player.setY(CENTERY);
+        player.setX(96);
+        player.setY(-32);
         //Set test NPC x and y
-        npc.setX(160);
-        npc.setY(300);
+        npc.setX(244);
+        npc.setY(270);
         npc.setInteractionRadiusX(16);
         npc.setInteractionRadiusY(16);
         //Register the new NPC to be tickable
@@ -202,6 +202,7 @@ public class Game extends Canvas implements Runnable, Tickable {
         animationTicker.tick();
         inputHandler.tick();
         npcTicker.tick();
+        player.tick();
     }
 
     public void render() {
@@ -223,61 +224,66 @@ public class Game extends Canvas implements Runnable, Tickable {
         g.drawImage(image, 0, 0, getWidth(), getHeight(), null);
 
         //Map
-        map.renderMap(g, player.getOffsetX(), player.getOffsetY(), player.getRealX(), player.getRealY());
+        map.renderMap(g, player);
 
         //Other objects
         map.renderObject(g, -100, -100, "house");
         map.renderObject(g, 4, -100, "house");
 
         //NPCs here
-        //Movement boundaries
-//        npc.drawBoundaries(g, player.getOffsetX(), player.getOffsetY());
-        //For debug; interaction boundaries
-//        npc.drawInteractionBoundaries(g, player.getOffsetX(), player.getOffsetY());
         //Draw npc
         spriteSheet.paint(g, "player_down", npc.getX() + player.getOffsetX(), npc.getY() + player.getOffsetY());
-
+        if (Game.DEBUG) {
+            //Movement boundaries
+            npc.drawBoundaries(g, player.getOffsetX(), player.getOffsetY());
+            //For debug; interaction boundaries
+            npc.drawInteractionBoundaries(g, player.getOffsetX(), player.getOffsetY());
+        }
         //If we are within interaction distance
         if (npc.isWithinInteractionDistance(player)) {
             g.drawString("Press E to talk with \"" + npc.getName() + "\"", 40, WINDOW_HEIGHT - 32);
         }
 
+        //Player x and y
+        int playerX = player.getRealX();
+        int playerY = player.getRealY();
+
         //Player walking animation
         switch (player.getDirection()) {
             case DOWN:
                 if (player.getWalkingState() == true) {
-                    playerWalkingDown.nextFrame(g, player.getX(), player.getY());
+                    playerWalkingDown.nextFrame(g, playerX, playerY);
                 } else {
-                    spriteSheet.paint(g, "player_down", player.getX(), player.getY());
+                    spriteSheet.paint(g, "player_down", playerX, playerY);
                 }
                 break;
             case UP:
                 if (player.getWalkingState() == true) {
-                    playerWalkingUp.nextFrame(g, player.getX(), player.getY());
+                    playerWalkingUp.nextFrame(g, playerX, playerY);
                 } else {
-                    spriteSheet.paint(g, "player_up", player.getX(), player.getY());
+                    spriteSheet.paint(g, "player_up", playerX, playerY);
                 }
                 break;
             case LEFT:
                 if (player.getWalkingState() == true) {
-                    playerWalkingLeft.nextFrame(g, player.getX(), player.getY());
+                    playerWalkingLeft.nextFrame(g, playerX, playerY);
                 } else {
-                    spriteSheet.paint(g, "player_right", player.getX(), player.getY());
+                    spriteSheet.paint(g, "player_right", playerX, playerY);
                 }
                 break;
             default:
                 if (player.getWalkingState() == true) {
-                    playerWalkingRight.nextFrame(g, player.getX(), player.getY());
+                    playerWalkingRight.nextFrame(g, playerX, playerY);
                 } else {
-                    spriteSheet.paint(g, "player_left", player.getX(), player.getY());
+                    spriteSheet.paint(g, "player_left", playerX, playerY);
                 }
                 break;
         }
 
         //X & Y coords
         g.setColor(Color.white);
-        g.drawString("x " + player.getRealX(), 1, 15);
-        g.drawString("y " + player.getRealY(), 1, 31);
+        g.drawString("x " + player.getX(), 1, 15);
+        g.drawString("y " + player.getY(), 1, 31);
 //        fontHandler.drawText(g, "x " + player.getRealX(), 5, 5);
 //        fontHandler.drawText(g, "y " + player.getRealY(), 5, 21);
 

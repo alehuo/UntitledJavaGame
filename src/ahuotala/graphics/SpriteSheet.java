@@ -31,6 +31,7 @@ public class SpriteSheet {
 
         //Yritetään ladata kuva
         try {
+            System.out.println(SpriteSheet.class.getResourceAsStream(path));
             image = ImageIO.read(SpriteSheet.class.getResourceAsStream(path));
         } catch (IOException e) {
             e.printStackTrace();

@@ -8,8 +8,8 @@ package ahuotala.game;
 import ahuotala.entities.InteractableNpc;
 import ahuotala.entities.NpcTicker;
 import ahuotala.entities.Player;
-import ahuotala.graphics.Animation;
-import ahuotala.graphics.AnimationTicker;
+import ahuotala.graphics.animation.Animation;
+import ahuotala.graphics.animation.AnimationTicker;
 import ahuotala.graphics.SpriteSheet;
 import ahuotala.map.Map;
 import java.awt.*;
@@ -86,7 +86,6 @@ public class Game extends Canvas implements Runnable, Tickable {
         this.setMinimumSize(new Dimension(WINDOW_WIDTH, WINDOW_HEIGHT));
         this.setMaximumSize(new Dimension(WINDOW_WIDTH, WINDOW_HEIGHT));
         this.setPreferredSize(new Dimension(WINDOW_WIDTH, WINDOW_HEIGHT));
-
         /**
          * Load sprites and animations here
          */

@@ -3,13 +3,15 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package ahuotala.graphics;
+package ahuotala.graphics.animation;
 
 import ahuotala.game.Game;
+import ahuotala.graphics.SpriteSheet;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -68,7 +70,8 @@ public class Animation {
     public void Load() {
         frames = new ArrayList<>();
         try {
-            File animFile = new File("src/ahuotala/graphics/animations/" + name + ".ani");
+            URL url = getClass().getResource(name + ".ani");
+            File animFile = new File(url.getPath());
             Scanner sc = new Scanner(animFile);
             int index = 0;
             while (sc.hasNextLine()) {

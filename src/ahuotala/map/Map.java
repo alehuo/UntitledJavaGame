@@ -6,12 +6,13 @@
 package ahuotala.map;
 
 import ahuotala.game.Game;
-import ahuotala.graphics.Animation;
+import ahuotala.graphics.animation.Animation;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Scanner;
@@ -47,7 +48,8 @@ public class Map {
         animations.put("water_ani", new Animation("Water", Game.spriteSheet, 60));
         Game.animationTicker.register(animations.get("water_ani"));
         try {
-            File mapFile = new File("src/ahuotala/map/" + name + ".map");
+            URL url = getClass().getResource(name + ".map");
+            File mapFile = new File(url.getPath());
             Scanner sc = new Scanner(mapFile);
             while (sc.hasNextLine()) {
                 String line = sc.nextLine();

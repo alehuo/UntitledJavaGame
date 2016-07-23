@@ -6,7 +6,7 @@
 package ahuotala.entities;
 
 import ahuotala.game.Game;
-import ahuotala.graphics.Animation;
+import ahuotala.graphics.animation.Animation;
 import java.awt.Graphics;
 
 /**

@@ -3,8 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package ahuotala.graphics;
+package ahuotala.graphics.animation;
 
+import ahuotala.graphics.animation.Animation;
 import ahuotala.game.Tickable;
 import java.util.ArrayList;
 

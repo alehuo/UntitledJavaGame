@@ -13,6 +13,8 @@ import ahuotala.graphics.animation.AnimationTicker;
 import ahuotala.graphics.SpriteSheet;
 import ahuotala.map.Map;
 import java.awt.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.awt.image.*;
 import javax.swing.JFrame;
 
@@ -139,9 +141,11 @@ public class Game extends Canvas implements Runnable, Tickable {
         ANIMATIONTICKER.register(playerSwimmingRight);
         ANIMATIONTICKER.register(playerLowHealth);
 
+        SaveGame save = new SaveGame("save.sav");
         //Set player x and y
-        player.setX(96);
-        player.setY(-32);
+        player.setX(save.getX());
+        player.setY(save.getY());
+        player.setHealth(save.getHealth());
         //Set test NPC x and y
         npc.setX(244);
         npc.setY(270);
@@ -153,6 +157,11 @@ public class Game extends Canvas implements Runnable, Tickable {
         //Initialize our JFrame
         frame = new JFrame(NAME);
         frame.addKeyListener(inputHandler);
+        frame.addWindowListener(new WindowAdapter() {
+            public void windowClosing(WindowEvent e) {
+                save.saveState(player.getX(), player.getY(), player.getHealth());
+            }
+        });
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setLayout(new BorderLayout());
         frame.add(this, BorderLayout.CENTER);

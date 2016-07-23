@@ -25,7 +25,7 @@ public class Player implements Entity, Tickable {
 
     private final String name;
     private int health = 120;
-    private int maxHealth = 120;
+    public static int maxHealth = 120;
 
     private Direction direction = Direction.DOWN;
 
@@ -171,6 +171,14 @@ public class Player implements Entity, Tickable {
     public void setY(int y) {
         offsetY = cY - y;
         this.y = y;
+    }
+
+    public void setHealth(int health) {
+        if (health > maxHealth) {
+            this.health = maxHealth;
+        } else {
+            this.health = health;
+        }
     }
 
     public void setCurrentTile(String tile) {

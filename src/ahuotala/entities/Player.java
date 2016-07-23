@@ -24,8 +24,8 @@ public class Player implements Entity, Tickable {
     private int step = 1;
 
     private final String name;
-    private int health = 5;
-    private int maxHealth = 100;
+    private int health = 120;
+    private int maxHealth = 120;
 
     private Direction direction = Direction.DOWN;
 

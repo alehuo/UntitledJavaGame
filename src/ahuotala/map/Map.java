@@ -5,6 +5,7 @@
  */
 package ahuotala.map;
 
+import ahuotala.entities.Player;
 import ahuotala.game.Game;
 import ahuotala.graphics.animation.Animation;
 import java.awt.Color;
@@ -98,9 +99,12 @@ public class Map {
         return maxY;
     }
 
-    public void renderMap(Graphics g, int offsetX, int offsetY, int playerX, int playerY) {
-        this.offsetX = offsetX;
-        this.offsetY = offsetY;
+    public void renderMap(Graphics g, Player player) {
+        offsetX = player.getOffsetX();
+        offsetY = player.getOffsetY();
+        int playerX = player.getX();
+        int playerY = player.getY();
+
         //Parse the map file line by line
         int tileCount = 0;
         for (String line : lines) {
@@ -120,6 +124,8 @@ public class Map {
                 System.err.println("Invalid tile at x = " + x + ",y = " + y);
             }
             int isAnimated = Integer.parseInt(lineData[3]);
+            int xArea = 16;
+            int yArea = 14;
             if (isAnimated == 1) {
                 if (!animations.containsKey(tileType)) {
                     System.err.println("Animation tile '" + tileType + "' is missing at x = " + x + ",y = " + y);
@@ -128,12 +134,25 @@ public class Map {
                 if (debug) {
                     g.draw3DRect(x + offsetX, y + offsetY, animations.get(tileType).getWidth() * scale, animations.get(tileType).getHeight() * scale, false);
                 }
+                if ((player.getRealX() >= x + offsetX - xArea && player.getRealX() <= x + offsetX + xArea && player.getRealY() >= y + offsetY - yArea && player.getRealY() <= y + offsetY + yArea)) {
+                    player.setCurrentTile(tileType);
+                    if (debug) {
+                        g.fill3DRect(x + offsetX, y + offsetY, animations.get(tileType).getWidth() * scale, animations.get(tileType).getHeight() * scale, false);
+                    }
+                }
 
             } else {
                 g.drawImage(tiles.get(tileType), x + offsetX, y + offsetY, tiles.get(tileType).getWidth() * scale, tiles.get(tileType).getHeight() * scale, null);
                 if (debug) {
                     g.setColor(Color.red);
                     g.draw3DRect(x + offsetX, y + offsetY, tiles.get(tileType).getWidth() * scale, tiles.get(tileType).getHeight() * scale, false);
+                }
+
+                if (player.getRealX() >= x + offsetX - xArea && player.getRealX() <= x + offsetX + xArea && player.getRealY() >= y + offsetY - yArea && player.getRealY() <= y + offsetY + yArea) {
+                    player.setCurrentTile(tileType);
+                    if (debug) {
+                        g.fill3DRect(x + offsetX, y + offsetY, tiles.get(tileType).getWidth() * scale, tiles.get(tileType).getHeight() * scale, false);
+                    }
                 }
 
             }

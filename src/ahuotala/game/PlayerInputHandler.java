@@ -17,9 +17,9 @@ import ahuotala.map.Map;
  */
 public class PlayerInputHandler implements KeyListener, Tickable {
 
-    private Player player;
-    private Map map;
-    public boolean up = false, down = false, left = false, right = false;
+    private final Player player;
+    private final Map map;
+    public boolean up = false, down = false, left = false, right = false, jump = false;
 
     public PlayerInputHandler(Player player, Map map) {
         this.player = player;
@@ -50,6 +50,9 @@ public class PlayerInputHandler implements KeyListener, Tickable {
             case KeyEvent.VK_D:
                 right = true;
                 break;
+            case KeyEvent.VK_SPACE:
+                jump = true;
+                break;
             default:
                 break;
         }
@@ -74,6 +77,9 @@ public class PlayerInputHandler implements KeyListener, Tickable {
             case KeyEvent.VK_D:
                 right = false;
                 break;
+            case KeyEvent.VK_SPACE:
+                jump = false;
+                break;
             default:
                 break;
         }
@@ -82,28 +88,31 @@ public class PlayerInputHandler implements KeyListener, Tickable {
     @Override
     public void tick() {
         if (up || down || left || right) {
-            if (up && player.getRealY() > map.getMinY()) {
+            if (up && player.getY() > map.getMinY()) {
                 player.setDirection(Direction.UP);
                 player.setWalkingState(true);
                 player.goUp();
             }
-            if (down && player.getRealY() < map.getMaxY()) {
+            if (down && player.getY() < map.getMaxY()) {
                 player.setDirection(Direction.DOWN);
                 player.setWalkingState(true);
                 player.goDown();
             }
-            if (left && player.getRealX() > map.getMinX()) {
+            if (left && player.getX() > map.getMinX()) {
                 player.setDirection(Direction.LEFT);
                 player.setWalkingState(true);
                 player.goLeft();
             }
-            if (right && player.getRealX() < map.getMaxX()) {
+            if (right && player.getX() < map.getMaxX()) {
                 player.setDirection(Direction.RIGHT);
                 player.setWalkingState(true);
                 player.goRight();
             }
         } else {
             player.setWalkingState(false);
+        }
+        if (jump) {
+            player.jump();
         }
     }
 }

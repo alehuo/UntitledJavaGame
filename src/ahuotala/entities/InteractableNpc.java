@@ -22,6 +22,7 @@ public class InteractableNpc implements Entity, Interactable, Tickable {
     private int y = 0;
     //Ticking interval
     private int interval;
+    //Tick count
     private int count = 0;
     //NPC name
     private final String name;

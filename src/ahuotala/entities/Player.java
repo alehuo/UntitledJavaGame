@@ -16,6 +16,7 @@ public class Player implements Entity, Tickable {
 
     private int x;
     private int y;
+    private int z;
 
     public static int realX;
     public static int realY;
@@ -69,6 +70,10 @@ public class Player implements Entity, Tickable {
     @Override
     public int getY() {
         return y;
+    }
+
+    public int getZ() {
+        return z;
     }
 
     public int getRealX() {
@@ -275,10 +280,12 @@ public class Player implements Entity, Tickable {
             if (jumpTicks > 30) {
                 realY += 2;
                 jumpTicks--;
+                z = 1;
             }
             if (jumpTicks == 30) {
                 jumpTicks = 40;
                 jumping = false;
+                z = 0;
             }
         }
         if (playerTicks == 100) {

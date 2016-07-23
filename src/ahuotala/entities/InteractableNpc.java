@@ -6,7 +6,6 @@
 package ahuotala.entities;
 
 import ahuotala.game.Tickable;
-import ahuotala.game.World;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.util.Random;
@@ -258,7 +257,9 @@ public class InteractableNpc implements Entity, Interactable, Tickable {
     public boolean isWithinInteractionDistance(Player player) {
         int offsetX = 8;
         int offsetY = 2;
-        return (player.getRealX() > x - rX - offsetX && player.getRealX() < x + 2 * rX + offsetX && player.getRealY() > y - rY - offsetY * 2 && player.getRealY() < y + 2 * rY);
+        int playerX = player.getX();
+        int playerY = player.getY();
+        return (playerX > x - rX - offsetX && playerX < x + 2 * rX + offsetX && playerY > y - rY - offsetY * 2 && playerY < y + 2 * rY);
     }
 
 }

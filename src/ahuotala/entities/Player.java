@@ -6,8 +6,6 @@
 package ahuotala.entities;
 
 import ahuotala.game.Game;
-import ahuotala.graphics.animation.Animation;
-import java.awt.Graphics;
 
 /**
  *
@@ -144,6 +142,5 @@ public class Player implements Entity {
     public String toString() {
         return this.getX() + "," + this.getY();
     }
-
 
 }

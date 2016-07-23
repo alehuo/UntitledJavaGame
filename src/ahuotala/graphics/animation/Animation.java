@@ -19,7 +19,7 @@ import java.util.Scanner;
  *
  * @author Aleksi
  */
-public class Animation {
+public final class Animation {
 
     private ArrayList<BufferedImage> frames;
     //Interval in frames
@@ -72,24 +72,25 @@ public class Animation {
         try {
             URL url = getClass().getResource(name + ".ani");
             File animFile = new File(url.getPath());
-            Scanner sc = new Scanner(animFile);
-            int index = 0;
-            while (sc.hasNextLine()) {
-                String line = sc.nextLine();
-                if (line.contains("#") || line.isEmpty()) {
-                    continue;
+            try (Scanner sc = new Scanner(animFile)) {
+                int frameCount = 0;
+                while (sc.hasNextLine()) {
+                    String line = sc.nextLine();
+                    if (line.contains("#") || line.isEmpty()) {
+                        continue;
+                    }
+                    //Skip comments
+                    String[] lineData;
+                    lineData = line.split(",");
+                    int x = Integer.parseInt(lineData[0]);
+                    int y = Integer.parseInt(lineData[1]);
+                    int width = Integer.parseInt(lineData[2]);
+                    int height = Integer.parseInt(lineData[3]);
+                    //Add the frame
+                    frames.add(spritesheet.getSprite("animation_" + name + "_frame" + frameCount, x, y, width, height));
+                    frameCount++;
                 }
-                //Skip comments
-                String[] lineData = line.split(",");
-                int x = Integer.parseInt(lineData[0]);
-                int y = Integer.parseInt(lineData[1]);
-                int width = Integer.parseInt(lineData[2]);
-                int height = Integer.parseInt(lineData[3]);
-                //Add the frame
-                frames.add(spritesheet.getSprite("animation_" + name + "_frame" + index, x, y, width, height));
-                index++;
             }
-            sc.close();
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }

@@ -111,8 +111,5 @@ public class PlayerInputHandler implements KeyListener, Tickable {
         } else {
             player.setWalkingState(false);
         }
-//        if (jump) {
-//            player.jump();
-//        }
     }
 }

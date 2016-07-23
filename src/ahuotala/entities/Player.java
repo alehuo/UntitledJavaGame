@@ -25,6 +25,7 @@ public class Player implements Entity, Tickable {
 
     private final String name;
     private int health = 5;
+    private int maxHealth = 100;
 
     private Direction direction = Direction.DOWN;
 
@@ -91,7 +92,11 @@ public class Player implements Entity, Tickable {
     }
 
     public void increaseHealth(int health) {
-        this.health += health;
+        if (this.health + health <= maxHealth) {
+            this.health += health;
+        } else {
+            health = maxHealth;
+        }
     }
 
     public int getHealth() {

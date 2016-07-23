@@ -21,9 +21,10 @@ import javax.swing.JFrame;
  * @author Aleksi Huotala
  */
 public class Game extends Canvas implements Runnable, Tickable {
-    
+
     private static final long serialVersionUID = 1L;
     public static final boolean DEBUG = false;
+    public static final boolean DEBUG_PLAYER = true;
     //Window width
     public static final int WINDOW_WIDTH = 1280;
     //Window height
@@ -161,33 +162,33 @@ public class Game extends Canvas implements Runnable, Tickable {
         frame.setVisible(true);
         frame.requestFocusInWindow();
     }
-    
+
     public void init() {
-        
+
     }
-    
+
     private synchronized void start() {
         running = true;
         new Thread(this).start();
     }
-    
+
     private synchronized void stop() {
         running = false;
     }
-    
+
     @Override
     public void run() {
         long lastTime = System.nanoTime();
         double nsPerTick = 1000000000D / tickrate;
-        
+
         int frames = 0;
         int ticks = 0;
-        
+
         long lastTimer = System.currentTimeMillis();
         double delta = 0;
-        
+
         init();
-        
+
         while (running) {
             long now = System.nanoTime();
             delta += (now - lastTime) / nsPerTick;
@@ -208,13 +209,13 @@ public class Game extends Canvas implements Runnable, Tickable {
                     ex.printStackTrace();
                 }
             }
-            
+
             if (shouldRender) {
                 //Render a new frame
                 frames++;
                 render();
             }
-            
+
             if (System.currentTimeMillis() - lastTimer >= 1000) {
                 lastTimer += 1000;
                 frame.setTitle(NAME + " (" + frames + " frames, " + ticks + " ticks)");
@@ -223,7 +224,7 @@ public class Game extends Canvas implements Runnable, Tickable {
             }
         }
     }
-    
+
     @Override
     public void tick() {
         tickCount++;
@@ -232,7 +233,7 @@ public class Game extends Canvas implements Runnable, Tickable {
         NPCTICKER.tick();
         player.tick();
     }
-    
+
     public void render() {
         BufferStrategy bs = getBufferStrategy();
         if (bs == null) {
@@ -336,18 +337,25 @@ public class Game extends Canvas implements Runnable, Tickable {
 
         //X & Y coords
         g.setColor(Color.white);
-        g.drawString("x " + player.getX(), 1, 15);
-        g.drawString("y " + player.getY(), 1, 31);
+        if (DEBUG_PLAYER) {
+            g.drawString("x " + player.getX(), 1, 15);
+            g.drawString("y " + player.getY(), 1, 31);
+        }
 //        fontHandler.drawText(g, "x " + player.getRealX(), 5, 5);
 //        fontHandler.drawText(g, "y " + player.getRealY(), 5, 21);
-        //Player health
+
+        //Player health system
         int playerFullHearts = (int) Math.floor(player.getHealth() / 20);
         int playerHalfHearts = (int) Math.floor((player.getHealth() - playerFullHearts * 20) / 10);
-        System.out.println(playerHalfHearts);
         int heartX = CENTERX;
         int heartY = 5;
         if (playerFullHearts == 0 && playerHalfHearts == 0 && player.getHealth() > 0) {
             playerLowHealth.nextFrame(g, heartX, heartY);
+        } else if (player.getHealth() == 0) {
+            g.setColor(Color.red);
+            //Black background
+            g.drawImage(image, 0, 0, getWidth(), getHeight(), null);
+            g.drawString("YOU DIED", CENTERX - 48, CENTERY);
         } else {
             for (int hearts = 0; hearts < playerFullHearts; hearts++) {
                 spriteSheet.paint(g, "full_heart", heartX, heartY);
@@ -363,7 +371,7 @@ public class Game extends Canvas implements Runnable, Tickable {
         //Show frame
         bs.show();
     }
-    
+
     public static void main(String[] args) {
         //Start the game
         new Game().start();

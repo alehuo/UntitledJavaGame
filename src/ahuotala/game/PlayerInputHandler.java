@@ -54,12 +54,12 @@ public class PlayerInputHandler implements KeyListener, Tickable {
                 player.jump();
                 break;
             case KeyEvent.VK_H:
-                if (Game.DEBUG) {
+                if (Game.DEBUG_PLAYER) {
                     player.increaseHealth(5);
                 }
                 break;
             case KeyEvent.VK_J:
-                if (Game.DEBUG) {
+                if (Game.DEBUG_PLAYER) {
                     player.damagePlayer(5);
                 }
                 break;

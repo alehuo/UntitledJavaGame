@@ -25,6 +25,14 @@ public class Tile {
         this.animated = animated;
     }
 
+    public Tile(int x, int y, int z, String type) {
+        this.x = x;
+        this.y = y;
+        this.z = z;
+        this.type = type;
+        animated = false;
+    }
+
     public int getX() {
         return x;
     }

@@ -9,8 +9,12 @@ import ahuotala.game.Game;
 import ahuotala.graphics.SpriteSheet;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -69,13 +73,13 @@ public final class Animation {
      */
     public void Load() {
         frames = new ArrayList<>();
+        String line = "";
         try {
-            URL url = getClass().getResource(name + ".ani");
-            File animFile = new File(url.getPath());
-            try (Scanner sc = new Scanner(animFile)) {
-                int frameCount = 0;
-                while (sc.hasNextLine()) {
-                    String line = sc.nextLine();
+            InputStream stream = getClass().getResourceAsStream(name + ".ani");
+            BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
+            int frameCount = 0;
+            if (stream != null) {
+                while ((line = reader.readLine()) != null) {
                     if (line.contains("#") || line.isEmpty()) {
                         continue;
                     }
@@ -91,9 +95,25 @@ public final class Animation {
                     frameCount++;
                 }
             }
-        } catch (FileNotFoundException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
 
+//            while (sc.hasNextLine()) {
+//                String line = sc.nextLine();
+//                if (line.contains("#") || line.isEmpty()) {
+//                    continue;
+//                }
+//                //Skip comments
+//                String[] lineData;
+//                lineData = line.split(",");
+//                int x = Integer.parseInt(lineData[0]);
+//                int y = Integer.parseInt(lineData[1]);
+//                int width = Integer.parseInt(lineData[2]);
+//                int height = Integer.parseInt(lineData[3]);
+//                //Add the frame
+//                frames.add(spritesheet.getSprite("animation_" + name + "_frame" + frameCount, x, y, width, height));
+//                frameCount++;
+//            }
     }
 }

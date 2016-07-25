@@ -38,6 +38,8 @@ public class Map {
     private int maxY;
     private int minZ;
     private int maxZ;
+    private int currentTileX = Integer.MIN_VALUE;
+    private int currentTileY = Integer.MIN_VALUE;
     private int tileCount;
 
     public Map(String name) {
@@ -50,7 +52,6 @@ public class Map {
 //        tiles.put("grass", Game.spriteSheet.getSprite("grass", 32, 80, 16));
         tiles.put("grass", Game.spriteSheet.getSprite("grass", 32, 176, 32));
         tiles.put("grass_bottom", Game.spriteSheet.getSprite("grass_bottom", 32, 208, 32, 60));
-        tiles.put("grass_z_1", Game.spriteSheet.getSprite("grass_z_1", 80, 160, 16, 30));
         tiles.put("house", Game.spriteSheet.getSprite("house", 112, 32, 96, 64));
         tiles.put("water", Game.spriteSheet.getSprite("water", 160, 0, 16));
         tiles.put("sand", Game.spriteSheet.getSprite("sand", 32, 304, 32));
@@ -96,9 +97,13 @@ public class Map {
                     if (z > maxZ) {
                         maxZ = z;
                     }
-                    String tileType = line.split(",")[3];
-                    boolean animated = (Integer.parseInt(line.split(",")[4]) == 1);
-                    tileEntities.add(new Tile(x, y, z, tileType, animated));
+                    String tileTypeBottom = line.split(",")[3];
+                    String tileTypeMask = line.split(",")[4];
+                    String tileTypeMask2 = line.split(",")[5];
+                    String tileTypeFringe1 = line.split(",")[6];
+                    String tileTypeFringe2 = line.split(",")[7];
+                    boolean animated = (Integer.parseInt(line.split(",")[8]) == 1);
+                    tileEntities.add(new Tile(x, y, z, tileTypeBottom, tileTypeMask, tileTypeMask2, tileTypeFringe1, tileTypeFringe2, animated));
                 }
                 System.out.println("Loaded map file into memory.");
                 System.out.println("Min x:" + minX + ", min y:" + minY + ", max x:" + maxX + ", max y:" + maxY + ", min z:" + minZ + ", max z:" + maxZ);
@@ -106,30 +111,7 @@ public class Map {
         } catch (IOException e) {
             e.printStackTrace();
         }
-//        try {
-//            InputStream stream = getClass().getResourceAsStream(name + ".ani");
-//            BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
-//            int frameCount = 0;
-//            if (stream != null) {
-//                while ((line = reader.readLine()) != null) {
-//                    if (line.contains("#") || line.isEmpty()) {
-//                        continue;
-//                    }
-//                    //Skip comments
-//                    String[] lineData;
-//                    lineData = line.split(",");
-//                    int x = Integer.parseInt(lineData[0]);
-//                    int y = Integer.parseInt(lineData[1]);
-//                    int width = Integer.parseInt(lineData[2]);
-//                    int height = Integer.parseInt(lineData[3]);
-//                    //Add the frame
-//                    frames.add(spritesheet.getSprite("animation_" + name + "_frame" + frameCount, x, y, width, height));
-//                    frameCount++;
-//                }
-//            }
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
+
     }
 
     public int getRenderedTileCount() {
@@ -158,7 +140,7 @@ public class Map {
                 return tile;
             }
         }
-        return new Tile(0, 0, 0, "false", false);
+        return new Tile(0, 0, 0, "false", null, null, null, null);
     }
 
     public void renderMap(Graphics g, Player player) {
@@ -181,7 +163,7 @@ public class Map {
             if (x < playerX - radiusX || x > playerX + radiusX || y < playerY - radiusY || y > playerY + radiusY) {
                 continue;
             }
-            String tileType = tile.getType();
+            String tileType = tile.getTypeBottom();
 
             boolean isAnimated = tile.isAnimated();
             int xArea = 16;
@@ -196,7 +178,8 @@ public class Map {
                 }
                 if ((player.getRealX() >= x + offsetX - xArea && player.getRealX() <= x + offsetX + xArea && player.getRealY() >= y + offsetY - yArea && player.getRealY() <= y + offsetY + yArea)) {
                     player.setCurrentTile(tileType);
-                    System.out.println(player.getDirection());
+                    currentTileX = x;
+                    currentTileY = y;
                     if (Game.DEBUG) {
                         g.fill3DRect(x + offsetX, y + offsetY, animations.get(tileType).getWidth() * scale, animations.get(tileType).getHeight() * scale, false);
                     }
@@ -223,6 +206,8 @@ public class Map {
 
                 if (player.getRealX() >= x + offsetX - xArea && player.getRealX() <= x + offsetX + xArea && player.getRealY() >= y + offsetY - yArea && player.getRealY() <= y + offsetY + yArea) {
                     player.setCurrentTile(tileType);
+                    currentTileX = x;
+                    currentTileY = y;
                     switch (player.getDirection()) {
                         case UP:
                             break;
@@ -231,7 +216,6 @@ public class Map {
                         case LEFT:
                             break;
                         case RIGHT:
-                            Tile tmpTile = this.getTile(x + offsetX + 32, y + offsetY + 32, z + 32);
                             break;
                     }
                     if (z != player.getZ()) {
@@ -250,6 +234,14 @@ public class Map {
             System.out.println(tileCount + " of " + lines.size() + " tiles rendered this round");
         }
 
+    }
+    
+    public int getCurrentTileX(){
+        return currentTileX;
+    }
+    
+    public int getCurrentTileY(){
+        return currentTileY;
     }
 
     public void renderObject(Graphics g, int x, int y, String name) {

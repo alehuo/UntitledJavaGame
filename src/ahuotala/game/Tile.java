@@ -6,30 +6,42 @@
 package ahuotala.game;
 
 /**
- *
- * @author Aleksi
+ * Tile class
+ * @author Aleksi Huotala
  */
 public class Tile {
 
     private int x;
     private int y;
     private int z;
-    private String type;
     private boolean animated;
+    private String tileTypeBottom;
+    private String tileTypeMask;
+    private String tileTypeMask2;
+    private String tileTypeFringe1;
+    private String tileTypeFringe2;
 
-    public Tile(int x, int y, int z, String type, boolean animated) {
+    public Tile(int x, int y, int z, String tileTypeBottom, String tileTypeMask, String tileTypeMask2, String tileTypeFringe1, String tileTypeFringe2, boolean animated) {
         this.x = x;
         this.y = y;
         this.z = z;
-        this.type = type;
+        this.tileTypeBottom = tileTypeBottom;
+        this.tileTypeMask = tileTypeMask;
+        this.tileTypeMask2 = tileTypeMask2;
+        this.tileTypeFringe1 = tileTypeFringe1;
+        this.tileTypeFringe2 = tileTypeFringe2;
         this.animated = animated;
     }
 
-    public Tile(int x, int y, int z, String type) {
+    public Tile(int x, int y, int z, String tileTypeBottom, String tileTypeMask, String tileTypeMask2, String tileTypeFringe1, String tileTypeFringe2) {
         this.x = x;
         this.y = y;
         this.z = z;
-        this.type = type;
+        this.tileTypeBottom = tileTypeBottom;
+        this.tileTypeMask = tileTypeMask;
+        this.tileTypeMask2 = tileTypeMask2;
+        this.tileTypeFringe1 = tileTypeFringe1;
+        this.tileTypeFringe2 = tileTypeFringe2;
         animated = false;
     }
 
@@ -45,8 +57,24 @@ public class Tile {
         return z;
     }
 
-    public String getType() {
-        return type;
+    public String getTypeBottom() {
+        return tileTypeBottom;
+    }
+
+    public String getTypeMask() {
+        return tileTypeMask;
+    }
+
+    public String getTypeMask2() {
+        return tileTypeMask2;
+    }
+
+    public String getTypeFringe1() {
+        return tileTypeFringe1;
+    }
+
+    public String getTypeFringe2() {
+        return tileTypeFringe1;
     }
 
     public boolean isAnimated() {

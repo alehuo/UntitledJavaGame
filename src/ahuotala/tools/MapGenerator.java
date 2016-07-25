@@ -7,8 +7,6 @@ package ahuotala.tools;
 
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -20,14 +18,14 @@ public class MapGenerator {
 
     public static void main(String[] args) {
         try {
-            FileWriter fw = new FileWriter("src/ahuotala/map/map1.map");
+            FileWriter fw = new FileWriter("src/ahuotala/map/map2.map");
             String tmp = "";
-            fw.write("# x,y,tile_type,animation\r\n");
-            fw.write("# Map 1\r\n");
+            fw.write("# x,y,z,tile_type,animation\r\n");
+            fw.write("# Map 2\r\n");
             //Center x = 20, y = 12 (320, 192)
             for (int x = -44; x <= 84; x++) {
                 for (int y = -52; y <= 76; y++) {
-                    fw.write(x * BLOCKSIZE + "," + y * BLOCKSIZE + ",grass,0\r\n");
+                    fw.write(x * BLOCKSIZE + "," + y * BLOCKSIZE + ",0,grass,0\r\n");
                 }
             }
             fw.close();

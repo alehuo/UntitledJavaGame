@@ -23,7 +23,7 @@ import javax.swing.JFrame;
  * @author Aleksi Huotala
  */
 public class Game extends Canvas implements Runnable, Tickable {
-    
+
     private static final long serialVersionUID = 1L;
     public static boolean DEBUG = false;
     public static boolean DEBUG_PLAYER = false;
@@ -86,7 +86,7 @@ public class Game extends Canvas implements Runnable, Tickable {
     private SaveGame save;
 
     //Map
-    Map map = new Map("map2");
+    Map map = new Map("map3");
     //Input handler
     private final PlayerInputHandler inputHandler = new PlayerInputHandler(player, map);
 
@@ -162,7 +162,7 @@ public class Game extends Canvas implements Runnable, Tickable {
         frame.setVisible(true);
         frame.requestFocusInWindow();
     }
-    
+
     public void init() {
         /**
          * TEMPORARY
@@ -184,29 +184,29 @@ public class Game extends Canvas implements Runnable, Tickable {
         //Register the new NPC to be tickable
         NPCTICKER.register(npc);
     }
-    
+
     private synchronized void start() {
         running = true;
         new Thread(this).start();
     }
-    
+
     private synchronized void stop() {
         running = false;
     }
-    
+
     @Override
     public void run() {
         long lastTime = System.nanoTime();
         double nsPerTick = 1000000000D / tickrate;
-        
+
         int frames = 0;
         int ticks = 0;
-        
+
         long lastTimer = System.currentTimeMillis();
         double delta = 0;
-        
+
         init();
-        
+
         while (running) {
             long now = System.nanoTime();
             delta += (now - lastTime) / nsPerTick;
@@ -227,13 +227,13 @@ public class Game extends Canvas implements Runnable, Tickable {
                     ex.printStackTrace();
                 }
             }
-            
+
             if (shouldRender) {
                 //Render a new frame
                 frames++;
                 render();
             }
-            
+
             if (System.currentTimeMillis() - lastTimer >= 1000) {
                 lastTimer += 1000;
                 frame.setTitle(NAME + " (" + frames + " frames, " + ticks + " ticks)");
@@ -242,7 +242,7 @@ public class Game extends Canvas implements Runnable, Tickable {
             }
         }
     }
-    
+
     @Override
     public void tick() {
         tickCount++;
@@ -251,7 +251,7 @@ public class Game extends Canvas implements Runnable, Tickable {
         NPCTICKER.tick();
         player.tick();
     }
-    
+
     public void render() {
         BufferStrategy bs = getBufferStrategy();
         if (bs == null) {
@@ -314,7 +314,7 @@ public class Game extends Canvas implements Runnable, Tickable {
                     break;
             }
         }
-        
+
         if (Game.DEBUG) {
             //Movement boundaries
             npc.drawBoundaries(g, player.getOffsetX(), player.getOffsetY());
@@ -395,6 +395,8 @@ public class Game extends Canvas implements Runnable, Tickable {
             g.drawString("y " + player.getY(), 1, 31);
             g.drawString("z " + player.getZ(), 1, 47);
             g.drawString("tileCount " + map.getRenderedTileCount(), 1, 63);
+            g.drawString("tileX " + map.getCurrentTileX(), 1, 79);
+            g.drawString("tileY " + map.getCurrentTileY(), 1, 95);
         }
 //        fontHandler.drawText(g, "x " + player.getRealX(), 5, 5);
 //        fontHandler.drawText(g, "y " + player.getRealY(), 5, 21);
@@ -426,7 +428,7 @@ public class Game extends Canvas implements Runnable, Tickable {
         //Show frame
         bs.show();
     }
-    
+
     public static void main(String[] args) {
         //Start the game
         new Game().start();

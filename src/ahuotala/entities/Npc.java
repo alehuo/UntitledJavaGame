@@ -18,6 +18,7 @@ public class Npc implements Entity, Tickable {
 
     private int x = 0;
     private int y = 0;
+    private int z = 0;
     private int interval = 600;
     private int count = 0;
     private final String name;
@@ -172,6 +173,16 @@ public class Npc implements Entity, Tickable {
     public void drawBoundaries(Graphics g, int oX, int oY) {
         g.setColor(Color.red);
         g.draw3DRect(startX - movingAreaX + oX, startY - movingAreaY + oY, 2 * movingAreaX + 32, 2 * movingAreaY + 32, false);
+    }
+
+    @Override
+    public int getZ() {
+        return z;
+    }
+
+    @Override
+    public void setZ(int z) {
+        this.z = z;
     }
 
 }

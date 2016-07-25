@@ -63,6 +63,20 @@ public class PlayerInputHandler implements KeyListener, Tickable {
                     player.damagePlayer(5);
                 }
                 break;
+            case KeyEvent.VK_F1:
+                if (Game.DEBUG) {
+                    Game.DEBUG = false;
+                } else {
+                    Game.DEBUG = true;
+                }
+                break;
+            case KeyEvent.VK_F2:
+                if (Game.DEBUG_PLAYER) {
+                    Game.DEBUG_PLAYER = false;
+                } else {
+                    Game.DEBUG_PLAYER = true;
+                }
+                break;
             default:
                 break;
         }
@@ -97,23 +111,25 @@ public class PlayerInputHandler implements KeyListener, Tickable {
 
     @Override
     public void tick() {
+        int yOffset = 2;
+        int xOffset = 8;
         if (up || down || left || right) {
-            if (up && player.getY() > map.getMinY()) {
+            if (up && player.getY() > map.getMinY() + yOffset) {
                 player.setDirection(Direction.UP);
                 player.setWalkingState(true);
                 player.goUp();
             }
-            if (down && player.getY() < map.getMaxY()) {
+            if (down && player.getY() < map.getMaxY() - yOffset) {
                 player.setDirection(Direction.DOWN);
                 player.setWalkingState(true);
                 player.goDown();
             }
-            if (left && player.getX() > map.getMinX()) {
+            if (left && player.getX() > map.getMinX() + xOffset) {
                 player.setDirection(Direction.LEFT);
                 player.setWalkingState(true);
                 player.goLeft();
             }
-            if (right && player.getX() < map.getMaxX()) {
+            if (right && player.getX() < map.getMaxX() - xOffset) {
                 player.setDirection(Direction.RIGHT);
                 player.setWalkingState(true);
                 player.goRight();

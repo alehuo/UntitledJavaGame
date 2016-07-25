@@ -23,16 +23,16 @@ import javax.swing.JFrame;
  * @author Aleksi Huotala
  */
 public class Game extends Canvas implements Runnable, Tickable {
-
+    
     private static final long serialVersionUID = 1L;
-    public static final boolean DEBUG = false;
-    public static final boolean DEBUG_PLAYER = true;
+    public static boolean DEBUG = false;
+    public static boolean DEBUG_PLAYER = false;
     //Window width
-    public static final int WINDOW_WIDTH = 1280;
+    public static final int WINDOW_WIDTH = 1600;
     //Window height
     public static final int WINDOW_HEIGHT = WINDOW_WIDTH / 16 * 9;
     //Tile scale
-    public static final int SCALE = 2;
+    public static final int SCALE = 1;
     //Font scale
     public static final double FONTSCALE = 0.7;
     //Center x coordinate
@@ -51,8 +51,7 @@ public class Game extends Canvas implements Runnable, Tickable {
     public int tickCount = 0;
     //Tickrate; amount of game updates per second
     public double tickrate = 60D;
-    //Image
-    private final BufferedImage image = new BufferedImage(WINDOW_WIDTH, WINDOW_HEIGHT, BufferedImage.TYPE_INT_RGB);
+    private final BufferedImage image;
     //Sprite sheet
     public static SpriteSheet spriteSheet = new SpriteSheet("spriteSheet.png");
     //Font
@@ -83,8 +82,11 @@ public class Game extends Canvas implements Runnable, Tickable {
     private final Animation playerSwimmingRight;
     private final Animation playerLowHealth;
 
+    //Save
+    private SaveGame save;
+
     //Map
-    Map map = new Map("map1");
+    Map map = new Map("map2");
     //Input handler
     private final PlayerInputHandler inputHandler = new PlayerInputHandler(player, map);
 
@@ -92,6 +94,7 @@ public class Game extends Canvas implements Runnable, Tickable {
      * Constructor
      */
     public Game() {
+        this.image = new BufferedImage(WINDOW_WIDTH, WINDOW_HEIGHT, BufferedImage.TYPE_INT_RGB);
         this.setMinimumSize(new Dimension(WINDOW_WIDTH, WINDOW_HEIGHT));
         this.setMaximumSize(new Dimension(WINDOW_WIDTH, WINDOW_HEIGHT));
         this.setPreferredSize(new Dimension(WINDOW_WIDTH, WINDOW_HEIGHT));
@@ -103,9 +106,9 @@ public class Game extends Canvas implements Runnable, Tickable {
         //Player picture (down)
         spriteSheet.getSprite("player_down", 32, 16, 16);
         //Player picture (left)
-        spriteSheet.getSprite("player_left", 32, 48, 16);
+        spriteSheet.getSprite("player_left", 32, 64, 16);
         //Player picture (right)
-        spriteSheet.getSprite("player_right", 32, 64, 16);
+        spriteSheet.getSprite("player_right", 32, 48, 16);
         //Swimming:
         //Player picture (up)
         spriteSheet.getSprite("player_swimming_up", 80, 32, 16);
@@ -116,9 +119,9 @@ public class Game extends Canvas implements Runnable, Tickable {
         //Player picture (right)
         spriteSheet.getSprite("player_swimming_right", 80, 48, 16);
         //Full heart
-        spriteSheet.getSprite("full_heart", 112, 16, 16);
+        spriteSheet.getSprite("full_heart", 112, 96, 32);
         //Half heart
-        spriteSheet.getSprite("half_a_heart", 128, 16, 16);
+        spriteSheet.getSprite("half_a_heart", 144, 96, 32);
 
         //Animations
         playerWalkingUp = new Animation("PlayerWalkingUp", spriteSheet, 15);
@@ -141,25 +144,13 @@ public class Game extends Canvas implements Runnable, Tickable {
         ANIMATIONTICKER.register(playerSwimmingRight);
         ANIMATIONTICKER.register(playerLowHealth);
 
-        SaveGame save = new SaveGame("save.sav");
-        //Set player x and y
-        player.setX(save.getX());
-        player.setY(save.getY());
-        player.setHealth(save.getHealth());
-        //Set test NPC x and y
-        npc.setX(244);
-        npc.setY(270);
-        npc.setInteractionRadiusX(16);
-        npc.setInteractionRadiusY(16);
-        //Register the new NPC to be tickable
-        NPCTICKER.register(npc);
-
         //Initialize our JFrame
         frame = new JFrame(NAME);
         frame.addKeyListener(inputHandler);
         frame.addWindowListener(new WindowAdapter() {
+            @Override
             public void windowClosing(WindowEvent e) {
-                save.saveState(player.getX(), player.getY(), player.getHealth());
+//                save.saveState(player.getX(), player.getY(), player.getHealth());
             }
         });
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -171,33 +162,51 @@ public class Game extends Canvas implements Runnable, Tickable {
         frame.setVisible(true);
         frame.requestFocusInWindow();
     }
-
+    
     public void init() {
-
+        /**
+         * TEMPORARY
+         */
+//        //Savegame object
+//        save = new SaveGame("save.sav");
+//        //Set player x,y and health
+//        player.setX(save.getX());
+//        player.setY(save.getY());
+//        player.setHealth(save.getHealth());
+        player.setX(100);
+        player.setY(100);
+        player.setHealth(120);
+        //Set test NPC x and y
+        npc.setX(244);
+        npc.setY(270);
+        npc.setInteractionRadiusX(16);
+        npc.setInteractionRadiusY(16);
+        //Register the new NPC to be tickable
+        NPCTICKER.register(npc);
     }
-
+    
     private synchronized void start() {
         running = true;
         new Thread(this).start();
     }
-
+    
     private synchronized void stop() {
         running = false;
     }
-
+    
     @Override
     public void run() {
         long lastTime = System.nanoTime();
         double nsPerTick = 1000000000D / tickrate;
-
+        
         int frames = 0;
         int ticks = 0;
-
+        
         long lastTimer = System.currentTimeMillis();
         double delta = 0;
-
+        
         init();
-
+        
         while (running) {
             long now = System.nanoTime();
             delta += (now - lastTime) / nsPerTick;
@@ -218,13 +227,13 @@ public class Game extends Canvas implements Runnable, Tickable {
                     ex.printStackTrace();
                 }
             }
-
+            
             if (shouldRender) {
                 //Render a new frame
                 frames++;
                 render();
             }
-
+            
             if (System.currentTimeMillis() - lastTimer >= 1000) {
                 lastTimer += 1000;
                 frame.setTitle(NAME + " (" + frames + " frames, " + ticks + " ticks)");
@@ -233,7 +242,7 @@ public class Game extends Canvas implements Runnable, Tickable {
             }
         }
     }
-
+    
     @Override
     public void tick() {
         tickCount++;
@@ -242,7 +251,7 @@ public class Game extends Canvas implements Runnable, Tickable {
         NPCTICKER.tick();
         player.tick();
     }
-
+    
     public void render() {
         BufferStrategy bs = getBufferStrategy();
         if (bs == null) {
@@ -270,7 +279,42 @@ public class Game extends Canvas implements Runnable, Tickable {
 
         //NPCs here
         //Draw npc
-        spriteSheet.paint(g, "player_down", npc.getX() + player.getOffsetX(), npc.getY() + player.getOffsetY());
+        if (npc.isWalking()) {
+            switch (npc.getDirection()) {
+                case UP:
+                    playerWalkingUp.nextFrame(g, npc.getX() + player.getOffsetX(), npc.getY() + player.getOffsetY());
+                    break;
+                case DOWN:
+                    playerWalkingDown.nextFrame(g, npc.getX() + player.getOffsetX(), npc.getY() + player.getOffsetY());
+                    break;
+                case LEFT:
+                    playerWalkingLeft.nextFrame(g, npc.getX() + player.getOffsetX(), npc.getY() + player.getOffsetY());
+                    break;
+                case RIGHT:
+                    playerWalkingRight.nextFrame(g, npc.getX() + player.getOffsetX(), npc.getY() + player.getOffsetY());
+                    break;
+                default:
+                    break;
+            }
+        } else {
+            switch (npc.getDirection()) {
+                case UP:
+                    spriteSheet.paint(g, "player_up", npc.getX() + player.getOffsetX(), npc.getY() + player.getOffsetY());
+                    break;
+                case DOWN:
+                    spriteSheet.paint(g, "player_down", npc.getX() + player.getOffsetX(), npc.getY() + player.getOffsetY());
+                    break;
+                case LEFT:
+                    spriteSheet.paint(g, "player_left", npc.getX() + player.getOffsetX(), npc.getY() + player.getOffsetY());
+                    break;
+                case RIGHT:
+                    spriteSheet.paint(g, "player_right", npc.getX() + player.getOffsetX(), npc.getY() + player.getOffsetY());
+                    break;
+                default:
+                    break;
+            }
+        }
+        
         if (Game.DEBUG) {
             //Movement boundaries
             npc.drawBoundaries(g, player.getOffsetX(), player.getOffsetY());
@@ -324,7 +368,7 @@ public class Game extends Canvas implements Runnable, Tickable {
                 } else if (player.isSwimming()) {
                     spriteSheet.paint(g, "player_swimming_left", playerX, playerY);
                 } else {
-                    spriteSheet.paint(g, "player_right", playerX, playerY);
+                    spriteSheet.paint(g, "player_left", playerX, playerY);
                 }
                 break;
             case RIGHT:
@@ -337,7 +381,7 @@ public class Game extends Canvas implements Runnable, Tickable {
                 } else if (player.isSwimming()) {
                     spriteSheet.paint(g, "player_swimming_right", playerX, playerY);
                 } else {
-                    spriteSheet.paint(g, "player_left", playerX, playerY);
+                    spriteSheet.paint(g, "player_right", playerX, playerY);
                 }
                 break;
             default:
@@ -349,6 +393,8 @@ public class Game extends Canvas implements Runnable, Tickable {
         if (DEBUG_PLAYER) {
             g.drawString("x " + player.getX(), 1, 15);
             g.drawString("y " + player.getY(), 1, 31);
+            g.drawString("z " + player.getZ(), 1, 47);
+            g.drawString("tileCount " + map.getRenderedTileCount(), 1, 63);
         }
 //        fontHandler.drawText(g, "x " + player.getRealX(), 5, 5);
 //        fontHandler.drawText(g, "y " + player.getRealY(), 5, 21);
@@ -380,7 +426,7 @@ public class Game extends Canvas implements Runnable, Tickable {
         //Show frame
         bs.show();
     }
-
+    
     public static void main(String[] args) {
         //Start the game
         new Game().start();

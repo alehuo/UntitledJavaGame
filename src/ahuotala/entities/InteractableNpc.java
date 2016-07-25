@@ -20,6 +20,8 @@ public class InteractableNpc implements Entity, Interactable, Tickable {
     private int x = 0;
     //Y
     private int y = 0;
+    //Z
+    private int z = 0;
     //Ticking interval
     private int interval;
     //Tick count
@@ -30,6 +32,8 @@ public class InteractableNpc implements Entity, Interactable, Tickable {
     private final int step = 1;
     //Direction
     private Direction direction = Direction.DOWN;
+    //Is walking?
+    private boolean isWalking = false;
 
     //Moving algorithm
     private final Random random;
@@ -58,6 +62,14 @@ public class InteractableNpc implements Entity, Interactable, Tickable {
 
     public String getName() {
         return name;
+    }
+
+    public boolean isWalking() {
+        return isWalking;
+    }
+
+    public void setWalkingState(boolean isWalking) {
+        this.isWalking = isWalking;
     }
 
     @Override
@@ -103,6 +115,7 @@ public class InteractableNpc implements Entity, Interactable, Tickable {
                         case 0:
                             if (y > startY - movingAreaY) {
                                 direction = Direction.UP;
+                                isWalking = true;
                                 y -= step;
                             } else {
 //                            System.out.println("NPC boundary (tried to move up)");
@@ -113,6 +126,7 @@ public class InteractableNpc implements Entity, Interactable, Tickable {
                             if (y < startY + movingAreaY) {
                                 direction = Direction.DOWN;
                                 y += step;
+                                isWalking = true;
                             } else {
 //                            System.out.println("NPC boundary (tried to move down)");
                             }
@@ -122,6 +136,7 @@ public class InteractableNpc implements Entity, Interactable, Tickable {
                             if (x > startX - movingAreaX) {
                                 direction = Direction.LEFT;
                                 x -= step;
+                                isWalking = true;
                             } else {
 //                            System.out.println("NPC boundary (tried to move left)");
                             }
@@ -131,6 +146,7 @@ public class InteractableNpc implements Entity, Interactable, Tickable {
                             if (x < startX + movingAreaX) {
                                 direction = Direction.RIGHT;
                                 x += step;
+                                isWalking = true;
                             } else {
 //                            System.out.println("NPC boundary (tried to move right)");
                             }
@@ -141,6 +157,7 @@ public class InteractableNpc implements Entity, Interactable, Tickable {
                                 direction = Direction.LEFT;
                                 x -= step;
                                 y -= step;
+                                isWalking = true;
                             } else {
 //                            System.out.println("NPC boundary (tried to move up and left)");
                             }
@@ -151,6 +168,7 @@ public class InteractableNpc implements Entity, Interactable, Tickable {
                                 direction = Direction.RIGHT;
                                 x += step;
                                 y -= step;
+                                isWalking = true;
                             } else {
 //                            System.out.println("NPC boundary (tried to move up and right)");
                             }
@@ -161,6 +179,7 @@ public class InteractableNpc implements Entity, Interactable, Tickable {
                                 direction = Direction.LEFT;
                                 x -= step;
                                 y += step;
+                                isWalking = true;
                             } else {
 //                            System.out.println("NPC boundary (tried to move down and left)");
                             }
@@ -171,6 +190,7 @@ public class InteractableNpc implements Entity, Interactable, Tickable {
                                 direction = Direction.RIGHT;
                                 x += step;
                                 y += step;
+                                isWalking = true;
                             } else {
 //                            System.out.println("NPC boundary (tried to move down and left)");
                             }
@@ -182,6 +202,7 @@ public class InteractableNpc implements Entity, Interactable, Tickable {
                     moveAmount--;
                 } else {
                     moveTicks = false;
+                    isWalking = false;
                 }
 
             } else {
@@ -261,6 +282,16 @@ public class InteractableNpc implements Entity, Interactable, Tickable {
         int playerX = player.getX();
         int playerY = player.getY();
         return (playerX > x - rX - offsetX && playerX < x + 2 * rX + offsetX && playerY > y - rY - offsetY * 2 && playerY < y + 2 * rY);
+    }
+
+    @Override
+    public int getZ() {
+        return z;
+    }
+
+    @Override
+    public void setZ(int z) {
+        this.z = z;
     }
 
 }

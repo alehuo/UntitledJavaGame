@@ -178,6 +178,17 @@ public class Player implements Entity, Tickable {
         this.y = y;
     }
 
+    public void setZ(int z) {
+        //Fix asap
+//        if (z > this.z && !jumping) {
+//            realY -= 20;
+//        } else if (!jumping) {
+//            realY += 20;
+//        }
+        this.z = z;
+
+    }
+
     public void setHealth(int health) {
         if (health > maxHealth) {
             this.health = maxHealth;
@@ -275,14 +286,14 @@ public class Player implements Entity, Tickable {
         }
         if (jumping && canJump) {
             if (jumpTicks == 40) {
-                realY -= 20;
+                realY -= 40;
             }
-            if (jumpTicks > 30) {
+            if (jumpTicks > 20) {
                 realY += 2;
                 jumpTicks--;
                 z = 1;
             }
-            if (jumpTicks == 30) {
+            if (jumpTicks == 20) {
                 jumpTicks = 40;
                 jumping = false;
                 z = 0;

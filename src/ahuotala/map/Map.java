@@ -55,7 +55,7 @@ public class Map {
          */
         try {
 
-            InputStream stream = getClass().getResourceAsStream("cfg/tiles.til");
+            InputStream stream = getClass().getResourceAsStream("cfg/tiles.cfg");
             BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
             if (stream != null) {
                 while ((line = reader.readLine()) != null) {
@@ -88,7 +88,7 @@ public class Map {
          */
         try {
 
-            InputStream stream = getClass().getResourceAsStream("cfg/animations.ani");
+            InputStream stream = getClass().getResourceAsStream("cfg/animatedTiles.cfg");
             BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
             if (stream != null) {
                 while ((line = reader.readLine()) != null) {

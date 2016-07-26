@@ -20,8 +20,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
+ * Map rendered class Used to render the game's map
  *
- * @author Aleksi
+ * @author Aleksi Huotala
  */
 public class Map {
 
@@ -49,17 +50,72 @@ public class Map {
         animations = new HashMap<>();
         tileEntities = new ArrayList<>();
         lines = new ArrayList<>();
-//        tiles.put("grass", Game.spriteSheet.getSprite("grass", 32, 80, 16));
-        tiles.put("grass", Game.spriteSheet.getSprite("grass", 32, 176, 32));
-        tiles.put("grass_bottom", Game.spriteSheet.getSprite("grass_bottom", 32, 208, 32, 60));
-        tiles.put("house", Game.spriteSheet.getSprite("house", 112, 32, 96, 64));
-        tiles.put("water", Game.spriteSheet.getSprite("water", 160, 0, 16));
-        tiles.put("sand", Game.spriteSheet.getSprite("sand", 32, 304, 32));
-        tiles.put("rock", Game.spriteSheet.getSprite("rock", 64, 80, 16));
-        animations.put("water_ani", new Animation("Water", Game.spriteSheet, 60));
-        animations.put("lava_ani", new Animation("Lava", Game.spriteSheet, 60));
-        Game.ANIMATIONTICKER.register(animations.get("water_ani"));
-        Game.ANIMATIONTICKER.register(animations.get("lava_ani"));
+        /**
+         * Load tiles into array
+         */
+        try {
+
+            InputStream stream = getClass().getResourceAsStream("cfg/tiles.til");
+            BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
+            if (stream != null) {
+                while ((line = reader.readLine()) != null) {
+                    if (line.contains("#") || line.isEmpty()) {
+                        continue;
+                    }
+
+                    //Parse variables
+                    String[] lineData = line.split(",");
+                    String tileName = lineData[0];
+
+                    int x = Integer.parseInt(lineData[1]);
+                    int y = Integer.parseInt(lineData[2]);
+                    int width = Integer.parseInt(lineData[3]);
+                    int height = Integer.parseInt(lineData[4]);
+
+                    //Add into tiles array
+                    tiles.put(tileName, Game.spriteSheet.getSprite(tileName, x, y, width, height));
+
+                    System.out.println("Loaded tile: " + tileName);
+                }
+                stream.close();
+            }
+            reader.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        /**
+         * Load animations into array
+         */
+        try {
+
+            InputStream stream = getClass().getResourceAsStream("cfg/animations.ani");
+            BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
+            if (stream != null) {
+                while ((line = reader.readLine()) != null) {
+                    if (line.contains("#") || line.isEmpty()) {
+                        continue;
+                    }
+
+                    //Parse variables
+                    String[] lineData = line.split(",");
+                    String animationName = lineData[0];
+                    String animationFileName = lineData[1];
+                    int interval = Integer.parseInt(lineData[2]);
+
+                    //Add into animations
+                    animations.put(animationName, new Animation(animationFileName, Game.spriteSheet, interval));
+                    //Register it to be tickable
+                    Game.ANIMATIONTICKER.register(animations.get(animationName));
+
+                    System.out.println("Loaded animated tile: " + animationName);
+                }
+                stream.close();
+            }
+            reader.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         try {
 
             InputStream stream = getClass().getResourceAsStream(name + ".map");
@@ -107,7 +163,9 @@ public class Map {
                 }
                 System.out.println("Loaded map file into memory.");
                 System.out.println("Min x:" + minX + ", min y:" + minY + ", max x:" + maxX + ", max y:" + maxY + ", min z:" + minZ + ", max z:" + maxZ);
+                stream.close();
             }
+            reader.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -143,7 +201,7 @@ public class Map {
         return new Tile(0, 0, 0, "false", null, null, null, null);
     }
 
-    public void renderMap(Graphics g, Player player) {
+    public void renderMap(Graphics g, Player player, int layer) {
         offsetX = player.getOffsetX();
         offsetY = player.getOffsetY();
         int playerX = player.getX();
@@ -163,25 +221,53 @@ public class Map {
             if (x < playerX - radiusX || x > playerX + radiusX || y < playerY - radiusY || y > playerY + radiusY) {
                 continue;
             }
-            String tileType = tile.getTypeBottom();
-
+            String tileType = "";
+            switch (layer) {
+                case 0:
+                    tileType = tile.getTypeBottom();
+                    break;
+                case 1:
+                    tileType = tile.getTypeMask();
+                    break;
+                case 2:
+                    tileType = tile.getTypeMask2();
+                    break;
+                case 3:
+                    tileType = tile.getTypeFringe1();
+                    break;
+                case 4:
+                    tileType = tile.getTypeFringe2();
+                    break;
+                default:
+                    System.err.println("Incorrect layer id");
+                    break;
+            }
+            if (tileType.isEmpty()) {
+                continue;
+            }
             boolean isAnimated = tile.isAnimated();
             int xArea = 16;
             int yArea = 14;
             if (isAnimated) {
                 if (!animations.containsKey(tileType)) {
                     System.err.println("Animation tile '" + tileType + "' is missing at x = " + x + ",y = " + y);
+                } else {
+                    animations.get(tileType).nextFrame(g, x + offsetX, y + offsetY);
                 }
-                animations.get(tileType).nextFrame(g, x + offsetX, y + offsetY);
+
                 if (Game.DEBUG) {
-                    g.draw3DRect(x + offsetX, y + offsetY, animations.get(tileType).getWidth() * scale, animations.get(tileType).getHeight() * scale, false);
+                    if (animations.containsKey(tileType)) {
+                        g.draw3DRect(x + offsetX, y + offsetY, animations.get(tileType).getWidth() * scale, animations.get(tileType).getHeight() * scale, false);
+                    }
                 }
                 if ((player.getRealX() >= x + offsetX - xArea && player.getRealX() <= x + offsetX + xArea && player.getRealY() >= y + offsetY - yArea && player.getRealY() <= y + offsetY + yArea)) {
                     player.setCurrentTile(tileType);
                     currentTileX = x;
                     currentTileY = y;
                     if (Game.DEBUG) {
-                        g.fill3DRect(x + offsetX, y + offsetY, animations.get(tileType).getWidth() * scale, animations.get(tileType).getHeight() * scale, false);
+                        if (animations.containsKey(tileType)) {
+                            g.fill3DRect(x + offsetX, y + offsetY, animations.get(tileType).getWidth() * scale, animations.get(tileType).getHeight() * scale, false);
+                        }
                     }
                 }
 
@@ -235,12 +321,12 @@ public class Map {
         }
 
     }
-    
-    public int getCurrentTileX(){
+
+    public int getCurrentTileX() {
         return currentTileX;
     }
-    
-    public int getCurrentTileY(){
+
+    public int getCurrentTileY() {
         return currentTileY;
     }
 

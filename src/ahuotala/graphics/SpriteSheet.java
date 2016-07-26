@@ -23,6 +23,7 @@ public class SpriteSheet {
     public int columns;
     public int scale;
     public BufferedImage image;
+    public boolean imageLoaded = false;
     public HashMap<String, BufferedImage> sprites;
 
     public SpriteSheet(String path) {
@@ -32,6 +33,7 @@ public class SpriteSheet {
         //Yritetään ladata kuva
         try {
             image = ImageIO.read(SpriteSheet.class.getResourceAsStream(path));
+            imageLoaded = true;
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -50,8 +52,10 @@ public class SpriteSheet {
      * @param y Y-koord. johon kuva ladataan
      */
     public void paint(Graphics g, String name, int x, int y) {
-        BufferedImage tmpImg = sprites.get(name);
-        g.drawImage(tmpImg, x, y, scale * tmpImg.getWidth(), scale * tmpImg.getHeight(), null);
+        if (sprites.containsKey(name)) {
+            BufferedImage tmpImg = sprites.get(name);
+            g.drawImage(tmpImg, x, y, scale * tmpImg.getWidth(), scale * tmpImg.getHeight(), null);
+        }
     }
 
     /**
@@ -66,7 +70,7 @@ public class SpriteSheet {
      */
     public BufferedImage getSprite(String name, int x, int y, int width, int height) {
 
-        if (!sprites.containsKey(name)) {
+        if (!sprites.containsKey(name) && imageLoaded) {
             BufferedImage tmpImg = image.getSubimage(x, y, width, height);
             sprites.put(name, tmpImg);
             return tmpImg;
@@ -87,7 +91,7 @@ public class SpriteSheet {
      */
     public BufferedImage getSprite(String name, int x, int y, int widthHeight) {
 
-        if (!sprites.containsKey(name)) {
+        if (!sprites.containsKey(name) && imageLoaded) {
             BufferedImage tmpImg = image.getSubimage(x, y, widthHeight, widthHeight);
             sprites.put(name, tmpImg);
             return tmpImg;

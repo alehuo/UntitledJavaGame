@@ -5,8 +5,11 @@
  */
 package ahuotala.game;
 
+import java.util.ArrayList;
+
 /**
  * Tile class
+ *
  * @author Aleksi Huotala
  */
 public class Tile {

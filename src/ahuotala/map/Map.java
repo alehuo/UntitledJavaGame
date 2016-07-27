@@ -5,6 +5,7 @@
  */
 package ahuotala.map;
 
+import ahuotala.entities.GameObject;
 import ahuotala.entities.Player;
 import ahuotala.game.Game;
 import ahuotala.game.Tile;
@@ -28,6 +29,7 @@ public class Map {
 
     private ArrayList<String> lines;
     private ArrayList<Tile> tileEntities;
+    private ArrayList<GameObject> gameObjects;
     private HashMap<String, BufferedImage> tiles;
     private HashMap<String, Animation> animations;
     private int scale;
@@ -37,8 +39,6 @@ public class Map {
     private int minY;
     private int maxX;
     private int maxY;
-    private int minZ;
-    private int maxZ;
     private int currentTileX = Integer.MIN_VALUE;
     private int currentTileY = Integer.MIN_VALUE;
     private int tileCount;
@@ -50,6 +50,7 @@ public class Map {
         animations = new HashMap<>();
         tileEntities = new ArrayList<>();
         lines = new ArrayList<>();
+        gameObjects = new ArrayList<>();
         /**
          * Load tiles into array
          */
@@ -84,6 +85,37 @@ public class Map {
             e.printStackTrace();
         }
         /**
+         * Load objects into array
+         */
+        try {
+
+            InputStream stream = getClass().getResourceAsStream("objects_" + name + ".obj");
+            BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
+            if (stream != null) {
+                while ((line = reader.readLine()) != null) {
+                    if (line.contains("#") || line.isEmpty()) {
+                        continue;
+                    }
+
+                    //Parse variables
+                    String[] lineData = line.split(",", -1);
+
+                    String objectName = lineData[0];
+                    int x = Integer.parseInt(lineData[1]);
+                    int y = Integer.parseInt(lineData[2]);
+
+                    //Add into tiles array
+                    gameObjects.add(new GameObject(x, y, tiles.get(objectName)));
+
+                    System.out.println("Loaded object: " + objectName);
+                }
+                stream.close();
+            }
+            reader.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        /**
          * Load animations into array
          */
         try {
@@ -97,7 +129,7 @@ public class Map {
                     }
 
                     //Parse variables
-                    String[] lineData = line.split(",");
+                    String[] lineData = line.split(",", -1);
                     String animationName = lineData[0];
                     String animationFileName = lineData[1];
                     int interval = Integer.parseInt(lineData[2]);
@@ -110,6 +142,7 @@ public class Map {
                     System.out.println("Loaded animated tile: " + animationName);
                 }
                 stream.close();
+                System.out.println("Loaded all tiles.");
             }
             reader.close();
         } catch (IOException e) {
@@ -122,18 +155,14 @@ public class Map {
             BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
             if (stream != null) {
                 while ((line = reader.readLine()) != null) {
-                    if (line.contains("#") || line.isEmpty()) {
-                        continue;
-                    }
-
                     //Skip comments
                     if (line.contains("#") || line.isEmpty()) {
                         continue;
                     }
                     lines.add(line);
-                    int x = Integer.parseInt(line.split(",")[0]);
-                    int y = Integer.parseInt(line.split(",")[1]);
-                    int z = Integer.parseInt(line.split(",")[2]);
+                    String[] splittedLine = line.split(",", -1);
+                    int x = Integer.parseInt(splittedLine[0]);
+                    int y = Integer.parseInt(splittedLine[1]);
                     //Calculate max x, y and z
                     if (x < minX) {
                         minX = x;
@@ -147,22 +176,16 @@ public class Map {
                     if (y > maxY) {
                         maxY = y;
                     }
-                    if (z < minZ) {
-                        minZ = z;
-                    }
-                    if (z > maxZ) {
-                        maxZ = z;
-                    }
-                    String tileTypeBottom = line.split(",")[3];
-                    String tileTypeMask = line.split(",")[4];
-                    String tileTypeMask2 = line.split(",")[5];
-                    String tileTypeFringe1 = line.split(",")[6];
-                    String tileTypeFringe2 = line.split(",")[7];
-                    boolean animated = (Integer.parseInt(line.split(",")[8]) == 1);
-                    tileEntities.add(new Tile(x, y, z, tileTypeBottom, tileTypeMask, tileTypeMask2, tileTypeFringe1, tileTypeFringe2, animated));
+
+                    String tileTypeBottom = splittedLine[2];
+                    String tileTypeMask = splittedLine[3];
+                    String tileTypeMask2 = splittedLine[4];
+                    String tileTypeFringe1 = splittedLine[5];
+                    String tileTypeFringe2 = splittedLine[6];
+                    tileEntities.add(new Tile(x, y, tileTypeBottom, tileTypeMask, tileTypeMask2, tileTypeFringe1, tileTypeFringe2));
                 }
                 System.out.println("Loaded map file into memory.");
-                System.out.println("Min x:" + minX + ", min y:" + minY + ", max x:" + maxX + ", max y:" + maxY + ", min z:" + minZ + ", max z:" + maxZ);
+                System.out.println("Min x:" + minX + ", min y:" + minY + ", max x:" + maxX + ", max y:" + maxY);
                 stream.close();
             }
             reader.close();
@@ -192,13 +215,13 @@ public class Map {
         return maxY;
     }
 
-    public Tile getTile(int x, int y, int z) {
+    public Tile getTile(int x, int y) {
         for (Tile tile : tileEntities) {
-            if (tile.getX() == x && tile.getY() == y && tile.getZ() == z) {
+            if (tile.getX() == x && tile.getY() == y) {
                 return tile;
             }
         }
-        return new Tile(0, 0, 0, "false", null, null, null, null);
+        return new Tile(0, 0, "false", null, null, null, null);
     }
 
     public void renderMap(Graphics g, Player player) {
@@ -217,7 +240,6 @@ public class Map {
             //tile per tile, add things
             int x = tile.getX();
             int y = tile.getY();
-            int z = tile.getZ();
             //Performance optimization: don't load tiles we don't need
             int radiusX = (int) Math.ceil(0.72 * Game.WINDOW_WIDTH);
             int radiusY = (int) Math.ceil(0.72 * Game.WINDOW_HEIGHT);
@@ -231,7 +253,7 @@ public class Map {
             tileTypes.add(tile.getTypeFringe2());
             for (String tileType : tileTypes) {
 
-                if (tileType.isEmpty() || tileType == null) {
+                if (tileType.isEmpty()) {
                     continue;
                 }
                 /**
@@ -275,14 +297,23 @@ public class Map {
                     }
                 }
             }
-            //Clean the tileType array
+            //Clear the tileType array
             tileTypes.clear();
             /**
              * #########################################################################
              */
         }
         if (Game.DEBUG) {
-            System.out.println(tileCount + " of " + lines.size() + " tiles rendered this round");
+//            System.out.println(tileCount + " of " + lines.size() + " tiles rendered this round");
+        }
+    }
+
+    public void renderObjects(Graphics g, Player p) {
+        for (GameObject gameObj : gameObjects) {
+            gameObj.render(g, p);
+            if (Game.DEBUG) {
+                gameObj.drawBoundaries(g, p);
+            }
         }
     }
 

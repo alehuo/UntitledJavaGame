@@ -1,4 +1,3 @@
 # name,x,y
-# List of objects for map 3
-house,-100,-100
-house,4,-100
+# List of objects for map 3. Note: remember to name the object the same way as it is in tiles.cfg
+house,0,0

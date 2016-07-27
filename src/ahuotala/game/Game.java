@@ -5,6 +5,7 @@
  */
 package ahuotala.game;
 
+import ahuotala.entities.GameObject;
 import ahuotala.entities.InteractableNpc;
 import ahuotala.entities.NpcTicker;
 import ahuotala.entities.Player;
@@ -174,7 +175,7 @@ public class Game extends Canvas implements Runnable, Tickable {
 //        player.setY(save.getY());
 //        player.setHealth(save.getHealth());
         player.setX(100);
-        player.setY(100);
+        player.setY(180);
         player.setHealth(120);
         //Set test NPC x and y
         npc.setX(244);
@@ -272,10 +273,8 @@ public class Game extends Canvas implements Runnable, Tickable {
 
         //Map
         map.renderMap(g, player);
-
         //Other objects
-        map.renderObject(g, -100, -100, "house");
-        map.renderObject(g, 4, -100, "house");
+        map.renderObjects(g, player);
 
         //NPCs here
         //Draw npc
@@ -393,13 +392,10 @@ public class Game extends Canvas implements Runnable, Tickable {
         if (DEBUG_PLAYER) {
             g.drawString("x " + player.getX(), 1, 15);
             g.drawString("y " + player.getY(), 1, 31);
-            g.drawString("z " + player.getZ(), 1, 47);
-            g.drawString("tileCount " + map.getRenderedTileCount(), 1, 63);
-            g.drawString("tileX " + map.getCurrentTileX(), 1, 79);
-            g.drawString("tileY " + map.getCurrentTileY(), 1, 95);
+            g.drawString("tileCount " + map.getRenderedTileCount(), 1, 47);
+            g.drawString("tileX " + map.getCurrentTileX(), 1, 63);
+            g.drawString("tileY " + map.getCurrentTileY(), 1, 79);
         }
-//        fontHandler.drawText(g, "x " + player.getRealX(), 5, 5);
-//        fontHandler.drawText(g, "y " + player.getRealY(), 5, 21);
 
         //Player health system
         int playerFullHearts = (int) Math.floor(player.getHealth() / 20);

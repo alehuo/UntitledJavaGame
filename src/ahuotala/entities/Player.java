@@ -16,7 +16,6 @@ public class Player implements Entity, Tickable {
 
     private int x;
     private int y;
-    private int z;
 
     public static int realX;
     public static int realY;
@@ -32,8 +31,13 @@ public class Player implements Entity, Tickable {
 
     private boolean walking = false;
     private boolean jumping = false;
-    private boolean canJump = true;
+    private boolean canJump = false;
     private boolean swimming = false;
+
+    private boolean canGoUp = true;
+    private boolean canGoDown = true;
+    private boolean canGoLeft = true;
+    private boolean canGoRight = true;
 
     private final int radiusX;
     private final int radiusY;
@@ -72,10 +76,6 @@ public class Player implements Entity, Tickable {
         return y;
     }
 
-    public int getZ() {
-        return z;
-    }
-
     public int getRealX() {
         return realX;
     }
@@ -111,59 +111,61 @@ public class Player implements Entity, Tickable {
     }
 
     public void goUp() {
-        y -= step;
-        offsetY += step;
-//        if (y - step >= cY - radiusY) {
-//            y -= step;
-//            realY -= step;
-//        } else {
-//            //Offset the map here
-//            offsetY += step;
-//            realY -= step;
-//            System.out.println("Cannot go up; Moving the map instead");
-//        }
+        if (canGoUp) {
+            y -= step;
+            offsetY += step;
+        }
     }
 
     public void goDown() {
-        y += step;
-        offsetY -= step;
-//        if (y + step <= cY + radiusY) {
-//            y += step;
-//            realY += step;
-//        } else {
-//            //Offset the map here
-//            offsetY -= step;
-//            realY += step;
-////            System.out.println("Cannot go down; Moving the map instead");
-//        }
+        if (canGoDown) {
+            y += step;
+            offsetY -= step;
+        }
     }
 
     public void goLeft() {
-        x -= step;
-        offsetX += step;
-//        if (x - step >= cX - radiusX) {
-//            x -= step;
-//            realX -= step;
-//        } else {
-//            //Offset the map here
-//            offsetX += step;
-//            realX -= step;
-////            System.out.println("Cannot go left; Moving the map instead");
-//        }
+        if (canGoLeft) {
+            x -= step;
+            offsetX += step;
+        }
     }
 
     public void goRight() {
-        x += step;
-        offsetX -= step;
-//        if (x + step <= cX + radiusX) {
-//            x += step;
-//            realX += step;
-//        } else {
-//            //Offset the map here
-//            offsetX -= step;
-//            realX += step;
-////            System.out.println("Cannot go right; Moving the map instead");
-//        }
+        if (canGoRight) {
+            x += step;
+            offsetX -= step;
+        }
+    }
+
+    public boolean canGoToDirection(Direction direction) {
+        switch (direction) {
+            case UP:
+                return canGoUp;
+            case DOWN:
+                return canGoDown;
+            case LEFT:
+                return canGoLeft;
+            case RIGHT:
+                return canGoRight;
+            default:
+                return false;
+        }
+    }
+
+    public void setDirectionState(Direction direction, boolean state) {
+        switch (direction) {
+            case UP:
+                canGoUp = state;
+            case DOWN:
+                canGoDown = state;
+            case LEFT:
+                canGoLeft = state;
+            case RIGHT:
+                canGoRight = state;
+            default:
+                break;
+        }
     }
 
     @Override
@@ -176,17 +178,6 @@ public class Player implements Entity, Tickable {
     public void setY(int y) {
         offsetY = cY - y;
         this.y = y;
-    }
-
-    public void setZ(int z) {
-        //Fix asap
-//        if (z > this.z && !jumping) {
-//            realY -= 20;
-//        } else if (!jumping) {
-//            realY += 20;
-//        }
-        this.z = z;
-
     }
 
     public void setHealth(int health) {
@@ -284,25 +275,25 @@ public class Player implements Entity, Tickable {
                 step = 3;
                 break;
         }
-        if (jumping && canJump) {
-            if (jumpTicks == 40) {
-                realY -= 40;
-            }
-            if (jumpTicks > 20) {
-                realY += 2;
-                jumpTicks--;
-                z = 1;
-            }
-            if (jumpTicks == 20) {
-                jumpTicks = 40;
-                jumping = false;
-                z = 0;
-            }
-        }
-        if (playerTicks == 100) {
-            playerTicks = 0;
-        }
-        playerTicks++;
+//        if (jumping && canJump) {
+//            if (jumpTicks == 40) {
+//                realY -= 40;
+//            }
+//            if (jumpTicks > 20) {
+//                realY += 2;
+//                jumpTicks--;
+//                z = 1;
+//            }
+//            if (jumpTicks == 20) {
+//                jumpTicks = 40;
+//                jumping = false;
+//                z = 0;
+//            }
+//        }
+//        if (playerTicks == 100) {
+//            playerTicks = 0;
+//        }
+//        playerTicks++;
     }
 
 }

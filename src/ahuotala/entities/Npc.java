@@ -174,15 +174,4 @@ public class Npc implements Entity, Tickable {
         g.setColor(Color.red);
         g.draw3DRect(startX - movingAreaX + oX, startY - movingAreaY + oY, 2 * movingAreaX + 32, 2 * movingAreaY + 32, false);
     }
-
-    @Override
-    public int getZ() {
-        return z;
-    }
-
-    @Override
-    public void setZ(int z) {
-        this.z = z;
-    }
-
 }

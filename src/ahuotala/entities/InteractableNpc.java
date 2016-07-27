@@ -20,8 +20,6 @@ public class InteractableNpc implements Entity, Interactable, Tickable {
     private int x = 0;
     //Y
     private int y = 0;
-    //Z
-    private int z = 0;
     //Ticking interval
     private int interval;
     //Tick count
@@ -283,15 +281,4 @@ public class InteractableNpc implements Entity, Interactable, Tickable {
         int playerY = player.getY();
         return (playerX > x - rX - offsetX && playerX < x + 2 * rX + offsetX && playerY > y - rY - offsetY * 2 && playerY < y + 2 * rY);
     }
-
-    @Override
-    public int getZ() {
-        return z;
-    }
-
-    @Override
-    public void setZ(int z) {
-        this.z = z;
-    }
-
 }

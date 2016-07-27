@@ -201,11 +201,14 @@ public class Map {
         return new Tile(0, 0, 0, "false", null, null, null, null);
     }
 
-    public void renderMap(Graphics g, Player player, int layer) {
+    public void renderMap(Graphics g, Player player) {
         offsetX = player.getOffsetX();
         offsetY = player.getOffsetY();
+        ArrayList<String> tileTypes = new ArrayList<>();
         int playerX = player.getX();
         int playerY = player.getY();
+        int xArea = 16;
+        int yArea = 14;
 
         //Parse the map file line by line
         tileCount = 0;
@@ -221,105 +224,66 @@ public class Map {
             if (x < playerX - radiusX || x > playerX + radiusX || y < playerY - radiusY || y > playerY + radiusY) {
                 continue;
             }
-            String tileType = "";
-            switch (layer) {
-                case 0:
-                    tileType = tile.getTypeBottom();
-                    break;
-                case 1:
-                    tileType = tile.getTypeMask();
-                    break;
-                case 2:
-                    tileType = tile.getTypeMask2();
-                    break;
-                case 3:
-                    tileType = tile.getTypeFringe1();
-                    break;
-                case 4:
-                    tileType = tile.getTypeFringe2();
-                    break;
-                default:
-                    System.err.println("Incorrect layer id");
-                    break;
-            }
-            if (tileType.isEmpty()) {
-                continue;
-            }
-            boolean isAnimated = tile.isAnimated();
-            int xArea = 16;
-            int yArea = 14;
-            if (isAnimated) {
-                if (!animations.containsKey(tileType)) {
-                    System.err.println("Animation tile '" + tileType + "' is missing at x = " + x + ",y = " + y);
-                } else {
-                    animations.get(tileType).nextFrame(g, x + offsetX, y + offsetY);
-                }
+            tileTypes.add(tile.getTypeBottom());
+            tileTypes.add(tile.getTypeMask());
+            tileTypes.add(tile.getTypeMask2());
+            tileTypes.add(tile.getTypeFringe1());
+            tileTypes.add(tile.getTypeFringe2());
+            for (String tileType : tileTypes) {
 
-                if (Game.DEBUG) {
-                    if (animations.containsKey(tileType)) {
-                        g.draw3DRect(x + offsetX, y + offsetY, animations.get(tileType).getWidth() * scale, animations.get(tileType).getHeight() * scale, false);
-                    }
+                if (tileType.isEmpty() || tileType == null) {
+                    continue;
                 }
-                if ((player.getRealX() >= x + offsetX - xArea && player.getRealX() <= x + offsetX + xArea && player.getRealY() >= y + offsetY - yArea && player.getRealY() <= y + offsetY + yArea)) {
-                    player.setCurrentTile(tileType);
-                    currentTileX = x;
-                    currentTileY = y;
+                /**
+                 * #########################################################################
+                 */
+                if (animations.containsKey(tileType)) {
+                    //Draw next frame
+                    animations.get(tileType).nextFrame(g, x + offsetX, y + offsetY);
                     if (Game.DEBUG) {
                         if (animations.containsKey(tileType)) {
                             g.fill3DRect(x + offsetX, y + offsetY, animations.get(tileType).getWidth() * scale, animations.get(tileType).getHeight() * scale, false);
                         }
                     }
-                }
-
-            } else {
-                if (y == maxY && tileType.equals("grass")) {
-                    tileType = "grass_bottom";
-                }
-                if (z == 1) {
-                    tileType = "grass_z_1";
-                    y -= 28;
-                }
-                if (!tiles.containsKey(tileType)) {
-                    System.err.println("Tile '" + tileType + "' is missing at x = " + x + ",y = " + y);
-                } else {
+                    tileCount++;
+                } else if (tiles.containsKey(tileType)) {
+                    if (y == maxY && tileType.equals("grass")) {
+                        tileType = "grass_bottom";
+                    }
+                    //Draw image
                     g.drawImage(tiles.get(tileType), x + offsetX, y + offsetY, tiles.get(tileType).getWidth() * scale, tiles.get(tileType).getHeight() * scale, null);
+                    //Debug
+                    if (Game.DEBUG) {
+                        g.setColor(Color.red);
+                        g.draw3DRect(x + offsetX, y + offsetY, tiles.get(tileType).getWidth() * scale, tiles.get(tileType).getHeight() * scale, false);
+                    }
+                    tileCount++;
+                } else {
+                    System.err.println("Could not find tile '" + tileType + "'");
                 }
-
-                if (Game.DEBUG) {
-                    g.setColor(Color.red);
-                    g.draw3DRect(x + offsetX, y + offsetY, tiles.get(tileType).getWidth() * scale, tiles.get(tileType).getHeight() * scale, false);
-                }
-
-                if (player.getRealX() >= x + offsetX - xArea && player.getRealX() <= x + offsetX + xArea && player.getRealY() >= y + offsetY - yArea && player.getRealY() <= y + offsetY + yArea) {
-                    player.setCurrentTile(tileType);
+                if ((player.getRealX() >= x + offsetX - xArea && player.getRealX() <= x + offsetX + xArea && player.getRealY() >= y + offsetY - yArea && player.getRealY() <= y + offsetY + yArea)) {
                     currentTileX = x;
                     currentTileY = y;
-                    switch (player.getDirection()) {
-                        case UP:
-                            break;
-                        case DOWN:
-                            break;
-                        case LEFT:
-                            break;
-                        case RIGHT:
-                            break;
-                    }
-                    if (z != player.getZ()) {
-                        player.setZ(z);
-                    }
-
+                    //Set current tile for player
+                    player.setCurrentTile(tileType);
                     if (Game.DEBUG) {
-                        g.fill3DRect(x + offsetX, y + offsetY, tiles.get(tileType).getWidth() * scale, tiles.get(tileType).getHeight() * scale, false);
+                        if (animations.containsKey(tileType)) {
+                            g.fill3DRect(x + offsetX, y + offsetY, animations.get(tileType).getWidth() * scale, animations.get(tileType).getHeight() * scale, false);
+                        } else if (tiles.containsKey(tileType)) {
+                            g.fill3DRect(x + offsetX, y + offsetY, tiles.get(tileType).getWidth() * scale, tiles.get(tileType).getHeight() * scale, false);
+                        }
                     }
                 }
-
             }
-            tileCount++;
+            //Clean the tileType array
+            tileTypes.clear();
+            /**
+             * #########################################################################
+             */
         }
         if (Game.DEBUG) {
             System.out.println(tileCount + " of " + lines.size() + " tiles rendered this round");
         }
-
     }
 
     public int getCurrentTileX() {

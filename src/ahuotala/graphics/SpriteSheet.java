@@ -21,15 +21,11 @@ public class SpriteSheet {
     public String path;
     public int rows;
     public int columns;
-    public int scale;
     public BufferedImage image;
     public boolean imageLoaded = false;
     public HashMap<String, BufferedImage> sprites;
 
     public SpriteSheet(String path) {
-
-        this.scale = Game.SCALE;
-
         //Yritetään ladata kuva
         try {
             image = ImageIO.read(SpriteSheet.class.getResourceAsStream(path));
@@ -54,7 +50,7 @@ public class SpriteSheet {
     public void paint(Graphics g, String name, int x, int y) {
         if (sprites.containsKey(name)) {
             BufferedImage tmpImg = sprites.get(name);
-            g.drawImage(tmpImg, x, y, scale * tmpImg.getWidth(), scale * tmpImg.getHeight(), null);
+            g.drawImage(tmpImg, x, y, Game.SCALE * tmpImg.getWidth(), Game.SCALE * tmpImg.getHeight(), null);
         }
     }
 

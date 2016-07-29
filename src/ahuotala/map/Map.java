@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package ahuotala.map;
 
 import ahuotala.entities.GameObject;
@@ -137,7 +132,7 @@ public class Map {
                     //Add into animations
                     animations.put(animationName, new Animation(animationFileName, Game.spriteSheet, interval));
                     //Register it to be tickable
-                    Game.ANIMATIONTICKER.register(animations.get(animationName));
+                    Game.animationTicker.register(animations.get(animationName));
 
                     System.out.println("Loaded animated tile: " + animationName);
                 }
@@ -222,6 +217,15 @@ public class Map {
             }
         }
         return new Tile(0, 0, "false", null, null, null, null);
+    }
+
+    public void detectCollision(Player p) {
+        for (GameObject gameObj : gameObjects) {
+            //If we have a collision
+            if (gameObj.collidesWithPlayer(p)) {
+                System.out.println("Collision with gameObject : Direction." + p.getCollisionDirection() + " disabled");
+            }
+        }
     }
 
     public void renderMap(Graphics g, Player player) {

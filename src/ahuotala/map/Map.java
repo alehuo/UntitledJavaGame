@@ -223,7 +223,9 @@ public class Map {
         for (GameObject gameObj : gameObjects) {
             //If we have a collision
             if (gameObj.collidesWithPlayer(p)) {
-                System.out.println("Collision with gameObject : Direction." + p.getCollisionDirection() + " disabled");
+                if (Game.DEBUG) {
+                    System.out.println("Collision with gameObject : Direction." + p.getCollisionDirection());
+                }
             }
         }
     }
@@ -287,7 +289,7 @@ public class Map {
                 } else {
                     System.err.println("Could not find tile '" + tileType + "'");
                 }
-                if ((player.getRealX() >= x + offsetX - xArea && player.getRealX() <= x + offsetX + xArea && player.getRealY() >= y + offsetY - yArea && player.getRealY() <= y + offsetY + yArea)) {
+                if ((player.getRealX() >= x + offsetX && player.getRealX() <= x + offsetX + 32 && player.getRealY() >= y + offsetY - 8 && player.getRealY() <= y + offsetY + 24)) {
                     currentTileX = x;
                     currentTileY = y;
                     //Set current tile for player
@@ -308,7 +310,7 @@ public class Map {
              */
         }
         if (Game.DEBUG) {
-//            System.out.println(tileCount + " of " + lines.size() + " tiles rendered this round");
+            System.out.println(tileCount + " of " + lines.size() + " tiles rendered this round");
         }
     }
 

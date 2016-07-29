@@ -10,14 +10,10 @@ import ahuotala.graphics.SpriteSheet;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.URL;
 import java.util.ArrayList;
-import java.util.Scanner;
 
 /**
  *
@@ -30,8 +26,6 @@ public final class Animation {
     private int interval;
     //Count
     private int count = 0;
-    //Scale
-    private int scale;
     //Spritesheet
     private SpriteSheet spritesheet;
     //Name
@@ -42,7 +36,6 @@ public final class Animation {
     public Animation(String name, SpriteSheet spritesheet, int interval) {
         this.frames = new ArrayList<>();
         this.interval = interval;
-        this.scale = Game.SCALE;
         this.spritesheet = spritesheet;
         this.name = name;
         this.Load();
@@ -57,7 +50,7 @@ public final class Animation {
             count = 0;
         }
         index = (int) Math.floor(count / interval);
-        g.drawImage(frames.get(index), x, y, frames.get(index).getWidth() * scale, frames.get(index).getHeight() * scale, null);
+        g.drawImage(frames.get(index), x, y, frames.get(index).getWidth() * Game.SCALE, frames.get(index).getHeight() * Game.SCALE, null);
     }
 
     public int getWidth() {
@@ -99,21 +92,5 @@ public final class Animation {
             e.printStackTrace();
         }
 
-//            while (sc.hasNextLine()) {
-//                String line = sc.nextLine();
-//                if (line.contains("#") || line.isEmpty()) {
-//                    continue;
-//                }
-//                //Skip comments
-//                String[] lineData;
-//                lineData = line.split(",");
-//                int x = Integer.parseInt(lineData[0]);
-//                int y = Integer.parseInt(lineData[1]);
-//                int width = Integer.parseInt(lineData[2]);
-//                int height = Integer.parseInt(lineData[3]);
-//                //Add the frame
-//                frames.add(spritesheet.getSprite("animation_" + name + "_frame" + frameCount, x, y, width, height));
-//                frameCount++;
-//            }
     }
 }

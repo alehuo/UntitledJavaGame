@@ -18,7 +18,6 @@ public class Npc implements Entity, Tickable {
 
     private int x = 0;
     private int y = 0;
-    private int z = 0;
     private int interval = 600;
     private int count = 0;
     private final String name;
@@ -70,10 +69,7 @@ public class Npc implements Entity, Tickable {
      * Use the tick() -method to add special features to npcs.
      */
     public void tick() {
-//        For debug only
-//        moveTicks = true;
-//        moveAmount = 800;
-//        randomDirection = 2;
+
         if (moveTicks) {
             if (moveAmount >= 0) {
                 switch (randomDirection) {
@@ -81,32 +77,24 @@ public class Npc implements Entity, Tickable {
                     case 0:
                         if (y > startY - movingAreaY) {
                             y -= step;
-                        } else {
-//                            System.out.println("NPC boundary (tried to move up)");
                         }
                         break;
                     //Down
                     case 1:
                         if (y < startY + movingAreaY) {
                             y += step;
-                        } else {
-//                            System.out.println("NPC boundary (tried to move down)");
                         }
                         break;
                     //Left
                     case 2:
                         if (x > startX - movingAreaX) {
                             x -= step;
-                        } else {
-//                            System.out.println("NPC boundary (tried to move left)");
                         }
                         break;
                     //Right
                     case 3:
                         if (x < startX + movingAreaX) {
                             x += step;
-                        } else {
-//                            System.out.println("NPC boundary (tried to move right)");
                         }
                         break;
                     //Up and left
@@ -114,8 +102,6 @@ public class Npc implements Entity, Tickable {
                         if (x > startX - movingAreaX && y > startY - movingAreaY) {
                             x -= step;
                             y -= step;
-                        } else {
-//                            System.out.println("NPC boundary (tried to move up and left)");
                         }
                         break;
                     //Up and right
@@ -123,8 +109,6 @@ public class Npc implements Entity, Tickable {
                         if (x < startX + movingAreaX && y > startY - movingAreaY) {
                             x += step;
                             y -= step;
-                        } else {
-//                            System.out.println("NPC boundary (tried to move up and right)");
                         }
                         break;
                     //Down and left
@@ -132,8 +116,6 @@ public class Npc implements Entity, Tickable {
                         if (x > startX - movingAreaX && y < startY + movingAreaY) {
                             x -= step;
                             y += step;
-                        } else {
-//                            System.out.println("NPC boundary (tried to move down and left)");
                         }
                         break;
                     //Down and right
@@ -141,8 +123,6 @@ public class Npc implements Entity, Tickable {
                         if (x < startX + movingAreaX && y < startY + movingAreaY) {
                             x += step;
                             y += step;
-                        } else {
-//                            System.out.println("NPC boundary (tried to move down and left)");
                         }
                         break;
                     default:
@@ -160,8 +140,6 @@ public class Npc implements Entity, Tickable {
                 randomDirection = random.nextInt(7);
                 moveAmount = random.nextInt(15) + 19;
                 moveTicks = true;
-//                System.out.println("New interval:" + interval);
-//                System.out.println("NPC tick");
                 count = 0;
             }
             count++;

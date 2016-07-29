@@ -14,8 +14,8 @@ import java.util.ArrayList;
  */
 public class NpcTicker implements Tickable {
 
-    private ArrayList<Npc> npcs;
-    private ArrayList<InteractableNpc> interactableNpcs;
+    private final ArrayList<Npc> npcs;
+    private final ArrayList<InteractableNpc> interactableNpcs;
 
     public NpcTicker() {
         npcs = new ArrayList<>();

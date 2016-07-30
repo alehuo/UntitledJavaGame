@@ -5,7 +5,6 @@
  */
 package ahuotala.game;
 
-import ahuotala.entities.GameObject;
 import ahuotala.entities.InteractableNpc;
 import ahuotala.entities.NpcTicker;
 import ahuotala.entities.Player;
@@ -68,9 +67,9 @@ public class Game extends Canvas implements Runnable, Tickable {
      * #######################
      */
     //Animation ticker
-    public static final AnimationTicker ANIMATIONTICKER = new AnimationTicker();
+    public static final AnimationTicker animationTicker = new AnimationTicker();
     //NPC ticker
-    public static final NpcTicker NPCTICKER = new NpcTicker();
+    public static final NpcTicker npcTicker = new NpcTicker();
 
     //Animations
     private final Animation playerWalkingUp;
@@ -123,27 +122,28 @@ public class Game extends Canvas implements Runnable, Tickable {
         spriteSheet.getSprite("full_heart", 112, 96, 32);
         //Half heart
         spriteSheet.getSprite("half_a_heart", 144, 96, 32);
-
+        //Player shadow
+        spriteSheet.getSprite("player_shadow", 208, 14, 32, 34);
         //Animations
-        playerWalkingUp = new Animation("PlayerWalkingUp", spriteSheet, 15);
-        playerWalkingDown = new Animation("PlayerWalkingDown", spriteSheet, 15);
-        playerWalkingLeft = new Animation("PlayerWalkingLeft", spriteSheet, 15);
-        playerWalkingRight = new Animation("PlayerWalkingRight", spriteSheet, 15);
-        playerSwimmingUp = new Animation("PlayerSwimmingUp", spriteSheet, 30);
-        playerSwimmingDown = new Animation("PlayerSwimmingDown", spriteSheet, 30);
-        playerSwimmingLeft = new Animation("PlayerSwimmingLeft", spriteSheet, 30);
-        playerSwimmingRight = new Animation("PlayerSwimmingRight", spriteSheet, 30);
-        playerLowHealth = new Animation("PlayerLowHealth", spriteSheet, 40);
+        playerWalkingUp = new Animation("PlayerWalkingUp", 10);
+        playerWalkingDown = new Animation("PlayerWalkingDown", 10);
+        playerWalkingLeft = new Animation("PlayerWalkingLeft", 10);
+        playerWalkingRight = new Animation("PlayerWalkingRight", 10);
+        playerSwimmingUp = new Animation("PlayerSwimmingUp", 30);
+        playerSwimmingDown = new Animation("PlayerSwimmingDown", 30);
+        playerSwimmingLeft = new Animation("PlayerSwimmingLeft", 30);
+        playerSwimmingRight = new Animation("PlayerSwimmingRight", 30);
+        playerLowHealth = new Animation("PlayerLowHealth", 40);
         //Register animations to be tickable
-        ANIMATIONTICKER.register(playerWalkingUp);
-        ANIMATIONTICKER.register(playerWalkingDown);
-        ANIMATIONTICKER.register(playerWalkingLeft);
-        ANIMATIONTICKER.register(playerWalkingRight);
-        ANIMATIONTICKER.register(playerSwimmingUp);
-        ANIMATIONTICKER.register(playerSwimmingDown);
-        ANIMATIONTICKER.register(playerSwimmingLeft);
-        ANIMATIONTICKER.register(playerSwimmingRight);
-        ANIMATIONTICKER.register(playerLowHealth);
+        animationTicker.register(playerWalkingUp);
+        animationTicker.register(playerWalkingDown);
+        animationTicker.register(playerWalkingLeft);
+        animationTicker.register(playerWalkingRight);
+        animationTicker.register(playerSwimmingUp);
+        animationTicker.register(playerSwimmingDown);
+        animationTicker.register(playerSwimmingLeft);
+        animationTicker.register(playerSwimmingRight);
+        animationTicker.register(playerLowHealth);
 
         //Initialize our JFrame
         frame = new JFrame(NAME);
@@ -183,7 +183,7 @@ public class Game extends Canvas implements Runnable, Tickable {
         npc.setInteractionRadiusX(16);
         npc.setInteractionRadiusY(16);
         //Register the new NPC to be tickable
-        NPCTICKER.register(npc);
+        npcTicker.register(npc);
     }
 
     private synchronized void start() {
@@ -247,9 +247,9 @@ public class Game extends Canvas implements Runnable, Tickable {
     @Override
     public void tick() {
         tickCount++;
-        ANIMATIONTICKER.tick();
+        animationTicker.tick();
         inputHandler.tick();
-        NPCTICKER.tick();
+        npcTicker.tick();
         player.tick();
     }
 
@@ -278,6 +278,7 @@ public class Game extends Canvas implements Runnable, Tickable {
 
         //NPCs here
         //Draw npc
+        spriteSheet.paint(g, "player_shadow", npc.getX() + player.getOffsetX() - 8, npc.getY() + player.getOffsetY() - 13);
         if (npc.isWalking()) {
             switch (npc.getDirection()) {
                 case UP:
@@ -329,6 +330,11 @@ public class Game extends Canvas implements Runnable, Tickable {
         int playerX = player.getRealX();
         int playerY = player.getRealY();
 
+        if (Game.DEBUG) {
+            g.setColor(Color.yellow);
+            g.fill3DRect(playerX, playerY, 16, 16, true);
+        }
+        spriteSheet.paint(g, "player_shadow", playerX - 8, playerY - 13);
         //Player walking animation
         switch (player.getDirection()) {
             case DOWN:
@@ -418,7 +424,7 @@ public class Game extends Canvas implements Runnable, Tickable {
                 spriteSheet.paint(g, "half_a_heart", heartX, heartY);
             }
         }
-
+        map.detectCollision(player);
         //Empty buffer
         g.dispose();
         //Show frame

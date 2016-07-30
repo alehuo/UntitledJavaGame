@@ -30,59 +30,27 @@ public class GameObject {
     public boolean collidesWithPlayer(Player player) {
         if (player.getX() == x - radiusX && player.getY() >= y - radiusY && player.getY() <= y + sprite.getHeight() + radiusY) {
             //Left side
+            player.setCollisionDirection(Direction.RIGHT);
             return true;
         } else if (player.getX() == x + sprite.getWidth() - radiusX && player.getY() >= y - radiusY && player.getY() <= y + sprite.getHeight() + radiusY) {
             //Right side
+            player.setCollisionDirection(Direction.LEFT);
             return true;
-        } else if (player.getX() >= x - radiusX && player.getX() <= x + sprite.getWidth() + radiusX && player.getY() == y + sprite.getHeight()) {
+        } else if (player.getX() >= x - radiusX && player.getX() <= x + sprite.getWidth() + radiusX && player.getY() == y) {
             //Bottom side
+            player.setCollisionDirection(Direction.DOWN);
             return true;
-        } else if (player.getX() >= x - radiusX && player.getX() <= x + sprite.getWidth() + radiusX && player.getY() == y - radiusY) {
+        } else if (player.getX() >= x - radiusX && player.getX() <= x + sprite.getWidth() + radiusX && player.getY() == y + radiusY + sprite.getHeight()) {
             //Top side
+            player.setCollisionDirection(Direction.UP);
             return true;
-        } else {
-            return false;
         }
-    }
-
-    public void collide(Player player) {
-        if (player.getX() == x - radiusX && player.getY() >= y - radiusY && player.getY() <= y + sprite.getHeight() + radiusY) {
-            //Left side
-            player.setDirectionState(Direction.RIGHT, false);
-            player.setDirectionState(Direction.UP, true);
-            player.setDirectionState(Direction.DOWN, true);
-            player.setDirectionState(Direction.LEFT, true);
-        } else if (player.getX() == x + sprite.getWidth() - radiusX && player.getY() >= y - radiusY && player.getY() <= y + sprite.getHeight() + radiusY) {
-            //Right side
-            player.setDirectionState(Direction.UP, true);
-            player.setDirectionState(Direction.DOWN, true);
-            player.setDirectionState(Direction.LEFT, false);
-            player.setDirectionState(Direction.RIGHT, true);
-        } else if (player.getX() >= x - radiusX && player.getX() <= x + sprite.getWidth() + radiusX && player.getY() == y + sprite.getHeight()) {
-            //Bottom side
-            player.setDirectionState(Direction.UP, false);
-            player.setDirectionState(Direction.DOWN, true);
-            player.setDirectionState(Direction.LEFT, true);
-            player.setDirectionState(Direction.RIGHT, true);
-        } else if (player.getX() >= x - radiusX && player.getX() <= x + sprite.getWidth() + radiusX && player.getY() == y - radiusY) {
-            //Top side
-            player.setDirectionState(Direction.UP, true);
-            player.setDirectionState(Direction.DOWN, false);
-            player.setDirectionState(Direction.LEFT, true);
-            player.setDirectionState(Direction.RIGHT, true);
-        }
+        player.setCollisionDirection(Direction.NAN);
+        return false;
     }
 
     public void render(Graphics g, Player p) {
         g.drawImage(sprite, x + p.getOffsetX(), y + p.getOffsetY(), null);
-        if (this.collidesWithPlayer(p)) {
-            this.collide(p);
-        } else {
-            p.setDirectionState(Direction.UP, true);
-            p.setDirectionState(Direction.DOWN, true);
-            p.setDirectionState(Direction.LEFT, true);
-            p.setDirectionState(Direction.RIGHT, true);
-        }
     }
 
     public void drawBoundaries(Graphics g, Player p) {

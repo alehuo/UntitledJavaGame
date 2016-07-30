@@ -18,20 +18,17 @@ public final class Animation {
 
     private ArrayList<BufferedImage> frames;
     //Interval in frames
-    private int interval;
+    private final int interval;
     //Count
     private int count = 0;
-    //Spritesheet
-    private SpriteSheet spritesheet;
     //Name
-    private String name;
+    private final String name;
     //Index
     private int index = 0;
 
-    public Animation(String name, SpriteSheet spritesheet, int interval) {
+    public Animation(String name, int interval) {
         this.frames = new ArrayList<>();
         this.interval = interval;
-        this.spritesheet = spritesheet;
         this.name = name;
         this.Load();
     }
@@ -79,7 +76,7 @@ public final class Animation {
                     int width = Integer.parseInt(lineData[2]);
                     int height = Integer.parseInt(lineData[3]);
                     //Add the frame
-                    frames.add(spritesheet.getSprite("animation_" + name + "_frame" + frameCount, x, y, width, height));
+                    frames.add(Game.spriteSheet.getSprite("animation_" + name + "_frame" + frameCount, x, y, width, height));
                     frameCount++;
                 }
             }

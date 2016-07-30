@@ -1,4 +1,0 @@
-# name,animation_name,interval
-# List of sprites to be registered in game
-water_ani,Water,60
-lava_ani,Lava,60

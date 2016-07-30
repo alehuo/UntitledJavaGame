@@ -38,14 +38,6 @@ public class Player implements Entity, Tickable {
     private boolean walking = false;
     private boolean swimming = false;
 
-    private boolean canGoUp = true;
-    private boolean canGoDown = true;
-    private boolean canGoLeft = true;
-    private boolean canGoRight = true;
-
-    private final int radiusX;
-    private final int radiusY;
-
     private final int cY;
     private final int cX;
 
@@ -76,8 +68,8 @@ public class Player implements Entity, Tickable {
         this.cX = Game.CENTERX;
         realX = cX;
         realY = cY;
-        radiusX = (int) Math.floor(0.2 * cX);
-        radiusY = (int) Math.floor(0.2 * cY);
+//        radiusX = (int) Math.floor(0.2 * cX);
+//        radiusY = (int) Math.floor(0.2 * cY);
 
         playerWalkingUp = new Animation("PlayerWalkingUp", 10);
         playerWalkingDown = new Animation("PlayerWalkingDown", 10);
@@ -304,11 +296,11 @@ public class Player implements Entity, Tickable {
         //Debug for player
         g.setColor(Color.white);
         if (DEBUG_PLAYER) {
-            g.drawString("x " + this.getX(), 1, 15);
-            g.drawString("y " + this.getY(), 1, 31);
-            g.drawString("tileCount " + map.getRenderedTileCount(), 1, 47);
-            g.drawString("tileX " + map.getCurrentTileX(), 1, 63);
-            g.drawString("tileY " + map.getCurrentTileY(), 1, 79);
+            g.drawString("x " + this.getX(), 5, 15);
+            g.drawString("y " + this.getY(), 5, 31);
+            g.drawString("tileCount " + map.getRenderedTileCount(), 5, 47);
+            g.drawString("tileX " + map.getCurrentTileX(), 5, 63);
+            g.drawString("tileY " + map.getCurrentTileY(), 5, 79);
         }
     }
 

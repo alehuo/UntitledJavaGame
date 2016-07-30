@@ -5,13 +5,10 @@
  */
 package ahuotala.game;
 
-import ahuotala.entities.InteractableNpc;
-import ahuotala.entities.NpcTicker;
-import ahuotala.entities.Player;
-import ahuotala.graphics.animation.Animation;
-import ahuotala.graphics.animation.AnimationTicker;
-import ahuotala.graphics.SpriteSheet;
-import ahuotala.map.Map;
+import ahuotala.entities.*;
+import ahuotala.graphics.animation.*;
+import ahuotala.graphics.*;
+import ahuotala.map.*;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -242,7 +239,7 @@ public class Game extends Canvas implements Runnable, Tickable {
 
         //Font
         currentFont = g.getFont();
-        g.setFont(new Font(currentFont.getName(), Font.BOLD, 18));
+        g.setFont(new Font(currentFont.getName(), Font.BOLD, (int)Math.floor(18*FONTSCALE)));
 
         //Black background
         g.drawImage(image, 0, 0, getWidth(), getHeight(), null);

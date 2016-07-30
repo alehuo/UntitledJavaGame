@@ -19,7 +19,7 @@ public class PlayerInputHandler implements KeyListener, Tickable {
 
     private final Player player;
     private final Map map;
-    public boolean up = false, down = false, left = false, right = false, jump = false;
+    public boolean up = false, down = false, left = false, right = false;
 
     public PlayerInputHandler(Player player, Map map) {
         this.player = player;
@@ -50,9 +50,6 @@ public class PlayerInputHandler implements KeyListener, Tickable {
             case KeyEvent.VK_D:
                 right = true;
                 break;
-            case KeyEvent.VK_SPACE:
-                player.jump();
-                break;
             case KeyEvent.VK_J:
                 if (Game.DEBUG_PLAYER) {
                     player.increaseHealth(5);
@@ -64,18 +61,10 @@ public class PlayerInputHandler implements KeyListener, Tickable {
                 }
                 break;
             case KeyEvent.VK_F1:
-                if (Game.DEBUG) {
-                    Game.DEBUG = false;
-                } else {
-                    Game.DEBUG = true;
-                }
+                Game.DEBUG = !Game.DEBUG;
                 break;
             case KeyEvent.VK_F2:
-                if (Game.DEBUG_PLAYER) {
-                    Game.DEBUG_PLAYER = false;
-                } else {
-                    Game.DEBUG_PLAYER = true;
-                }
+                Game.DEBUG_PLAYER = !Game.DEBUG_PLAYER;
                 break;
             default:
                 break;
@@ -101,9 +90,6 @@ public class PlayerInputHandler implements KeyListener, Tickable {
             case KeyEvent.VK_D:
                 right = false;
                 break;
-            case KeyEvent.VK_SPACE:
-                jump = false;
-                break;
             default:
                 break;
         }
@@ -114,22 +100,22 @@ public class PlayerInputHandler implements KeyListener, Tickable {
         int yOffset = 2;
         int xOffset = 8;
         if (up || down || left || right) {
-            if (up && player.getY() > map.getMinY() + yOffset) {
+            if (up && player.getY() > map.getMinY() + yOffset && player.getCollisionDirection() != Direction.UP) {
                 player.setDirection(Direction.UP);
                 player.setWalkingState(true);
                 player.goUp();
             }
-            if (down && player.getY() < map.getMaxY() - yOffset) {
+            if (down && player.getY() < map.getMaxY() - yOffset && player.getCollisionDirection() != Direction.DOWN) {
                 player.setDirection(Direction.DOWN);
                 player.setWalkingState(true);
                 player.goDown();
             }
-            if (left && player.getX() > map.getMinX() + xOffset) {
+            if (left && player.getX() > map.getMinX() + xOffset && player.getCollisionDirection() != Direction.LEFT) {
                 player.setDirection(Direction.LEFT);
                 player.setWalkingState(true);
                 player.goLeft();
             }
-            if (right && player.getX() < map.getMaxX() - xOffset) {
+            if (right && player.getX() < map.getMaxX() - xOffset && player.getCollisionDirection() != Direction.RIGHT) {
                 player.setDirection(Direction.RIGHT);
                 player.setWalkingState(true);
                 player.goRight();

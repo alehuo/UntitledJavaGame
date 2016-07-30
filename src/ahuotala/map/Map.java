@@ -130,7 +130,7 @@ public class Map {
                     int interval = Integer.parseInt(lineData[2]);
 
                     //Add into animations
-                    animations.put(animationName, new Animation(animationFileName, Game.spriteSheet, interval));
+                    animations.put(animationName, new Animation(animationFileName, interval));
                     //Register it to be tickable
                     Game.animationTicker.register(animations.get(animationName));
 

@@ -66,6 +66,9 @@ public class PlayerInputHandler implements KeyListener, Tickable {
             case KeyEvent.VK_F2:
                 Game.DEBUG_PLAYER = !Game.DEBUG_PLAYER;
                 break;
+            case KeyEvent.VK_E:
+                Game.SHOW_INVENTORY = !Game.SHOW_INVENTORY;
+                break;
             default:
                 break;
         }
@@ -99,7 +102,7 @@ public class PlayerInputHandler implements KeyListener, Tickable {
     public void tick() {
         int yOffset = 2;
         int xOffset = 8;
-        if (up || down || left || right) {
+        if ((up || down || left || right) && !Game.SHOW_INVENTORY) {
             if (up && player.getY() > map.getMinY() + yOffset && player.getCollisionDirection() != Direction.UP) {
                 player.setDirection(Direction.UP);
                 player.setWalkingState(true);

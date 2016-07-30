@@ -22,20 +22,29 @@ import javax.swing.JFrame;
 public class Game extends Canvas implements Runnable, Tickable {
 
     private static final long serialVersionUID = 1L;
+
     public static boolean DEBUG = false;
+
     public static boolean DEBUG_PLAYER = false;
+
     //Window width
     public static final int WINDOW_WIDTH = 1600;
+
     //Window height
     public static final int WINDOW_HEIGHT = WINDOW_WIDTH / 16 * 9;
+
     //Tile scale
     public static final int SCALE = 1;
+
     //Font scale
     public static final double FONTSCALE = 0.7;
+
     //Center x coordinate
     public static final int CENTERX = (int) Math.floor(WINDOW_WIDTH / 2);
+
     //Center y coordinate
     public static final int CENTERY = (int) Math.floor(WINDOW_HEIGHT / 2);
+
     //Game name
     public static final String NAME = "Untitled Game";
 
@@ -44,27 +53,30 @@ public class Game extends Canvas implements Runnable, Tickable {
 
     //Game state
     public boolean running = false;
+
     //Tick count
     public int tickCount = 0;
+
     //Tickrate; amount of game updates per second
     public double tickrate = 60D;
+
     private final BufferedImage image;
+
     //Sprite sheet
     public static SpriteSheet spriteSheet = new SpriteSheet("spriteSheet.png");
+
     //Font
     private Font currentFont;
-    /**
-     * ####################### Players and NPC's here #######################
-     */
+
     //Player
     private final Player player = new Player("Aleksi");
+
     //NPC test
     private final InteractableNpc npc = new InteractableNpc("TestNPC");
-    /**
-     * #######################
-     */
+
     //Animation ticker
     public static final AnimationTicker animationTicker = new AnimationTicker();
+
     //NPC ticker
     public static final NpcTicker npcTicker = new NpcTicker();
 
@@ -76,8 +88,13 @@ public class Game extends Canvas implements Runnable, Tickable {
 
     //Map
     Map map = new Map("map3");
+
     //Input handler
     private final PlayerInputHandler inputHandler = new PlayerInputHandler(player, map);
+
+    //Inventory
+    private final Inventory inventory = new Inventory();
+    public static boolean SHOW_INVENTORY = false;
 
     /**
      * Constructor
@@ -239,7 +256,7 @@ public class Game extends Canvas implements Runnable, Tickable {
 
         //Font
         currentFont = g.getFont();
-        g.setFont(new Font(currentFont.getName(), Font.BOLD, (int)Math.floor(18*FONTSCALE)));
+        g.setFont(new Font(currentFont.getName(), Font.BOLD, (int) Math.floor(18 * FONTSCALE)));
 
         //Black background
         g.drawImage(image, 0, 0, getWidth(), getHeight(), null);
@@ -281,6 +298,11 @@ public class Game extends Canvas implements Runnable, Tickable {
             }
         }
         map.detectCollision(player);
+
+        if (SHOW_INVENTORY) {
+            inventory.renderInventory(g);
+        }
+
         //Empty buffer
         g.dispose();
         //Show frame

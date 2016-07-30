@@ -18,18 +18,21 @@ import javax.imageio.ImageIO;
  */
 public class SpriteSheet {
 
-    public String path;
-    public int rows;
-    public int columns;
-    public BufferedImage image;
-    public boolean imageLoaded = false;
-    public HashMap<String, BufferedImage> sprites;
+    private String spriteSheetPath;
+    private String inventoryPath = "inventory.png";
+    private BufferedImage image;
+    private BufferedImage inventoryImage;
+    private boolean imageLoaded = false;
+    private boolean inventoryLoaded = false;
+    private HashMap<String, BufferedImage> sprites;
 
-    public SpriteSheet(String path) {
+    public SpriteSheet(String spriteSheetPath) {
         //Yritetään ladata kuva
         try {
-            image = ImageIO.read(SpriteSheet.class.getResourceAsStream(path));
+            image = ImageIO.read(SpriteSheet.class.getResourceAsStream(spriteSheetPath));
             imageLoaded = true;
+            inventoryImage = ImageIO.read(SpriteSheet.class.getResourceAsStream(inventoryPath));
+            inventoryLoaded = true;
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -37,6 +40,17 @@ public class SpriteSheet {
         //Alustetaan hajautustaulu
         sprites = new HashMap<>();
 
+    }
+
+    /**
+     * Returns the inventory image
+     * @return BufferedImage Inventory image
+     */
+    public BufferedImage getInventory() {
+        if (inventoryLoaded) {
+            return inventoryImage;
+        }
+        return new BufferedImage(128, 128, BufferedImage.TYPE_INT_ARGB);
     }
 
     /**

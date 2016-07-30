@@ -5,7 +5,12 @@
  */
 package ahuotala.entities;
 
+import ahuotala.game.Game;
+import static ahuotala.game.Game.WINDOW_HEIGHT;
+import static ahuotala.game.Game.animationTicker;
+import static ahuotala.game.Game.spriteSheet;
 import ahuotala.game.Tickable;
+import ahuotala.graphics.animation.Animation;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.util.Random;
@@ -30,7 +35,7 @@ public class InteractableNpc implements Entity, Interactable, Tickable {
     private final int step = 1;
     //Direction
     private Direction direction = Direction.DOWN;
-    //Is walking?
+    //Is the NPC walking?
     private boolean isWalking = false;
 
     //Moving algorithm
@@ -48,14 +53,29 @@ public class InteractableNpc implements Entity, Interactable, Tickable {
 
     //Can the NPC move around?
     private boolean canMove = true;
+
     //Interaction radius
     private int rY;
     private int rX;
+
+    //Animations
+    private final Animation playerWalkingUp;
+    private final Animation playerWalkingDown;
+    private final Animation playerWalkingLeft;
+    private final Animation playerWalkingRight;
 
     public InteractableNpc(String name) {
         this.interval = 100;
         this.name = name;
         random = new Random();
+        playerWalkingUp = new Animation("PlayerWalkingUp", 10);
+        playerWalkingDown = new Animation("PlayerWalkingDown", 10);
+        playerWalkingLeft = new Animation("PlayerWalkingLeft", 10);
+        playerWalkingRight = new Animation("PlayerWalkingRight", 10);
+        animationTicker.register(playerWalkingUp);
+        animationTicker.register(playerWalkingDown);
+        animationTicker.register(playerWalkingLeft);
+        animationTicker.register(playerWalkingRight);
     }
 
     public String getName() {
@@ -221,8 +241,54 @@ public class InteractableNpc implements Entity, Interactable, Tickable {
 
     }
 
-    public void renderNpc(Graphics g) {
+    public void renderNpc(Graphics g, Player player) {
+        spriteSheet.paint(g, "player_shadow", this.getX() + player.getOffsetX() - 8, this.getY() + player.getOffsetY() - 13);
+        if (this.isWalking()) {
+            switch (this.getDirection()) {
+                case UP:
+                    playerWalkingUp.nextFrame(g, this.getX() + player.getOffsetX(), this.getY() + player.getOffsetY());
+                    break;
+                case DOWN:
+                    playerWalkingDown.nextFrame(g, this.getX() + player.getOffsetX(), this.getY() + player.getOffsetY());
+                    break;
+                case LEFT:
+                    playerWalkingLeft.nextFrame(g, this.getX() + player.getOffsetX(), this.getY() + player.getOffsetY());
+                    break;
+                case RIGHT:
+                    playerWalkingRight.nextFrame(g, this.getX() + player.getOffsetX(), this.getY() + player.getOffsetY());
+                    break;
+                default:
+                    break;
+            }
+        } else {
+            switch (this.getDirection()) {
+                case UP:
+                    spriteSheet.paint(g, "player_up", this.getX() + player.getOffsetX(), this.getY() + player.getOffsetY());
+                    break;
+                case DOWN:
+                    spriteSheet.paint(g, "player_down", this.getX() + player.getOffsetX(), this.getY() + player.getOffsetY());
+                    break;
+                case LEFT:
+                    spriteSheet.paint(g, "player_left", this.getX() + player.getOffsetX(), this.getY() + player.getOffsetY());
+                    break;
+                case RIGHT:
+                    spriteSheet.paint(g, "player_right", this.getX() + player.getOffsetX(), this.getY() + player.getOffsetY());
+                    break;
+                default:
+                    break;
+            }
+        }
 
+        if (Game.DEBUG) {
+            //Movement boundaries
+            this.drawBoundaries(g, player.getOffsetX(), player.getOffsetY());
+            //For debug; interaction boundaries
+            this.drawInteractionBoundaries(g, player.getOffsetX(), player.getOffsetY());
+        }
+        //If we are within interaction distance
+        if (this.isWithinInteractionDistance(player)) {
+            g.drawString("Press E to talk with \"" + this.getName() + "\"", 40, WINDOW_HEIGHT - 32);
+        }
     }
 
     public void drawBoundaries(Graphics g, int oX, int oY) {

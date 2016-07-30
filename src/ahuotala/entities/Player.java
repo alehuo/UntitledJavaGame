@@ -6,7 +6,13 @@
 package ahuotala.entities;
 
 import ahuotala.game.Game;
+import static ahuotala.game.Game.DEBUG_PLAYER;
+import static ahuotala.game.Game.animationTicker;
 import ahuotala.game.Tickable;
+import ahuotala.graphics.animation.Animation;
+import ahuotala.map.Map;
+import java.awt.Color;
+import java.awt.Graphics;
 
 /**
  *
@@ -52,6 +58,16 @@ public class Player implements Entity, Tickable {
 
     private Direction collisionDirection;
 
+    //Animations
+    private final Animation playerWalkingUp;
+    private final Animation playerWalkingDown;
+    private final Animation playerWalkingLeft;
+    private final Animation playerWalkingRight;
+    private final Animation playerSwimmingUp;
+    private final Animation playerSwimmingDown;
+    private final Animation playerSwimmingLeft;
+    private final Animation playerSwimmingRight;
+
     public Player(String name) {
         this.name = name;
         //Center Y
@@ -62,6 +78,23 @@ public class Player implements Entity, Tickable {
         realY = cY;
         radiusX = (int) Math.floor(0.2 * cX);
         radiusY = (int) Math.floor(0.2 * cY);
+
+        playerWalkingUp = new Animation("PlayerWalkingUp", 10);
+        playerWalkingDown = new Animation("PlayerWalkingDown", 10);
+        playerWalkingLeft = new Animation("PlayerWalkingLeft", 10);
+        playerWalkingRight = new Animation("PlayerWalkingRight", 10);
+        playerSwimmingUp = new Animation("PlayerSwimmingUp", 30);
+        playerSwimmingDown = new Animation("PlayerSwimmingDown", 30);
+        playerSwimmingLeft = new Animation("PlayerSwimmingLeft", 30);
+        playerSwimmingRight = new Animation("PlayerSwimmingRight", 30);
+        animationTicker.register(playerWalkingUp);
+        animationTicker.register(playerWalkingDown);
+        animationTicker.register(playerWalkingLeft);
+        animationTicker.register(playerWalkingRight);
+        animationTicker.register(playerSwimmingUp);
+        animationTicker.register(playerSwimmingDown);
+        animationTicker.register(playerSwimmingLeft);
+        animationTicker.register(playerSwimmingRight);
     }
 
     @Override
@@ -201,6 +234,83 @@ public class Player implements Entity, Tickable {
         return this.getX() + "," + this.getY();
     }
 
+    public void render(Graphics g, Map map) {
+        //Debug
+        if (Game.DEBUG) {
+            g.setColor(Color.yellow);
+            g.fill3DRect(realX, realY, 16, 16, true);
+        }
+        //Player shadow
+        Game.spriteSheet.paint(g, "player_shadow", realX - 8, realY - 13);
+
+        //Player walking animation
+        switch (this.getDirection()) {
+            case DOWN:
+                if (this.isWalking()) {
+                    if (this.isSwimming()) {
+                        playerSwimmingDown.nextFrame(g, realX, realY);
+                    } else {
+                        playerWalkingDown.nextFrame(g, realX, realY);
+                    }
+                } else if (this.isSwimming()) {
+                    Game.spriteSheet.paint(g, "player_swimming_down", realX, realY);
+                } else {
+                    Game.spriteSheet.paint(g, "player_down", realX, realY);
+                }
+                break;
+            case UP:
+                if (this.isWalking()) {
+                    if (this.isSwimming()) {
+                        playerSwimmingUp.nextFrame(g, realX, realY);
+                    } else {
+                        playerWalkingUp.nextFrame(g, realX, realY);
+                    }
+                } else if (this.isSwimming()) {
+                    Game.spriteSheet.paint(g, "player_swimming_up", realX, realY);
+                } else {
+                    Game.spriteSheet.paint(g, "player_up", realX, realY);
+                }
+                break;
+            case LEFT:
+                if (this.isWalking()) {
+                    if (this.isSwimming()) {
+                        playerSwimmingLeft.nextFrame(g, realX, realY);
+                    } else {
+                        playerWalkingLeft.nextFrame(g, realX, realY);
+                    }
+                } else if (this.isSwimming()) {
+                    Game.spriteSheet.paint(g, "player_swimming_left", realX, realY);
+                } else {
+                    Game.spriteSheet.paint(g, "player_left", realX, realY);
+                }
+                break;
+            case RIGHT:
+                if (this.isWalking()) {
+                    if (this.isSwimming()) {
+                        playerSwimmingRight.nextFrame(g, realX, realY);
+                    } else {
+                        playerWalkingRight.nextFrame(g, realX, realY);
+                    }
+                } else if (this.isSwimming()) {
+                    Game.spriteSheet.paint(g, "player_swimming_right", realX, realY);
+                } else {
+                    Game.spriteSheet.paint(g, "player_right", realX, realY);
+                }
+                break;
+            default:
+                break;
+        }
+        
+        //Debug for player
+        g.setColor(Color.white);
+        if (DEBUG_PLAYER) {
+            g.drawString("x " + this.getX(), 1, 15);
+            g.drawString("y " + this.getY(), 1, 31);
+            g.drawString("tileCount " + map.getRenderedTileCount(), 1, 47);
+            g.drawString("tileX " + map.getCurrentTileX(), 1, 63);
+            g.drawString("tileY " + map.getCurrentTileY(), 1, 79);
+        }
+    }
 
     @Override
     public void tick() {
@@ -221,13 +331,14 @@ public class Player implements Entity, Tickable {
                     this.damagePlayer(10);
                     playerTicks = 0;
                 }
+                playerTicks++;
                 break;
             default:
                 swimming = false;
                 step = 3;
                 break;
         }
-        playerTicks++;
+
     }
 
 }

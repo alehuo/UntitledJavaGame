@@ -72,14 +72,6 @@ public class Game extends Canvas implements Runnable, Tickable {
     public static final NpcTicker npcTicker = new NpcTicker();
 
     //Animations
-    private final Animation playerWalkingUp;
-    private final Animation playerWalkingDown;
-    private final Animation playerWalkingLeft;
-    private final Animation playerWalkingRight;
-    private final Animation playerSwimmingUp;
-    private final Animation playerSwimmingDown;
-    private final Animation playerSwimmingLeft;
-    private final Animation playerSwimmingRight;
     private final Animation playerLowHealth;
 
     //Save
@@ -125,24 +117,8 @@ public class Game extends Canvas implements Runnable, Tickable {
         //Player shadow
         spriteSheet.getSprite("player_shadow", 208, 14, 32, 34);
         //Animations
-        playerWalkingUp = new Animation("PlayerWalkingUp", 10);
-        playerWalkingDown = new Animation("PlayerWalkingDown", 10);
-        playerWalkingLeft = new Animation("PlayerWalkingLeft", 10);
-        playerWalkingRight = new Animation("PlayerWalkingRight", 10);
-        playerSwimmingUp = new Animation("PlayerSwimmingUp", 30);
-        playerSwimmingDown = new Animation("PlayerSwimmingDown", 30);
-        playerSwimmingLeft = new Animation("PlayerSwimmingLeft", 30);
-        playerSwimmingRight = new Animation("PlayerSwimmingRight", 30);
         playerLowHealth = new Animation("PlayerLowHealth", 40);
         //Register animations to be tickable
-        animationTicker.register(playerWalkingUp);
-        animationTicker.register(playerWalkingDown);
-        animationTicker.register(playerWalkingLeft);
-        animationTicker.register(playerWalkingRight);
-        animationTicker.register(playerSwimmingUp);
-        animationTicker.register(playerSwimmingDown);
-        animationTicker.register(playerSwimmingLeft);
-        animationTicker.register(playerSwimmingRight);
         animationTicker.register(playerLowHealth);
 
         //Initialize our JFrame
@@ -278,130 +254,13 @@ public class Game extends Canvas implements Runnable, Tickable {
 
         //NPCs here
         //Draw npc
-        spriteSheet.paint(g, "player_shadow", npc.getX() + player.getOffsetX() - 8, npc.getY() + player.getOffsetY() - 13);
-        if (npc.isWalking()) {
-            switch (npc.getDirection()) {
-                case UP:
-                    playerWalkingUp.nextFrame(g, npc.getX() + player.getOffsetX(), npc.getY() + player.getOffsetY());
-                    break;
-                case DOWN:
-                    playerWalkingDown.nextFrame(g, npc.getX() + player.getOffsetX(), npc.getY() + player.getOffsetY());
-                    break;
-                case LEFT:
-                    playerWalkingLeft.nextFrame(g, npc.getX() + player.getOffsetX(), npc.getY() + player.getOffsetY());
-                    break;
-                case RIGHT:
-                    playerWalkingRight.nextFrame(g, npc.getX() + player.getOffsetX(), npc.getY() + player.getOffsetY());
-                    break;
-                default:
-                    break;
-            }
-        } else {
-            switch (npc.getDirection()) {
-                case UP:
-                    spriteSheet.paint(g, "player_up", npc.getX() + player.getOffsetX(), npc.getY() + player.getOffsetY());
-                    break;
-                case DOWN:
-                    spriteSheet.paint(g, "player_down", npc.getX() + player.getOffsetX(), npc.getY() + player.getOffsetY());
-                    break;
-                case LEFT:
-                    spriteSheet.paint(g, "player_left", npc.getX() + player.getOffsetX(), npc.getY() + player.getOffsetY());
-                    break;
-                case RIGHT:
-                    spriteSheet.paint(g, "player_right", npc.getX() + player.getOffsetX(), npc.getY() + player.getOffsetY());
-                    break;
-                default:
-                    break;
-            }
-        }
-
-        if (Game.DEBUG) {
-            //Movement boundaries
-            npc.drawBoundaries(g, player.getOffsetX(), player.getOffsetY());
-            //For debug; interaction boundaries
-            npc.drawInteractionBoundaries(g, player.getOffsetX(), player.getOffsetY());
-        }
-        //If we are within interaction distance
-        if (npc.isWithinInteractionDistance(player)) {
-            g.drawString("Press E to talk with \"" + npc.getName() + "\"", 40, WINDOW_HEIGHT - 32);
-        }
+        npc.renderNpc(g, player);
 
         //Player x and y
         int playerX = player.getRealX();
         int playerY = player.getRealY();
 
-        if (Game.DEBUG) {
-            g.setColor(Color.yellow);
-            g.fill3DRect(playerX, playerY, 16, 16, true);
-        }
-        spriteSheet.paint(g, "player_shadow", playerX - 8, playerY - 13);
-        //Player walking animation
-        switch (player.getDirection()) {
-            case DOWN:
-                if (player.isWalking()) {
-                    if (player.isSwimming()) {
-                        playerSwimmingDown.nextFrame(g, playerX, playerY);
-                    } else {
-                        playerWalkingDown.nextFrame(g, playerX, playerY);
-                    }
-                } else if (player.isSwimming()) {
-                    spriteSheet.paint(g, "player_swimming_down", playerX, playerY);
-                } else {
-                    spriteSheet.paint(g, "player_down", playerX, playerY);
-                }
-                break;
-            case UP:
-                if (player.isWalking()) {
-                    if (player.isSwimming()) {
-                        playerSwimmingUp.nextFrame(g, playerX, playerY);
-                    } else {
-                        playerWalkingUp.nextFrame(g, playerX, playerY);
-                    }
-                } else if (player.isSwimming()) {
-                    spriteSheet.paint(g, "player_swimming_up", playerX, playerY);
-                } else {
-                    spriteSheet.paint(g, "player_up", playerX, playerY);
-                }
-                break;
-            case LEFT:
-                if (player.isWalking()) {
-                    if (player.isSwimming()) {
-                        playerSwimmingLeft.nextFrame(g, playerX, playerY);
-                    } else {
-                        playerWalkingLeft.nextFrame(g, playerX, playerY);
-                    }
-                } else if (player.isSwimming()) {
-                    spriteSheet.paint(g, "player_swimming_left", playerX, playerY);
-                } else {
-                    spriteSheet.paint(g, "player_left", playerX, playerY);
-                }
-                break;
-            case RIGHT:
-                if (player.isWalking()) {
-                    if (player.isSwimming()) {
-                        playerSwimmingRight.nextFrame(g, playerX, playerY);
-                    } else {
-                        playerWalkingRight.nextFrame(g, playerX, playerY);
-                    }
-                } else if (player.isSwimming()) {
-                    spriteSheet.paint(g, "player_swimming_right", playerX, playerY);
-                } else {
-                    spriteSheet.paint(g, "player_right", playerX, playerY);
-                }
-                break;
-            default:
-                break;
-        }
-
-        //X & Y coords
-        g.setColor(Color.white);
-        if (DEBUG_PLAYER) {
-            g.drawString("x " + player.getX(), 1, 15);
-            g.drawString("y " + player.getY(), 1, 31);
-            g.drawString("tileCount " + map.getRenderedTileCount(), 1, 47);
-            g.drawString("tileX " + map.getCurrentTileX(), 1, 63);
-            g.drawString("tileY " + map.getCurrentTileY(), 1, 79);
-        }
+        player.render(g, map);
 
         //Player health system
         int playerFullHearts = (int) Math.floor(player.getHealth() / 20);

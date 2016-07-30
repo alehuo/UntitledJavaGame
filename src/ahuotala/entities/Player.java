@@ -30,8 +30,6 @@ public class Player implements Entity, Tickable {
     private Direction direction = Direction.DOWN;
 
     private boolean walking = false;
-    private boolean jumping = false;
-    private boolean canJump = false;
     private boolean swimming = false;
 
     private boolean canGoUp = true;
@@ -52,7 +50,7 @@ public class Player implements Entity, Tickable {
 
     private int playerTicks = 0;
 
-    private int jumpTicks = 40;
+    private Direction collisionDirection;
 
     public Player(String name) {
         this.name = name;
@@ -111,61 +109,31 @@ public class Player implements Entity, Tickable {
     }
 
     public void goUp() {
-        if (canGoUp) {
-            y -= step;
-            offsetY += step;
-        }
+        y -= step;
+        offsetY += step;
     }
 
     public void goDown() {
-        if (canGoDown) {
-            y += step;
-            offsetY -= step;
-        }
+        y += step;
+        offsetY -= step;
     }
 
     public void goLeft() {
-        if (canGoLeft) {
-            x -= step;
-            offsetX += step;
-        }
+        x -= step;
+        offsetX += step;
     }
 
     public void goRight() {
-        if (canGoRight) {
-            x += step;
-            offsetX -= step;
-        }
+        x += step;
+        offsetX -= step;
     }
 
-    public boolean canGoToDirection(Direction direction) {
-        switch (direction) {
-            case UP:
-                return canGoUp;
-            case DOWN:
-                return canGoDown;
-            case LEFT:
-                return canGoLeft;
-            case RIGHT:
-                return canGoRight;
-            default:
-                return false;
-        }
+    public void setCollisionDirection(Direction direction) {
+        collisionDirection = direction;
     }
 
-    public void setDirectionState(Direction direction, boolean state) {
-        switch (direction) {
-            case UP:
-                canGoUp = state;
-            case DOWN:
-                canGoDown = state;
-            case LEFT:
-                canGoLeft = state;
-            case RIGHT:
-                canGoRight = state;
-            default:
-                break;
-        }
+    public Direction getCollisionDirection() {
+        return collisionDirection;
     }
 
     @Override
@@ -216,10 +184,6 @@ public class Player implements Entity, Tickable {
         this.walking = walking;
     }
 
-    public void SetJumpingState(boolean jumping) {
-        this.jumping = jumping;
-    }
-
     public void setSwimmingState(boolean swimming) {
         this.swimming = swimming;
     }
@@ -232,68 +196,38 @@ public class Player implements Entity, Tickable {
         return swimming;
     }
 
-    public boolean canJump() {
-        return canJump;
-    }
-
     @Override
     public String toString() {
         return this.getX() + "," + this.getY();
     }
 
-    public void jump() {
-        jumping = true;
-    }
 
     @Override
     public void tick() {
         //Slow the player down if we are walking on a sand
         switch (currentTile) {
             case "sand":
-                canJump = true;
                 swimming = false;
                 step = 2;
                 break;
             case "water_ani":
                 swimming = true;
-                canJump = false;
-                jumping = false;
                 step = 1;
                 break;
             case "lava_ani":
                 swimming = true;
-                canJump = false;
-                jumping = false;
                 step = 1;
                 if (playerTicks % 40 == 0 && health > 0) {
                     this.damagePlayer(10);
+                    playerTicks = 0;
                 }
                 break;
             default:
-                canJump = true;
                 swimming = false;
                 step = 3;
                 break;
         }
-//        if (jumping && canJump) {
-//            if (jumpTicks == 40) {
-//                realY -= 40;
-//            }
-//            if (jumpTicks > 20) {
-//                realY += 2;
-//                jumpTicks--;
-//                z = 1;
-//            }
-//            if (jumpTicks == 20) {
-//                jumpTicks = 40;
-//                jumping = false;
-//                z = 0;
-//            }
-//        }
-//        if (playerTicks == 100) {
-//            playerTicks = 0;
-//        }
-//        playerTicks++;
+        playerTicks++;
     }
 
 }

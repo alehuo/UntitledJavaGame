@@ -242,7 +242,7 @@ public class InteractableNpc implements Entity, Interactable, Tickable {
     }
 
     public void renderNpc(Graphics g, Player player) {
-        spriteSheet.paint(g, "player_shadow", this.getX() + player.getOffsetX() - 8, this.getY() + player.getOffsetY() - 13);
+//        spriteSheet.paint(g, "player_shadow", this.getX() + player.getOffsetX() - 8, this.getY() + player.getOffsetY() - 13);
         if (this.isWalking()) {
             switch (this.getDirection()) {
                 case UP:

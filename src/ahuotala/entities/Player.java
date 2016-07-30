@@ -233,7 +233,7 @@ public class Player implements Entity, Tickable {
             g.fill3DRect(realX, realY, 16, 16, true);
         }
         //Player shadow
-        Game.spriteSheet.paint(g, "player_shadow", realX - 8, realY - 13);
+//        Game.spriteSheet.paint(g, "player_shadow", realX - 8, realY - 13);
 
         //Player walking animation
         switch (this.getDirection()) {

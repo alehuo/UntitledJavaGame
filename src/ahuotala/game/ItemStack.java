@@ -8,9 +8,8 @@ public class ItemStack {
 
     private final int maxSize = 16;
     private int amount;
-    private final int itemId;
-
-    public ItemStack(int itemId, int amount) {
+    private final ItemId itemId;
+    public ItemStack(ItemId itemId, int amount) {
         this.itemId = itemId;
         if (this.amount > maxSize) {
             this.amount = maxSize;
@@ -20,7 +19,8 @@ public class ItemStack {
 
     }
 
-    public ItemStack(int itemId) {
+
+    public ItemStack(ItemId itemId) {
         this.itemId = itemId;
         this.amount = 1;
     }
@@ -37,7 +37,7 @@ public class ItemStack {
         }
     }
 
-    public int getItemId() {
+    public ItemId getItemId() {
         return itemId;
     }
 
@@ -60,7 +60,7 @@ public class ItemStack {
 
     @Override
     public int hashCode() {
-        return itemId;
+        return (itemId + "").hashCode();
     }
 
     @Override

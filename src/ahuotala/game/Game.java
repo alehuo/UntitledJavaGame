@@ -153,12 +153,11 @@ public class Game extends Canvas implements Runnable, Tickable {
         frame.setVisible(true);
         frame.requestFocusInWindow();
 //        Inventory code testing
-//        inventory.addStack(new ItemStack(1,12));
-//        inventory.addStack(new ItemStack(1,18));
-//        inventory.addStack(new ItemStack(2,11));
-//        inventory.addStack(new ItemStack(1,2));
-//        inventory.addStack(new ItemStack(2,6));
-//        System.out.println(inventory);
+        inventory.addStack(new ItemStack(ItemId.POTION,12));
+//        inventory.addStack(new ItemStack(ItemId.POTION,18));
+//        inventory.addStack(new ItemStack(ItemId.FOOD,11));
+//        inventory.addStack(new ItemStack(ItemId.POTION,2));
+//        inventory.addStack(new ItemStack(ItemId.FOOD,6));
     }
 
     public void init() {

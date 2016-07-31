@@ -1,7 +1,6 @@
 package ahuotala.graphics.animation;
 
 import ahuotala.game.Game;
-import ahuotala.graphics.SpriteSheet;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.io.BufferedReader;

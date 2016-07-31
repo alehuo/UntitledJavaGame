@@ -6,9 +6,13 @@
 package ahuotala.graphics;
 
 import ahuotala.game.Game;
+import ahuotala.game.ItemId;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.HashMap;
 import javax.imageio.ImageIO;
 
@@ -27,6 +31,8 @@ public class SpriteSheet {
     private HashMap<String, BufferedImage> sprites;
 
     public SpriteSheet(String spriteSheetPath) {
+        //Alustetaan hajautustaulu
+        sprites = new HashMap<>();
         //Yritetään ladata kuva
         try {
             image = ImageIO.read(SpriteSheet.class.getResourceAsStream(spriteSheetPath));
@@ -36,19 +42,48 @@ public class SpriteSheet {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        try {
+            String line = "";
+            InputStream stream = getClass().getResourceAsStream("items.itm");
+            BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
+            if (stream != null) {
+                while ((line = reader.readLine()) != null) {
+                    if (line.contains("#") || line.isEmpty()) {
+                        continue;
+                    }
 
-        //Alustetaan hajautustaulu
-        sprites = new HashMap<>();
-
+                    //Parse variables
+                    String[] lineData = line.split(",", -1);
+                    String name = lineData[0];
+                    int x = Integer.parseInt(lineData[1]);
+                    int y = Integer.parseInt(lineData[2]);
+                    int width = Integer.parseInt(lineData[3]);
+                    int height = Integer.parseInt(lineData[4]);
+                    sprites.put(name, image.getSubimage(x, y, width, height));
+                }
+                stream.close();
+            }
+            reader.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
      * Returns the inventory image
+     *
      * @return BufferedImage Inventory image
      */
     public BufferedImage getInventory() {
         if (inventoryLoaded) {
             return inventoryImage;
+        }
+        return new BufferedImage(128, 128, BufferedImage.TYPE_INT_ARGB);
+    }
+
+    public BufferedImage getItemIcon(ItemId itemId) {
+        if (sprites.containsKey(itemId + "")) {
+            return sprites.get(itemId + "");
         }
         return new BufferedImage(128, 128, BufferedImage.TYPE_INT_ARGB);
     }

@@ -5,10 +5,11 @@
  */
 package ahuotala.game;
 
+import static ahuotala.game.Game.FONTSCALE;
+import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  *
@@ -102,9 +103,18 @@ public class Inventory {
         //X-offset of 80 afterwards.
         //1: (4,4) , 2: (84,4), 3: (164,4), ...
         //9: (4,84), 10: (84,84), 11: (164,84), ...
+        int slot = 0;
         for (int col = 0; col < cols; col++) {
             for (int row = 0; row < rows; row++) {
-                g.drawImage(Game.spriteSheet.getSprite("tmp_inv", 208, 16, 36), x + 4 + 80 * row, y + 4 + 80 * col, 72, 72, null);
+                //If the slot is not empty
+                if (inventory[slot] != null) {
+                    g.drawImage(Game.spriteSheet.getItemIcon(inventory[slot].getItemId()), x + 4 + 80 * row, y + 4 + 80 * col, 72, 72, null);
+                    g.setColor(Color.YELLOW);
+                    int fontOffsetX = 2;
+                    int fontOffsetY = 68;
+                    g.drawString(inventory[slot].getAmount() + "", x + 4 + 80 * row + fontOffsetX, y + 4 + 80 * col + fontOffsetY);
+                }
+                slot++;
             }
         }
 

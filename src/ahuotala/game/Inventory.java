@@ -27,7 +27,56 @@ public class Inventory {
     }
 
     public void addStack(ItemStack stack) {
+        for (int i = 0; i < inventory.length; i++) {
+            //We have the same item in the stack and the stack is not full
+            if (inventory[i] != null && inventory[i].equals(stack) && inventory[i].getAmount() < inventory[i].getMaxSize()) {
+                //Check for the quantity and add to it if possible
+                int inventoryAmount = inventory[i].getAmount();
+                int inventoryMaxAmount = inventory[i].getMaxSize();
+                //Amount if items in stack
+                int stackAmount = stack.getAmount();
+                //Available space in inventory (current stack)
+                int availableSpace = inventoryMaxAmount - inventoryAmount;
+                //Leftover; amount of items that don't fit
+                int leftoverSpace = stackAmount - availableSpace;
+                //If the leftoverSpace is greater than zero, we need to create a new itemStack.
+                if (leftoverSpace > 0) {
+                    System.out.println("Not all items fit the stack.");
+                    System.out.println(leftoverSpace);
+                    inventory[i].addToStack(availableSpace);
+                    int stackId = this.addNewStack(stack);
+                    if (stackId != -1) {
+                        inventory[stackId].takeFromStack(availableSpace);
+                    } else {
+                        System.out.println("Inventory full; can't add");
+                    }
+                    break;
+                } else {
+                    System.out.println("All items fit the stack.");
+                    //If the leftoverSpace is negative, all items fit the stack.
+                    inventory[i].addToStack(stackAmount);
+                    break;
+                }
+            } else if (inventory[i] == null) {
+                //If the stack is empty
+                inventory[i] = stack;
+                break;
+            }
+        }
+    }
 
+    public int addNewStack(ItemStack stack) {
+        for (int i = 0; i < inventory.length; i++) {
+            if (inventory[i] == null) {
+                inventory[i] = stack;
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    public int addToStack(int stackId, ItemStack stack) {
+        return -1;
     }
 
     public void removeStack(int stackId) {
@@ -59,5 +108,19 @@ public class Inventory {
             }
         }
 
+    }
+
+    @Override
+    public String toString() {
+        String tmp = "";
+        for (int i = 0; i < inventory.length; i++) {
+            if (inventory[i] != null) {
+                tmp += i + ": " + inventory[i].toString() + "\r\n";
+            } else {
+                tmp += i + ": empty\r\n";
+            }
+
+        }
+        return tmp;
     }
 }

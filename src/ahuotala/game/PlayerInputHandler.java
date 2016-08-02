@@ -66,8 +66,11 @@ public class PlayerInputHandler implements KeyListener, Tickable {
             case KeyEvent.VK_F2:
                 Game.DEBUG_PLAYER = !Game.DEBUG_PLAYER;
                 break;
-            case KeyEvent.VK_E:
+            case KeyEvent.VK_I:
                 Game.SHOW_INVENTORY = !Game.SHOW_INVENTORY;
+                if (Game.DEBUG) {
+                    System.out.println(Game.inventory);
+                }
                 break;
             default:
                 break;

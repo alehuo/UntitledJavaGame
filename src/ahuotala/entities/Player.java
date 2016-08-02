@@ -181,6 +181,10 @@ public class Player implements Entity, Tickable {
         }
     }
 
+    public int getMaxHealth() {
+        return maxHealth;
+    }
+
     public void setCurrentTile(String tile) {
         currentTile = tile;
     }
@@ -292,7 +296,7 @@ public class Player implements Entity, Tickable {
             default:
                 break;
         }
-        
+
         //Debug for player
         g.setColor(Color.white);
         if (DEBUG_PLAYER) {

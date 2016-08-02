@@ -93,8 +93,11 @@ public class Game extends Canvas implements Runnable, Tickable {
     private final PlayerInputHandler inputHandler = new PlayerInputHandler(player, map);
 
     //Inventory
-    private final Inventory inventory = new Inventory();
+    public static final Inventory inventory = new Inventory();
     public static boolean SHOW_INVENTORY = false;
+
+    //Mouse handler
+    private final MouseHandler mouseHandler = new MouseHandler(inventory);
 
     /**
      * Constructor
@@ -104,6 +107,12 @@ public class Game extends Canvas implements Runnable, Tickable {
         this.setMinimumSize(new Dimension(WINDOW_WIDTH, WINDOW_HEIGHT));
         this.setMaximumSize(new Dimension(WINDOW_WIDTH, WINDOW_HEIGHT));
         this.setPreferredSize(new Dimension(WINDOW_WIDTH, WINDOW_HEIGHT));
+
+        //Listeners
+        addKeyListener(inputHandler);
+        addMouseListener(mouseHandler);
+        addMouseMotionListener(mouseHandler);
+
         /**
          * Load sprites and animations here
          */
@@ -137,6 +146,8 @@ public class Game extends Canvas implements Runnable, Tickable {
 
         //Initialize our JFrame
         frame = new JFrame(NAME);
+
+        //Listeners
         frame.addKeyListener(inputHandler);
         frame.addWindowListener(new WindowAdapter() {
             @Override
@@ -144,6 +155,9 @@ public class Game extends Canvas implements Runnable, Tickable {
 //                save.saveState(player.getX(), player.getY(), player.getHealth());
             }
         });
+        frame.addMouseListener(mouseHandler);
+        frame.addMouseMotionListener(mouseHandler);
+
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setLayout(new BorderLayout());
         frame.add(this, BorderLayout.CENTER);
@@ -153,9 +167,9 @@ public class Game extends Canvas implements Runnable, Tickable {
         frame.setVisible(true);
         frame.requestFocusInWindow();
 //        Inventory code testing
-        inventory.addStack(new ItemStack(ItemId.POTION,12));
-//        inventory.addStack(new ItemStack(ItemId.POTION,18));
-//        inventory.addStack(new ItemStack(ItemId.FOOD,11));
+        inventory.addStack(new ItemStack(ItemId.POTION, 12));
+        inventory.addStack(new ItemStack(ItemId.POTION, 18));
+        inventory.addStack(new ItemStack(ItemId.FOOD, 11));
 //        inventory.addStack(new ItemStack(ItemId.POTION,2));
 //        inventory.addStack(new ItemStack(ItemId.FOOD,6));
     }
@@ -287,6 +301,7 @@ public class Game extends Canvas implements Runnable, Tickable {
         int playerHalfHearts = (int) Math.floor((player.getHealth() - playerFullHearts * 20) / 10);
         int heartX = CENTERX - 256;
         int heartY = 5;
+        g.drawString(player.getHealth() + " / " + player.getMaxHealth() + " LP", heartX - 78, heartY + 22);
         if (playerFullHearts == 0 && playerHalfHearts == 0 && player.getHealth() > 0) {
             playerLowHealth.nextFrame(g, heartX, heartY);
         } else if (player.getHealth() == 0) {

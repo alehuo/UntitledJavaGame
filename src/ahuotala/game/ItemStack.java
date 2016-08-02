@@ -9,6 +9,8 @@ public class ItemStack {
     private final int maxSize = 16;
     private int amount;
     private final ItemId itemId;
+    private String effect = "";
+
     public ItemStack(ItemId itemId, int amount) {
         this.itemId = itemId;
         if (this.amount > maxSize) {
@@ -16,9 +18,15 @@ public class ItemStack {
         } else {
             this.amount = amount;
         }
-
     }
 
+    public void setEffect(String effect) {
+        this.effect = effect;
+    }
+
+    public String getEffect() {
+        return effect;
+    }
 
     public ItemStack(ItemId itemId) {
         this.itemId = itemId;

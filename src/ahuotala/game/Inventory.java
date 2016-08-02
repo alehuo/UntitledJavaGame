@@ -87,6 +87,16 @@ public class Inventory {
         return inventory[-1];
     }
 
+    public int getStackCount() {
+        int itemCount = 0;
+        for (int i = 0; i < inventory.length; i++) {
+            if (inventory[i] != null) {
+                itemCount++;
+            }
+        }
+        return itemCount;
+    }
+
     public void renderInventory(Graphics g) {
         //Base image
         BufferedImage inventoryImage = Game.spriteSheet.getInventory();
@@ -95,7 +105,7 @@ public class Inventory {
         g.drawImage(inventoryImage, x, y, null);
         //Tooltip
         g.setColor(Color.white);
-        g.drawString("[F] Use     [R] Drop", x, y + inventoryImage.getHeight() + 16);
+        g.drawString("[F] Use     [R] Drop         " + this.getStackCount() + " / " + slots + " inventory slots in use", x + 8, y + inventoryImage.getHeight() + 16);
         //Item stacks
         //Each inventory slot is 72x72 pixels
         //First inv slot has an x-offset of 4 and an y-offset of 4.

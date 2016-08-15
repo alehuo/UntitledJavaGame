@@ -23,13 +23,14 @@ public class Player implements Entity, Tickable {
     private int x;
     private int y;
 
+    private double xp;
+
     public static int realX;
     public static int realY;
 
     //Base stepping speed
     private int step = 1;
 
-    private final String name;
     private int health = 120;
     public static int maxHealth = 120;
 
@@ -60,12 +61,14 @@ public class Player implements Entity, Tickable {
     private final Animation playerSwimmingLeft;
     private final Animation playerSwimmingRight;
 
-    public Player(String name) {
-        this.name = name;
+    public Player() {
+        //XP
+        xp = 0.0;
         //Center Y
         this.cY = Game.CENTERY;
         //Center X
         this.cX = Game.CENTERX;
+        //Real x&t
         realX = cX;
         realY = cY;
 //        radiusX = (int) Math.floor(0.2 * cX);
@@ -99,6 +102,14 @@ public class Player implements Entity, Tickable {
         return y;
     }
 
+    public double getXp() {
+        return xp;
+    }
+
+    public void setXp(double xp) {
+        this.xp = xp;
+    }
+
     public int getRealX() {
         return realX;
     }
@@ -116,7 +127,7 @@ public class Player implements Entity, Tickable {
     }
 
     public void damagePlayer(int health) {
-        if (health >= 0) {
+        if (this.health - health >= 0) {
             this.health -= health;
         }
     }

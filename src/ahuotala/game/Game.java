@@ -13,6 +13,14 @@ import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.image.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JFrame;
 
 /**
@@ -20,11 +28,11 @@ import javax.swing.JFrame;
  * @author Aleksi Huotala
  */
 public class Game extends Canvas implements Runnable, Tickable {
-
+    
     private static final long serialVersionUID = 1L;
-
+    
     public static boolean DEBUG = false;
-
+    
     public static boolean DEBUG_PLAYER = false;
 
     //Window width
@@ -48,6 +56,9 @@ public class Game extends Canvas implements Runnable, Tickable {
     //Game name
     public static final String NAME = "Untitled Game";
 
+    //Save file name
+    private final String saveFileName = "save.sav";
+
     //JFrame object
     private final JFrame frame;
 
@@ -59,7 +70,7 @@ public class Game extends Canvas implements Runnable, Tickable {
 
     //Tickrate; amount of game updates per second
     public double tickrate = 60D;
-
+    
     private final BufferedImage image;
 
     //Sprite sheet
@@ -69,7 +80,7 @@ public class Game extends Canvas implements Runnable, Tickable {
     private Font currentFont;
 
     //Player
-    private final Player player = new Player("Aleksi");
+    private final Player player = new Player();
 
     //NPC test
     private final InteractableNpc npc = new InteractableNpc("TestNPC");
@@ -95,6 +106,9 @@ public class Game extends Canvas implements Runnable, Tickable {
     //Inventory
     public static final Inventory inventory = new Inventory();
     public static boolean SHOW_INVENTORY = false;
+
+    //ItemRegistry
+    public static ItemRegistry itemRegistry = new ItemRegistry();
 
     //Mouse handler
     private final MouseHandler mouseHandler = new MouseHandler(inventory);
@@ -153,11 +167,32 @@ public class Game extends Canvas implements Runnable, Tickable {
             @Override
             public void windowClosing(WindowEvent e) {
 //                save.saveState(player.getX(), player.getY(), player.getHealth());
+                File saveFile = new File(saveFileName);
+                if (!saveFile.exists()) {
+                    try {
+                        saveFile.createNewFile();
+                    } catch (IOException ex) {
+                        ex.printStackTrace();
+                    }
+                }
+                try {
+                    //Save the game
+                    save.saveState(player.getX(), player.getY(), player.getHealth(), player.getXp(), player.getDirection());
+                    FileOutputStream fileOutput = new FileOutputStream(saveFileName);
+                    ObjectOutputStream out = new ObjectOutputStream(fileOutput);
+                    out.writeObject(save);
+                    System.out.println("Saving game");
+                    out.close();
+                    fileOutput.close();
+                    fileOutput.close();
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
             }
         });
         frame.addMouseListener(mouseHandler);
         frame.addMouseMotionListener(mouseHandler);
-
+        
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setLayout(new BorderLayout());
         frame.add(this, BorderLayout.CENTER);
@@ -166,27 +201,43 @@ public class Game extends Canvas implements Runnable, Tickable {
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
         frame.requestFocusInWindow();
-//        Inventory code testing
-        inventory.addStack(new ItemStack(ItemId.POTION, 12));
-        inventory.addStack(new ItemStack(ItemId.POTION, 18));
-        inventory.addStack(new ItemStack(ItemId.FOOD, 11));
-//        inventory.addStack(new ItemStack(ItemId.POTION,2));
-//        inventory.addStack(new ItemStack(ItemId.FOOD,6));
+        //Register items to the game
+        itemRegistry.registerItem(ItemId.POTIONOFHEALING_20LP).setName("Potion of healing").setEffect(Effect.HEAL_20LP, "Heals the player for 20 lifepoints").setInteractable(true);
+        itemRegistry.registerItem(ItemId.POTIONOFHEALING_60LP).setName("Grand potion of healing").setEffect(Effect.HEAL_60LP, "Heals the player for 60 lifepoints").setInteractable(true);
+        itemRegistry.registerItem(ItemId.FOOD).setName("Raw beef").setEffect(Effect.HEAL_40LP, "Heals the player for 40 lifepoints").setInteractable(false);
+        inventory.addStack(new ItemStack(itemRegistry.getItem(ItemId.POTIONOFHEALING_20LP), 12));
+        inventory.addStack(new ItemStack(itemRegistry.getItem(ItemId.POTIONOFHEALING_60LP), 12));
+        inventory.addStack(new ItemStack(itemRegistry.getItem(ItemId.FOOD), 1));
     }
-
+    
     public void init() {
+
         /**
-         * TEMPORARY
+         * Load from save
          */
-//        //Savegame object
-//        save = new SaveGame("save.sav");
-//        //Set player x,y and health
-//        player.setX(save.getX());
-//        player.setY(save.getY());
-//        player.setHealth(save.getHealth());
-        player.setX(100);
-        player.setY(180);
-        player.setHealth(120);
+        try {
+            File saveFile = new File("save.sav");
+            if (saveFile.exists()) {
+                FileInputStream fileInput = new FileInputStream("save.sav");
+                ObjectInputStream in = new ObjectInputStream(fileInput);
+                save = (SaveGame) in.readObject();
+                System.out.println(save.getX());
+                in.close();
+                fileInput.close();
+            } else {
+                save = new SaveGame();
+                save.saveState(180, 100, Player.maxHealth, 0.0, Direction.DOWN);
+            }
+            
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        //Set player x,y and health
+        player.setX(save.getX());
+        player.setY(save.getY());
+        player.setHealth(save.getHealth());
+        player.setXp(save.getXp());
+        player.setDirection(save.getDirection());
         //Set test NPC x and y
         npc.setX(244);
         npc.setY(270);
@@ -195,29 +246,29 @@ public class Game extends Canvas implements Runnable, Tickable {
         //Register the new NPC to be tickable
         npcTicker.register(npc);
     }
-
+    
     private synchronized void start() {
         running = true;
         new Thread(this).start();
     }
-
+    
     private synchronized void stop() {
         running = false;
     }
-
+    
     @Override
     public void run() {
         long lastTime = System.nanoTime();
         double nsPerTick = 1000000000D / tickrate;
-
+        
         int frames = 0;
         int ticks = 0;
-
+        
         long lastTimer = System.currentTimeMillis();
         double delta = 0;
-
+        
         init();
-
+        
         while (running) {
             long now = System.nanoTime();
             delta += (now - lastTime) / nsPerTick;
@@ -238,13 +289,13 @@ public class Game extends Canvas implements Runnable, Tickable {
                     ex.printStackTrace();
                 }
             }
-
+            
             if (shouldRender) {
                 //Render a new frame
                 frames++;
                 render();
             }
-
+            
             if (System.currentTimeMillis() - lastTimer >= 1000) {
                 lastTimer += 1000;
                 frame.setTitle(NAME + " (" + frames + " frames, " + ticks + " ticks)");
@@ -253,7 +304,7 @@ public class Game extends Canvas implements Runnable, Tickable {
             }
         }
     }
-
+    
     @Override
     public void tick() {
         tickCount++;
@@ -261,8 +312,9 @@ public class Game extends Canvas implements Runnable, Tickable {
         inputHandler.tick();
         npcTicker.tick();
         player.tick();
+        System.out.println(player.getHealth());
     }
-
+    
     public void render() {
         BufferStrategy bs = getBufferStrategy();
         if (bs == null) {
@@ -293,7 +345,7 @@ public class Game extends Canvas implements Runnable, Tickable {
         //Player x and y
         int playerX = player.getRealX();
         int playerY = player.getRealY();
-
+        
         player.render(g, map);
 
         //Player health system
@@ -302,6 +354,7 @@ public class Game extends Canvas implements Runnable, Tickable {
         int heartX = CENTERX - 256;
         int heartY = 5;
         g.drawString(player.getHealth() + " / " + player.getMaxHealth() + " LP", heartX - 78, heartY + 22);
+        g.drawString(player.getXp() + " xp", heartX - 78, heartY + 44);
         if (playerFullHearts == 0 && playerHalfHearts == 0 && player.getHealth() > 0) {
             playerLowHealth.nextFrame(g, heartX, heartY);
         } else if (player.getHealth() == 0) {
@@ -318,8 +371,9 @@ public class Game extends Canvas implements Runnable, Tickable {
                 spriteSheet.paint(g, "half_a_heart", heartX, heartY);
             }
         }
+        
         map.detectCollision(player);
-
+        
         if (SHOW_INVENTORY) {
             inventory.renderInventory(g);
         }
@@ -329,7 +383,7 @@ public class Game extends Canvas implements Runnable, Tickable {
         //Show frame
         bs.show();
     }
-
+    
     public static void main(String[] args) {
         //Start the game
         new Game().start();

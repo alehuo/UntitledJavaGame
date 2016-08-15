@@ -60,6 +60,16 @@ public class PlayerInputHandler implements KeyListener, Tickable {
                     player.damagePlayer(5);
                 }
                 break;
+            case KeyEvent.VK_U:
+                if (Game.DEBUG_PLAYER) {
+                    player.setXp(player.getXp() + 10.5);
+                }
+                break;
+            case KeyEvent.VK_Y:
+                if (Game.DEBUG_PLAYER && player.getXp() >= 10.5) {
+                    player.setXp(player.getXp() - 10.5);
+                }
+                break;
             case KeyEvent.VK_F1:
                 Game.DEBUG = !Game.DEBUG;
                 break;

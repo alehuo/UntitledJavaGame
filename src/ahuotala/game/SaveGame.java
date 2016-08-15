@@ -5,59 +5,46 @@
  */
 package ahuotala.game;
 
+import ahuotala.entities.Direction;
 import ahuotala.entities.Player;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.Properties;
 
 /**
  *
  * @author Aleksi
  */
-public class SaveGame {
+public class SaveGame implements java.io.Serializable {
 
-    private Properties prop;
-    private InputStream input = null;
-
-    public SaveGame(String file) {
-        prop = new Properties();
-        try {
-            input = new FileInputStream("src/ahuotala/game/saves/" + file);
-            prop.load(input);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-    }
+    private int x;
+    private int y;
+    private int health;
+    private double xp;
+    private Direction direction;
 
     public int getX() {
-        return Integer.parseInt(prop.getProperty("x", "0"));
+        return x;
     }
 
     public int getY() {
-        return Integer.parseInt(prop.getProperty("y", "0"));
+        return y;
     }
 
     public int getHealth() {
-        return Integer.parseInt(prop.getProperty("health", Player.maxHealth + ""));
+        return health;
     }
 
-    public void saveState(int x, int y, int health) {
-        try {
-            prop.setProperty("x", x + "");
-            prop.setProperty("y", y + "");
-            prop.setProperty("health", health + "");
+    public double getXp() {
+        return xp;
+    }
 
-            File file = new File("src/ahuotala/game/saves/save.sav");
-            OutputStream out = new FileOutputStream(file);
-            prop.store(out, "Save file");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    public Direction getDirection() {
+        return direction;
+    }
 
+    public void saveState(int x, int y, int health, double xp, Direction direction) {
+        this.x = x;
+        this.y = y;
+        this.health = health;
+        this.xp = xp;
+        this.direction = direction;
     }
 }

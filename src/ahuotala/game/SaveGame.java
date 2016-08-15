@@ -1,16 +1,10 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package ahuotala.game;
 
 import ahuotala.entities.Direction;
-import ahuotala.entities.Player;
 
 /**
  *
- * @author Aleksi
+ * @author Aleksi Huotala
  */
 public class SaveGame implements java.io.Serializable {
 
@@ -19,6 +13,7 @@ public class SaveGame implements java.io.Serializable {
     private int health;
     private double xp;
     private Direction direction;
+    private ItemStack[] inventory;
 
     public int getX() {
         return x;
@@ -36,15 +31,20 @@ public class SaveGame implements java.io.Serializable {
         return xp;
     }
 
+    public ItemStack[] getInventory() {
+        return inventory;
+    }
+
     public Direction getDirection() {
         return direction;
     }
 
-    public void saveState(int x, int y, int health, double xp, Direction direction) {
+    public void saveState(int x, int y, int health, double xp, Direction direction, ItemStack[] inventory) {
         this.x = x;
         this.y = y;
         this.health = health;
         this.xp = xp;
         this.direction = direction;
+        this.inventory = inventory;
     }
 }

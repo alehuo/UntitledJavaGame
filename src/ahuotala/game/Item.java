@@ -4,7 +4,7 @@ package ahuotala.game;
  *
  * @author Aleksi Huotala
  */
-public class Item {
+public class Item implements java.io.Serializable {
 
     private String name;
     private Effect effect;

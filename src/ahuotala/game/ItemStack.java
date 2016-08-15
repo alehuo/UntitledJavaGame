@@ -4,7 +4,7 @@ package ahuotala.game;
  *
  * @author Aleksi Huotala
  */
-public class ItemStack {
+public class ItemStack implements java.io.Serializable {
 
     private final int maxSize = 16;
     private int amount;
@@ -62,8 +62,8 @@ public class ItemStack {
     public ItemId getItemId() {
         return item.getItemId();
     }
-    
-    public boolean isInteractable(){
+
+    public boolean isInteractable() {
         return item.isInteractable();
     }
 

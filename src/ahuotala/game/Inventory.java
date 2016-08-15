@@ -15,17 +15,25 @@ import java.awt.image.BufferedImage;
  */
 public class Inventory {
 
-    private final int cols = 6;
-    private final int rows = 8;
+    public static final int cols = 6;
+    public static final int rows = 8;
     private final int slots = cols * rows;
-    private final ItemStack[] inventory;
+    private ItemStack[] inventory;
     private int movingSlot = -1;
     private ItemStack tmpStack;
     private ItemStack tmpStack2;
 
     public Inventory() {
-        //Initialize the inventory
+        //Initialize the inventory, an array of ItemStacks
         inventory = new ItemStack[cols * rows];
+    }
+
+    public ItemStack[] getInventory() {
+        return inventory;
+    }
+
+    public void setInventory(ItemStack[] inventory) {
+        this.inventory = inventory;
     }
 
     public void addStack(ItemStack stack) {

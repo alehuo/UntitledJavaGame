@@ -8,29 +8,43 @@ public class ItemStack {
 
     private final int maxSize = 16;
     private int amount;
-    private final ItemId itemId;
-    private String effect = "";
+    private final Item item;
+    private final String effect = "";
+    private String label = "";
 
-    public ItemStack(ItemId itemId, int amount) {
-        this.itemId = itemId;
+    public ItemStack(Item item, int amount) {
+        this.item = item;
         if (this.amount > maxSize) {
+            System.out.println("ItemStack too large; Defaulting to max stack size");
             this.amount = maxSize;
         } else {
             this.amount = amount;
         }
     }
 
-    public void setEffect(String effect) {
-        this.effect = effect;
-    }
-
-    public String getEffect() {
-        return effect;
-    }
-
-    public ItemStack(ItemId itemId) {
-        this.itemId = itemId;
+    public ItemStack(Item item) {
+        this.item = item;
         this.amount = 1;
+    }
+
+    public void setEffect(Effect effect, String desc) {
+        item.setEffect(effect, desc);
+    }
+
+    public String getEffectDesc() {
+        return item.getEffectDescription();
+    }
+
+    public Effect getEffect() {
+        return item.getEffect();
+    }
+
+    public void setLabel(String label) {
+        this.label = label;
+    }
+
+    public String getLabel() {
+        return item.getName();
     }
 
     public void takeFromStack(int amount) {
@@ -46,7 +60,11 @@ public class ItemStack {
     }
 
     public ItemId getItemId() {
-        return itemId;
+        return item.getItemId();
+    }
+    
+    public boolean isInteractable(){
+        return item.isInteractable();
     }
 
     public int getAmount() {
@@ -68,12 +86,12 @@ public class ItemStack {
 
     @Override
     public int hashCode() {
-        return (itemId + "").hashCode();
+        return (item.getItemId() + "").hashCode();
     }
 
     @Override
     public String toString() {
-        return "itemId: " + itemId + ", amount: " + amount + "/" + maxSize; //To change body of generated methods, choose Tools | Templates.
+        return "itemId: " + item.getItemId() + ", amount: " + amount + "/" + maxSize; //To change body of generated methods, choose Tools | Templates.
     }
 
 }

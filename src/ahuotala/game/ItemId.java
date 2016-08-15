@@ -5,5 +5,5 @@ package ahuotala.game;
  * @author Aleksi Huotala
  */
 public enum ItemId {
-    POTION, FOOD;
+    POTIONOFHEALING_20LP, POTIONOFHEALING_60LP, FOOD, NONE;
 }

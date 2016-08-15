@@ -168,8 +168,30 @@ public class Inventory {
                     //Item data
                     if (mouseX >= x + 4 + 80 * row && mouseX < x + 4 + 80 * row + 72 && mouseY >= y + 4 + 80 * col && mouseY < y + 4 + 80 * col + 72 && this.getMovingSlot() == -1) {
                         g.setColor(Color.YELLOW);
-                        g.drawString("Item: " + inventory[slot].getItemId(), mouseX - 32 + 4, mouseY + 64);
-                        g.drawString("Amount: " + inventory[slot].getAmount(), mouseX - 32 + 4, mouseY + 78);
+                        if (!inventory[slot].getLabel().isEmpty()) {
+                            String tmp = "";
+                            if (inventory[slot].getAmount() > 1) {
+                                tmp = " (" + inventory[slot].getAmount() + ")";
+                            }
+                            g.drawString(inventory[slot].getLabel() + tmp, mouseX - 32 + 4, mouseY + 64);
+                        } else {
+                            String tmp = "";
+                            if (inventory[slot].getAmount() > 1) {
+                                tmp = " (" + inventory[slot].getAmount() + ")";
+                            }
+                            g.drawString(inventory[slot].getItemId() + tmp, mouseX - 32 + 4, mouseY + 64);
+                        }
+                        if (inventory[slot].getEffect() != Effect.NONE) {
+                            g.drawString(inventory[slot].getEffectDesc(), mouseX - 32 + 4, mouseY + 78);
+                        }
+                        if (Game.DEBUG) {
+                            if (inventory[slot] != null && inventory[slot].isInteractable()) {
+                                System.out.println("Slot " + slot + " is interactable");
+                            } else {
+                                System.out.println("Slot " + slot + " is not interactable");
+                            }
+                        }
+
                     }
                 } else if (MouseHandler.mouseClicked && mouseX >= x + 4 + 80 * row && mouseX < x + 4 + 80 * row + 72 && mouseY >= y + 4 + 80 * col && mouseY < y + 4 + 80 * col + 72) {
                     //If the slot is empty & we are moving an item

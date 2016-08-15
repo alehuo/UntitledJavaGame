@@ -159,7 +159,6 @@ public class Game extends Canvas implements Runnable, Tickable {
         frame.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
-//                save.saveState(player.getX(), player.getY(), player.getHealth());
                 File saveFile = new File(saveFileName);
                 if (!saveFile.exists()) {
                     try {

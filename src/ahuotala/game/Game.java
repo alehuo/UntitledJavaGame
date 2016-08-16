@@ -160,6 +160,7 @@ public class Game extends Canvas implements Runnable, Tickable {
             @Override
             public void windowClosing(WindowEvent e) {
                 File saveFile = new File(saveFileName);
+                //If the file doesn't exist, create it
                 if (!saveFile.exists()) {
                     try {
                         saveFile.createNewFile();
@@ -174,7 +175,6 @@ public class Game extends Canvas implements Runnable, Tickable {
                     ObjectOutputStream out = new ObjectOutputStream(fileOutput);
                     out.writeObject(save);
                     out.close();
-                    fileOutput.close();
                     fileOutput.close();
                 } catch (IOException ex) {
                     ex.printStackTrace();
@@ -200,9 +200,9 @@ public class Game extends Canvas implements Runnable, Tickable {
          * Load from save
          */
         try {
-            File saveFile = new File("save.sav");
+            File saveFile = new File(saveFileName);
             if (saveFile.exists()) {
-                FileInputStream fileInput = new FileInputStream("save.sav");
+                FileInputStream fileInput = new FileInputStream(saveFileName);
                 ObjectInputStream in = new ObjectInputStream(fileInput);
                 save = (SaveGame) in.readObject();
                 in.close();
@@ -210,18 +210,17 @@ public class Game extends Canvas implements Runnable, Tickable {
             } else {
                 //If the save file is not found, start a new game
                 save = new SaveGame();
-                save.saveState(180, 100, Player.maxHealth, 0.0, Direction.DOWN, new ItemStack[Inventory.cols * Inventory.rows]);
             }
 
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
-        //Set inventory
+        //Set player inventory
         inventory.setInventory(save.getInventory());
 //        inventory.addStack(new ItemStack(itemRegistry.getItem(ItemId.POTIONOFHEALING_20LP), 12));
 //        inventory.addStack(new ItemStack(itemRegistry.getItem(ItemId.POTIONOFHEALING_60LP), 12));
 //        inventory.addStack(new ItemStack(itemRegistry.getItem(ItemId.FOOD), 1));
-        //Set player x,y and health
+        //Set player x, y, health, xp and direction
         player.setX(save.getX());
         player.setY(save.getY());
         player.setHealth(save.getHealth());

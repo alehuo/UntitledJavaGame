@@ -5,7 +5,6 @@
  */
 package ahuotala.graphics.animation;
 
-import ahuotala.graphics.animation.Animation;
 import ahuotala.game.Tickable;
 import java.util.ArrayList;
 

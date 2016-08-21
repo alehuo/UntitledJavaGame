@@ -14,11 +14,11 @@ public class Tile {
 
     private final int x;
     private final int y;
-    private final String tileTypeBottom;
-    private final String tileTypeMask;
-    private final String tileTypeMask2;
-    private final String tileTypeFringe1;
-    private final String tileTypeFringe2;
+    private String tileTypeBottom;
+    private String tileTypeMask;
+    private String tileTypeMask2;
+    private String tileTypeFringe1;
+    private String tileTypeFringe2;
 
     public Tile(int x, int y, String tileTypeBottom, String tileTypeMask, String tileTypeMask2, String tileTypeFringe1, String tileTypeFringe2) {
         this.x = x;
@@ -56,6 +56,32 @@ public class Tile {
 
     public String getTypeFringe2() {
         return tileTypeFringe1;
+    }
+
+    public void setTypeBottom(String type) {
+        tileTypeBottom = type;
+    }
+
+    public void setTypeMask(String type) {
+        tileTypeMask = type;
+    }
+
+    public void setTypeMask2(String type) {
+        tileTypeMask2 = type;
+    }
+
+    public void setTypeFringe1(String type) {
+        tileTypeFringe1 = type;
+    }
+
+    public void setTypeFringe2(String type) {
+        tileTypeFringe2 = type;
+    }
+
+    @Override
+    public String toString() {
+        //x,y,tile_type_bottom,tile_type_mask_1,tile_type_mask2,tile_type_fringe_1,tile_type_fringe_2
+        return x + "," + y + "," + tileTypeBottom + "," + tileTypeMask + "," + tileTypeMask2 + "," + tileTypeFringe1 + "," + tileTypeFringe2;
     }
 
 }

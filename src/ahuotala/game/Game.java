@@ -332,10 +332,6 @@ public class Game extends Canvas implements Runnable, Tickable {
         //Draw npc
         npc.renderNpc(g, player);
 
-        //Player x and y
-        int playerX = player.getRealX();
-        int playerY = player.getRealY();
-
         player.render(g, map);
 
         //Player health system

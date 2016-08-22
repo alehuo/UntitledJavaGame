@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
- * Map rendered class Used to render the game's map
+ * Map renderer class Used to render the game's map
  *
  * @author Aleksi Huotala
  */
@@ -266,6 +266,9 @@ public class Map {
                  * #########################################################################
                  */
                 if (animations.containsKey(tileType)) {
+                    if (y == maxY && tileType.equals("water_ani")) {
+//                        tileType = "water_ani_bottom";
+                    }
                     //Draw next frame
                     animations.get(tileType).nextFrame(g, x + offsetX, y + offsetY);
                     if (Game.DEBUG) {

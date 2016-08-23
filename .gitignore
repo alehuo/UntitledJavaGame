@@ -2,3 +2,5 @@
 /src/ahuotala/game/saves/save.sav
 /src/ahuotala/map/map2.map
 /save.sav
+/src/ahuotala/net/Client.java
+/src/ahuotala/net/Server.java

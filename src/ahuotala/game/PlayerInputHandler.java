@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package ahuotala.game;
 
 import ahuotala.entities.Direction;
@@ -10,6 +5,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import ahuotala.entities.Player;
 import ahuotala.map.Map;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -19,11 +15,14 @@ public class PlayerInputHandler implements KeyListener, Tickable {
 
     private final Player player;
     private final Map map;
+    private final Game game;
+    private String prompt = "";
     public boolean up = false, down = false, left = false, right = false;
 
-    public PlayerInputHandler(Player player, Map map) {
+    public PlayerInputHandler(Player player, Map map, Game game) {
         this.player = player;
         this.map = map;
+        this.game = game;
     }
 
     @Override
@@ -33,58 +32,62 @@ public class PlayerInputHandler implements KeyListener, Tickable {
 
     @Override
     public void keyPressed(KeyEvent e) {
-        switch (e.getKeyCode()) {
-            case KeyEvent.VK_UP:
-            case KeyEvent.VK_W:
-                up = true;
-                break;
-            case KeyEvent.VK_DOWN:
-            case KeyEvent.VK_S:
-                down = true;
-                break;
-            case KeyEvent.VK_LEFT:
-            case KeyEvent.VK_A:
-                left = true;
-                break;
-            case KeyEvent.VK_RIGHT:
-            case KeyEvent.VK_D:
-                right = true;
-                break;
-            case KeyEvent.VK_J:
-                if (Game.DEBUG_PLAYER) {
-                    player.increaseHealth(5);
-                }
-                break;
-            case KeyEvent.VK_H:
-                if (Game.DEBUG_PLAYER) {
-                    player.damagePlayer(5);
-                }
-                break;
-            case KeyEvent.VK_U:
-                if (Game.DEBUG_PLAYER) {
-                    player.setXp(player.getXp() + 10.5);
-                }
-                break;
-            case KeyEvent.VK_Y:
-                if (Game.DEBUG_PLAYER && player.getXp() >= 10.5) {
-                    player.setXp(player.getXp() - 10.5);
-                }
-                break;
-            case KeyEvent.VK_F1:
-                Game.DEBUG = !Game.DEBUG;
-                break;
-            case KeyEvent.VK_F2:
-                Game.DEBUG_PLAYER = !Game.DEBUG_PLAYER;
-                break;
-            case KeyEvent.VK_I:
-                Game.SHOW_INVENTORY = !Game.SHOW_INVENTORY;
-                if (Game.DEBUG) {
-                    System.out.println(Game.inventory);
-                }
-                break;
-            default:
-                break;
-        }
+            switch (e.getKeyCode()) {
+                case KeyEvent.VK_UP:
+                case KeyEvent.VK_W:
+                    up = true;
+                    break;
+                case KeyEvent.VK_DOWN:
+                case KeyEvent.VK_S:
+                    down = true;
+                    break;
+                case KeyEvent.VK_LEFT:
+                case KeyEvent.VK_A:
+                    left = true;
+                    break;
+                case KeyEvent.VK_RIGHT:
+                case KeyEvent.VK_D:
+                    right = true;
+                    break;
+                case KeyEvent.VK_J:
+                    if (Game.DEBUG_PLAYER) {
+                        player.increaseHealth(5);
+                    }
+                    break;
+                case KeyEvent.VK_H:
+                    if (Game.DEBUG_PLAYER) {
+                        player.damagePlayer(5);
+                    }
+                    break;
+                case KeyEvent.VK_U:
+                    if (Game.DEBUG_PLAYER) {
+                        player.setXp(player.getXp() + 10.5);
+                    }
+                    break;
+                case KeyEvent.VK_Y:
+                    if (Game.DEBUG_PLAYER && player.getXp() >= 10.5) {
+                        player.setXp(player.getXp() - 10.5);
+                    }
+                    break;
+                case KeyEvent.VK_F1:
+                    Game.DEBUG = !Game.DEBUG;
+                    break;
+                case KeyEvent.VK_F2:
+                    Game.DEBUG_PLAYER = !Game.DEBUG_PLAYER;
+                    break;
+                case KeyEvent.VK_I:
+                        Game.SHOW_INVENTORY = !Game.SHOW_INVENTORY;
+                    if (Game.DEBUG) {
+                        System.out.println(Game.inventory);
+                    }
+                    break;
+                case KeyEvent.VK_ESCAPE:
+                    Game.isInMenu = true;
+                    Game.menuState = MenuState.MAINMENU;
+                    break;
+                default:
+                    break;
+            }
     }
 
     @Override

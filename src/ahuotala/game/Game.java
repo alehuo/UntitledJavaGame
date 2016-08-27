@@ -4,6 +4,7 @@ import ahuotala.entities.*;
 import ahuotala.graphics.animation.*;
 import ahuotala.graphics.*;
 import ahuotala.map.*;
+import ahuotala.net.Client;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -94,7 +95,7 @@ public class Game extends Canvas implements Runnable, Tickable {
     Map map = new Map("map3");
 
     //Input handler
-    private final PlayerInputHandler inputHandler = new PlayerInputHandler(player, map);
+    private final PlayerInputHandler inputHandler = new PlayerInputHandler(player, map, this);
 
     //Inventory
     public static final Inventory inventory = new Inventory();
@@ -105,6 +106,15 @@ public class Game extends Canvas implements Runnable, Tickable {
 
     //Mouse handler
     private final MouseHandler mouseHandler = new MouseHandler(inventory);
+
+    //Client
+    private Client client;
+    public static boolean isConnectedToServer = false;
+
+    //Menu
+    private Menu menu;
+    public static MenuState menuState = MenuState.MAINMENU;
+    public static boolean isInMenu = true;
 
     /**
      * Constructor
@@ -159,6 +169,10 @@ public class Game extends Canvas implements Runnable, Tickable {
         frame.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
+                if (isConnectedToServer) {
+                    client.send("CLIENT_DISCONNECTED");
+                    client.disconnect();
+                }
                 File saveFile = new File(saveFileName);
                 //If the file doesn't exist, create it
                 if (!saveFile.exists()) {
@@ -192,40 +206,12 @@ public class Game extends Canvas implements Runnable, Tickable {
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
         frame.requestFocusInWindow();
-        //Register items to the game
-        itemRegistry.registerItem(ItemId.POTIONOFHEALING_20LP).setName("Potion of healing").setEffect(Effect.HEAL_20LP, "Heals the player for 20 lifepoints").setInteractable(true);
-        itemRegistry.registerItem(ItemId.POTIONOFHEALING_60LP).setName("Grand potion of healing").setEffect(Effect.HEAL_60LP, "Heals the player for 60 lifepoints").setInteractable(true);
-        itemRegistry.registerItem(ItemId.FOOD).setName("Raw beef").setEffect(Effect.HEAL_40LP, "Heals the player for 40 lifepoints").setInteractable(false);
-        /**
-         * Load from save
-         */
-        try {
-            File saveFile = new File(saveFileName);
-            if (saveFile.exists()) {
-                FileInputStream fileInput = new FileInputStream(saveFileName);
-                ObjectInputStream in = new ObjectInputStream(fileInput);
-                save = (SaveGame) in.readObject();
-                in.close();
-                fileInput.close();
-            } else {
-                //If the save file is not found, start a new game
-                save = new SaveGame();
-            }
+    }
 
-        } catch (IOException | ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-        //Set player inventory
-        inventory.setInventory(save.getInventory());
-//        inventory.addStack(new ItemStack(itemRegistry.getItem(ItemId.POTIONOFHEALING_20LP), 12));
-//        inventory.addStack(new ItemStack(itemRegistry.getItem(ItemId.POTIONOFHEALING_60LP), 12));
-//        inventory.addStack(new ItemStack(itemRegistry.getItem(ItemId.FOOD), 1));
-        //Set player x, y, health, xp and direction
-        player.setX(save.getX());
-        player.setY(save.getY());
-        player.setHealth(save.getHealth());
-        player.setXp(save.getXp());
-        player.setDirection(save.getDirection());
+    public void connectToServer(String host, int port) {
+        client = new Client(player, host, port);
+        client.start();
+        client.send("CLIENT_CONNECTED");
     }
 
     public void init() {
@@ -236,6 +222,52 @@ public class Game extends Canvas implements Runnable, Tickable {
         npc.setInteractionRadiusY(16);
         //Register the new NPC to be tickable
         npcTicker.register(npc);
+        //Register items to the game
+        itemRegistry.registerItem(ItemId.POTIONOFHEALING_20LP).setName("Potion of healing").setEffect(Effect.HEAL_20LP, "Heals the player for 20 lifepoints").setInteractable(true);
+        itemRegistry.registerItem(ItemId.POTIONOFHEALING_60LP).setName("Grand potion of healing").setEffect(Effect.HEAL_60LP, "Heals the player for 60 lifepoints").setInteractable(true);
+        itemRegistry.registerItem(ItemId.FOOD).setName("Raw beef").setEffect(Effect.HEAL_40LP, "Heals the player for 40 lifepoints").setInteractable(false);
+        menu = new Menu(this);
+    }
+
+    public JFrame getFrame() {
+        return frame;
+    }
+
+    public void loadSaveFile(File file) {
+        /**
+         * Load from save
+         */
+        try {
+            File saveFile = file;
+            FileInputStream fileInput = new FileInputStream(saveFileName);
+            ObjectInputStream in = new ObjectInputStream(fileInput);
+            save = (SaveGame) in.readObject();
+            in.close();
+            fileInput.close();
+
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        //Set player x, y, health, xp and direction
+        player.setX(save.getX());
+        player.setY(save.getY());
+        player.setHealth(save.getHealth());
+        player.setXp(save.getXp());
+        player.setDirection(save.getDirection());
+        //Set player inventory
+        inventory.setInventory(save.getInventory());
+    }
+
+    public void newGame() {
+        save = new SaveGame();
+        //Set player x, y, health, xp and direction
+        player.setX(save.getX());
+        player.setY(save.getY());
+        player.setHealth(save.getHealth());
+        player.setXp(save.getXp());
+        player.setDirection(save.getDirection());
+        //Set player inventory
+        inventory.setInventory(save.getInventory());
     }
 
     private synchronized void start() {
@@ -258,6 +290,7 @@ public class Game extends Canvas implements Runnable, Tickable {
         long lastTimer = System.currentTimeMillis();
         double delta = 0;
 
+        //Init
         init();
 
         while (running) {
@@ -303,6 +336,9 @@ public class Game extends Canvas implements Runnable, Tickable {
         inputHandler.tick();
         npcTicker.tick();
         player.tick();
+        if (isConnectedToServer) {
+            client.tick();
+        }
     }
 
     public void render() {
@@ -323,45 +359,51 @@ public class Game extends Canvas implements Runnable, Tickable {
         //Black background
         g.drawImage(image, 0, 0, getWidth(), getHeight(), null);
 
-        //Map
-        map.renderMap(g, player);
-        //Other objects
-        map.renderObjects(g, player);
-
-        //NPCs here
-        //Draw npc
-        npc.renderNpc(g, player);
-
-        player.render(g, map);
-
-        //Player health system
-        int playerFullHearts = (int) Math.floor(player.getHealth() / 20);
-        int playerHalfHearts = (int) Math.floor((player.getHealth() - playerFullHearts * 20) / 10);
-        int heartX = CENTERX - 256;
-        int heartY = 5;
-        g.drawString(player.getHealth() + " / " + player.getMaxHealth() + " LP", heartX - 78, heartY + 22);
-        g.drawString(player.getXp() + " xp", heartX - 78, heartY + 44);
-        if (playerFullHearts == 0 && playerHalfHearts == 0 && player.getHealth() > 0) {
-            playerLowHealth.nextFrame(g, heartX, heartY);
-        } else if (player.getHealth() == 0) {
-            g.setColor(Color.red);
-            //Black background
-            g.drawImage(image, 0, 0, getWidth(), getHeight(), null);
-            g.drawString("YOU DIED", CENTERX - 48, CENTERY);
+        if (Game.isInMenu) {
+            menu.render(g);
         } else {
-            for (int hearts = 0; hearts < playerFullHearts; hearts++) {
-                spriteSheet.paint(g, "full_heart", heartX, heartY);
-                heartX += 26;
-            }
-            if (playerHalfHearts > 0) {
-                spriteSheet.paint(g, "half_a_heart", heartX, heartY);
-            }
-        }
+            //If the game is running, render map & npcs
 
-        map.detectCollision(player);
+            //Map
+            map.renderMap(g, player);
+            //Other objects
+            map.renderObjects(g, player);
 
-        if (SHOW_INVENTORY) {
-            inventory.renderInventory(g);
+            //NPCs here
+            //Draw npc
+            npc.renderNpc(g, player);
+
+            player.render(g, map);
+
+            //Player health system
+            int playerFullHearts = (int) Math.floor(player.getHealth() / 20);
+            int playerHalfHearts = (int) Math.floor((player.getHealth() - playerFullHearts * 20) / 10);
+            int heartX = CENTERX - 256;
+            int heartY = 5;
+            g.drawString(player.getHealth() + " / " + player.getMaxHealth() + " LP", heartX - 78, heartY + 22);
+            g.drawString(player.getXp() + " xp", heartX - 78, heartY + 44);
+            if (playerFullHearts == 0 && playerHalfHearts == 0 && player.getHealth() > 0) {
+                playerLowHealth.nextFrame(g, heartX, heartY);
+            } else if (player.getHealth() == 0) {
+                g.setColor(Color.red);
+                //Black background
+                g.drawImage(image, 0, 0, getWidth(), getHeight(), null);
+                g.drawString("YOU DIED", CENTERX - 48, CENTERY);
+            } else {
+                for (int hearts = 0; hearts < playerFullHearts; hearts++) {
+                    spriteSheet.paint(g, "full_heart", heartX, heartY);
+                    heartX += 26;
+                }
+                if (playerHalfHearts > 0) {
+                    spriteSheet.paint(g, "half_a_heart", heartX, heartY);
+                }
+            }
+
+            map.detectCollision(player);
+
+            if (SHOW_INVENTORY) {
+                inventory.renderInventory(g);
+            }
         }
 
         //Empty buffer

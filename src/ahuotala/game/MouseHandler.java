@@ -54,7 +54,7 @@ public class MouseHandler extends MouseAdapter {
 
     @Override
     public void mousePressed(MouseEvent e) {
-        if (Game.SHOW_INVENTORY) {
+        if (Game.SHOW_INVENTORY || Game.isInMenu) {
             mouseClicked = !mouseClicked;
         }
     }

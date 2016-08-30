@@ -32,62 +32,65 @@ public class PlayerInputHandler implements KeyListener, Tickable {
 
     @Override
     public void keyPressed(KeyEvent e) {
-            switch (e.getKeyCode()) {
-                case KeyEvent.VK_UP:
-                case KeyEvent.VK_W:
-                    up = true;
-                    break;
-                case KeyEvent.VK_DOWN:
-                case KeyEvent.VK_S:
-                    down = true;
-                    break;
-                case KeyEvent.VK_LEFT:
-                case KeyEvent.VK_A:
-                    left = true;
-                    break;
-                case KeyEvent.VK_RIGHT:
-                case KeyEvent.VK_D:
-                    right = true;
-                    break;
-                case KeyEvent.VK_J:
-                    if (Game.DEBUG_PLAYER) {
-                        player.increaseHealth(5);
-                    }
-                    break;
-                case KeyEvent.VK_H:
-                    if (Game.DEBUG_PLAYER) {
-                        player.damagePlayer(5);
-                    }
-                    break;
-                case KeyEvent.VK_U:
-                    if (Game.DEBUG_PLAYER) {
-                        player.setXp(player.getXp() + 10.5);
-                    }
-                    break;
-                case KeyEvent.VK_Y:
-                    if (Game.DEBUG_PLAYER && player.getXp() >= 10.5) {
-                        player.setXp(player.getXp() - 10.5);
-                    }
-                    break;
-                case KeyEvent.VK_F1:
-                    Game.DEBUG = !Game.DEBUG;
-                    break;
-                case KeyEvent.VK_F2:
-                    Game.DEBUG_PLAYER = !Game.DEBUG_PLAYER;
-                    break;
-                case KeyEvent.VK_I:
-                        Game.SHOW_INVENTORY = !Game.SHOW_INVENTORY;
-                    if (Game.DEBUG) {
-                        System.out.println(Game.inventory);
-                    }
-                    break;
-                case KeyEvent.VK_ESCAPE:
-                    Game.isInMenu = true;
-                    Game.menuState = MenuState.MAINMENU;
-                    break;
-                default:
-                    break;
-            }
+        switch (e.getKeyCode()) {
+            case KeyEvent.VK_UP:
+            case KeyEvent.VK_W:
+                up = true;
+                break;
+            case KeyEvent.VK_DOWN:
+            case KeyEvent.VK_S:
+                down = true;
+                break;
+            case KeyEvent.VK_LEFT:
+            case KeyEvent.VK_A:
+                left = true;
+                break;
+            case KeyEvent.VK_RIGHT:
+            case KeyEvent.VK_D:
+                right = true;
+                break;
+            case KeyEvent.VK_J:
+                if (Game.DEBUG_PLAYER) {
+                    player.increaseHealth(5);
+                }
+                break;
+            case KeyEvent.VK_H:
+                if (Game.DEBUG_PLAYER) {
+                    player.damagePlayer(5);
+                }
+                break;
+            case KeyEvent.VK_U:
+                if (Game.DEBUG_PLAYER) {
+                    player.setXp(player.getXp() + 10.5);
+                }
+                break;
+            case KeyEvent.VK_Y:
+                if (Game.DEBUG_PLAYER && player.getXp() >= 10.5) {
+                    player.setXp(player.getXp() - 10.5);
+                }
+                break;
+            case KeyEvent.VK_F1:
+                Game.DEBUG = !Game.DEBUG;
+                break;
+            case KeyEvent.VK_F2:
+                Game.DEBUG_PLAYER = !Game.DEBUG_PLAYER;
+                break;
+            case KeyEvent.VK_I:
+                Game.SHOW_INVENTORY = !Game.SHOW_INVENTORY;
+                if (Game.DEBUG) {
+                    System.out.println(Game.inventory);
+                }
+                break;
+            case KeyEvent.VK_ESCAPE:
+                if (Game.menuState == MenuState.PAUSED) {
+                    Game.menuState = MenuState.NONE;
+                } else if (Game.menuState == MenuState.NONE) {
+                    Game.menuState = MenuState.PAUSED;
+                }
+                break;
+            default:
+                break;
+        }
     }
 
     @Override

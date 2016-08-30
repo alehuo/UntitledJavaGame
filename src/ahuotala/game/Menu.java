@@ -33,51 +33,80 @@ public class Menu {
         renderCenterText(g, Game.NAME, 32, false);
 
         g.setFont(new Font(currentFont.getName(), Font.BOLD, (int) Math.floor(25 * FONTSCALE)));
-        //Main menu
-        if (Game.menuState == MenuState.MAINMENU) {
-            //Singleplayer
-            if (renderCenterText(g, "Singleplayer", 128, true)) {
-                System.out.println("Clicked singleplayer");
-                Game.menuState = MenuState.SINGLEPLAYER;
-            }
-            //Multiplayer
-            if (renderCenterText(g, "Multiplayer", 150, true)) {
-                System.out.println("Clicked multiplayer");
-                Game.menuState = MenuState.MULTIPLAYER_CONNECT;
-                //Connection prompt
-                if (!Game.isConnectedToServer) {
-                    String[] data = JOptionPane.showInputDialog(game, "Please enter the IP address and the port of the host to connect to\r\nFor example, 127.0.0.1:1337").split(":");
-                    if (data.length == 2) {
-                        game.connectToServer(data[0], Integer.parseInt(data[1]));
-                        Game.isConnectedToServer = true;
-                    } else {
+        if (null != Game.menuState) //Main menu
+        {
+            switch (Game.menuState) {
+                case MAINMENU:
+                    //Singleplayer
+                    if (renderCenterText(g, "Singleplayer", 128, true)) {
+                        System.out.println("Clicked singleplayer");
+                        Game.menuState = MenuState.SINGLEPLAYER;
+                    }   //Multiplayer
+                    if (renderCenterText(g, "Multiplayer", 150, true)) {
+                        System.out.println("Clicked multiplayer");
+                        Game.menuState = MenuState.MULTIPLAYER_CONNECT;
+                        //Connection prompt
+                        if (!Game.isConnectedToServer) {
+                            String data = JOptionPane.showInputDialog(game, "Please enter the IP address and the port of the host to connect to\r\nFor example, 127.0.0.1:1337");
+                            if (data != null) {
+                                String[] tmpData = data.split(":");
+                                if (tmpData.length == 2) {
+                                    game.connectToServer(tmpData[0], Integer.parseInt(tmpData[1]));
+                                    Game.isConnectedToServer = true;
+                                }
+                            } else {
+                                Game.menuState = MenuState.MAINMENU;
+                            }
+                        }
+                    }
+                    //Exit game
+                    if (renderCenterText(g, "Exit game", 173, true)) {
+                        game.save();
+                        System.exit(1);
+                    }
+                    break;
+                case SINGLEPLAYER:
+                    //Load game
+                    if (renderCenterText(g, "Load game", 128, true)) {
+                        int returnValue = fc.showOpenDialog(game);
+                        if (returnValue == JFileChooser.APPROVE_OPTION) {
+                            File tmpFile = fc.getSelectedFile();
+                            game.loadSaveFile(tmpFile);
+                            Game.menuState = MenuState.NONE;
+                        }
+                    }
+                    //New game
+                    if (renderCenterText(g, "New game", 150, true)) {
+                        String tmpName = JOptionPane.showInputDialog(game, "Please give your save a name.");
+                        if (tmpName != null) {
+                            game.newGame(tmpName);
+                            Game.menuState = MenuState.NONE;
+                        } else {
+                            Game.menuState = MenuState.SINGLEPLAYER;
+                        }
+
+                    }
+                    if (renderCenterText(g, "Back", 173, true)) {
                         Game.menuState = MenuState.MAINMENU;
                     }
-                }
-            }
-            //Exit game
-            if (renderCenterText(g, "Exit game", 173, true)) {
-                System.out.println("Clicked exit game");
-                System.exit(1);
-            }
-        } else if (Game.menuState == MenuState.SINGLEPLAYER) {
-            //Load game
-            if (renderCenterText(g, "Load game", 128, true)) {
-                System.out.println("Clicked load game");
-                int returnValue = fc.showOpenDialog(game);
-                if (returnValue == JFileChooser.APPROVE_OPTION) {
-                    File tmpFile = fc.getSelectedFile();
-                    game.loadSaveFile(tmpFile);
-                    Game.menuState = MenuState.NONE;
-                    Game.isInMenu = false;
-                }
-            }
-            //New game
-            if (renderCenterText(g, "New game", 150, true)) {
-                System.out.println("Clicked new game");
-                game.newGame();
-                Game.menuState = MenuState.NONE;
-                Game.isInMenu = false;
+                    break;
+                case PAUSED:
+                    //Continue
+                    if (renderCenterText(g, "Continue", 128, true)) {
+                        Game.menuState = MenuState.NONE;
+                    }
+//Save game
+                    if (renderCenterText(g, "Save game", 150, true)) {
+                        game.save();
+                    }
+//Exit
+                    if (renderCenterText(g, "Exit game", 173, true)) {
+                        game.save();
+                        System.exit(1);
+                    }
+                    break;
+                default:
+                    break;
             }
         }
 

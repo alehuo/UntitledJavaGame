@@ -8,6 +8,7 @@ package ahuotala.graphics;
 import ahuotala.game.Game;
 import ahuotala.game.ItemId;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -36,8 +37,21 @@ public class SpriteSheet {
         //Yritetään ladata kuva
         try {
             image = ImageIO.read(SpriteSheet.class.getResourceAsStream(spriteSheetPath));
+//            BufferedImage tmpImage = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_ARGB);
+//            Graphics2D g2d = tmpImage.createGraphics();
+//            g2d.drawImage(image, 0, 0, null);
+//            g2d.dispose();
+//            image = tmpImage;
+//            tmpImage = null;
             imageLoaded = true;
+            
             inventoryImage = ImageIO.read(SpriteSheet.class.getResourceAsStream(inventoryPath));
+//            BufferedImage tmpInventoryImage = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_ARGB);
+//            Graphics2D g2dInv = tmpInventoryImage.createGraphics();
+//            g2dInv.drawImage(inventoryImage, 0, 0, null);
+//            g2dInv.dispose();
+//            inventoryImage = tmpInventoryImage;
+//            tmpInventoryImage = null;
             inventoryLoaded = true;
         } catch (IOException e) {
             e.printStackTrace();

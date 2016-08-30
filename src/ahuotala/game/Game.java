@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -51,7 +52,7 @@ public class Game extends Canvas implements Runnable, Tickable {
     public static final String NAME = "Untitled Game";
 
     //Save file name
-    private final String saveFileName = "save.sav";
+    private String saveFileName = "save.sav";
 
     //JFrame object
     private final JFrame frame;
@@ -65,7 +66,14 @@ public class Game extends Canvas implements Runnable, Tickable {
     //Tickrate; amount of game updates per second
     public double tickrate = 60D;
 
-    private final BufferedImage image;
+    //Image
+    private final BufferedImage image = new BufferedImage(WINDOW_WIDTH, WINDOW_HEIGHT, BufferedImage.TYPE_INT_RGB);
+
+    //Pixels
+    private int[] pixels = ((DataBufferInt) image.getRaster().getDataBuffer()).getData();
+
+    //Renderer
+    private Renderer renderer;
 
     //Sprite sheet
     public static SpriteSheet spriteSheet = new SpriteSheet("spriteSheet.png");
@@ -120,7 +128,7 @@ public class Game extends Canvas implements Runnable, Tickable {
      * Constructor
      */
     public Game() {
-        this.image = new BufferedImage(WINDOW_WIDTH, WINDOW_HEIGHT, BufferedImage.TYPE_INT_RGB);
+        renderer = new Renderer(WINDOW_WIDTH, WINDOW_HEIGHT);
         this.setMinimumSize(new Dimension(WINDOW_WIDTH, WINDOW_HEIGHT));
         this.setMaximumSize(new Dimension(WINDOW_WIDTH, WINDOW_HEIGHT));
         this.setPreferredSize(new Dimension(WINDOW_WIDTH, WINDOW_HEIGHT));
@@ -173,26 +181,7 @@ public class Game extends Canvas implements Runnable, Tickable {
                     client.send("CLIENT_DISCONNECTED");
                     client.disconnect();
                 }
-                File saveFile = new File(saveFileName);
-                //If the file doesn't exist, create it
-                if (!saveFile.exists()) {
-                    try {
-                        saveFile.createNewFile();
-                    } catch (IOException ex) {
-                        ex.printStackTrace();
-                    }
-                }
-                try {
-                    //Save the game
-                    save.saveState(player.getX(), player.getY(), player.getHealth(), player.getXp(), player.getDirection(), inventory.getInventory());
-                    FileOutputStream fileOutput = new FileOutputStream(saveFileName);
-                    ObjectOutputStream out = new ObjectOutputStream(fileOutput);
-                    out.writeObject(save);
-                    out.close();
-                    fileOutput.close();
-                } catch (IOException ex) {
-                    ex.printStackTrace();
-                }
+                save();
             }
         });
         frame.addMouseListener(mouseHandler);
@@ -233,12 +222,40 @@ public class Game extends Canvas implements Runnable, Tickable {
         return frame;
     }
 
+    public void save() {
+        File saveFile = new File(saveFileName);
+        //If the file doesn't exist, create it
+        if (!saveFile.exists()) {
+            try {
+                System.out.println("Save file doesn't exist; Creating a new file..");
+                saveFile.createNewFile();
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        }
+        try {
+            if (save != null) {
+                //Save the game
+                System.out.println("Saving game..");
+                save.saveState(player.getX(), player.getY(), player.getHealth(), player.getXp(), player.getDirection(), inventory.getInventory());
+                FileOutputStream fileOutput = new FileOutputStream(saveFileName);
+                ObjectOutputStream out = new ObjectOutputStream(fileOutput);
+                out.writeObject(save);
+                out.close();
+                fileOutput.close();
+            }
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+    }
+
     public void loadSaveFile(File file) {
         /**
          * Load from save
          */
         try {
             File saveFile = file;
+            saveFileName = saveFile.getName();
             FileInputStream fileInput = new FileInputStream(saveFileName);
             ObjectInputStream in = new ObjectInputStream(fileInput);
             save = (SaveGame) in.readObject();
@@ -258,7 +275,11 @@ public class Game extends Canvas implements Runnable, Tickable {
         inventory.setInventory(save.getInventory());
     }
 
-    public void newGame() {
+    public void newGame(String saveFileName) {
+        this.saveFileName = saveFileName;
+        if (!saveFileName.trim().endsWith(".sav")) {
+            this.saveFileName += ".sav";
+        }
         save = new SaveGame();
         //Set player x, y, health, xp and direction
         player.setX(save.getX());
@@ -332,10 +353,14 @@ public class Game extends Canvas implements Runnable, Tickable {
     @Override
     public void tick() {
         tickCount++;
-        animationTicker.tick();
-        inputHandler.tick();
-        npcTicker.tick();
-        player.tick();
+        if (Game.menuState != MenuState.PAUSED) {
+            animationTicker.tick();
+            inputHandler.tick();
+            npcTicker.tick();
+            player.tick();
+        } else {
+//            System.out.println("Game is paused");
+        }
         if (isConnectedToServer) {
             client.tick();
         }
@@ -351,15 +376,22 @@ public class Game extends Canvas implements Runnable, Tickable {
 
         //Get draw graphics
         Graphics g = bs.getDrawGraphics();
+        renderer.render();
+
+        for (int i = 0; i < pixels.length; i++) {
+            pixels[i] = renderer.pixels[i];
+        }
+
+//        renderer.renderObject(0, 0, spriteSheet.getSprite("grass", 88, 176, 512));
+        //Base image
+        g.drawImage(image, 0, 0, getWidth(), getHeight(), null);
+//        g.fill3DRect(0, 0, getWidth(), getHeight(), false);
 
         //Font
         currentFont = g.getFont();
         g.setFont(new Font(currentFont.getName(), Font.BOLD, (int) Math.floor(18 * FONTSCALE)));
 
-        //Black background
-        g.drawImage(image, 0, 0, getWidth(), getHeight(), null);
-
-        if (Game.isInMenu) {
+        if (Game.menuState != MenuState.NONE) {
             menu.render(g);
         } else {
             //If the game is running, render map & npcs
@@ -405,7 +437,6 @@ public class Game extends Canvas implements Runnable, Tickable {
                 inventory.renderInventory(g);
             }
         }
-
         //Empty buffer
         g.dispose();
         //Show frame

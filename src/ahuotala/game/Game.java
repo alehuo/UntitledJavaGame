@@ -164,7 +164,7 @@ public class Game extends Canvas implements Runnable, Tickable {
         //Player shadow
         spriteSheet.getSprite("player_shadow", 208, 14, 32, 34);
         //Animations
-        playerLowHealth = new Animation("PlayerLowHealth", 40);
+        playerLowHealth = new Animation("PlayerLowHealth", 30);
         //Register animations to be tickable
         animationTicker.register(playerLowHealth);
 
@@ -254,7 +254,7 @@ public class Game extends Canvas implements Runnable, Tickable {
          */
         try {
             File saveFile = file;
-            saveFileName = saveFile.getName();
+            saveFileName = saveFile.getAbsolutePath();
             FileInputStream fileInput = new FileInputStream(saveFileName);
             ObjectInputStream in = new ObjectInputStream(fileInput);
             save = (SaveGame) in.readObject();

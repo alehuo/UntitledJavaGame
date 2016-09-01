@@ -79,8 +79,13 @@ public class Menu {
                     if (renderCenterText(g, "New game", 150, true)) {
                         String tmpName = JOptionPane.showInputDialog(game, "Please give your save a name.");
                         if (tmpName != null) {
-                            game.newGame(tmpName);
-                            Game.menuState = MenuState.NONE;
+                            if (!tmpName.isEmpty()) {
+                                game.newGame(tmpName);
+                                Game.menuState = MenuState.NONE;
+                            } else {
+                                Game.menuState = MenuState.SINGLEPLAYER;
+                            }
+
                         } else {
                             Game.menuState = MenuState.SINGLEPLAYER;
                         }

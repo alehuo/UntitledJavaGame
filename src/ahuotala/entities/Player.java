@@ -74,14 +74,14 @@ public class Player implements Entity, Tickable {
 //        radiusX = (int) Math.floor(0.2 * cX);
 //        radiusY = (int) Math.floor(0.2 * cY);
 
-        playerWalkingUp = new Animation("PlayerWalkingUp", 10);
-        playerWalkingDown = new Animation("PlayerWalkingDown", 10);
-        playerWalkingLeft = new Animation("PlayerWalkingLeft", 10);
-        playerWalkingRight = new Animation("PlayerWalkingRight", 10);
-        playerSwimmingUp = new Animation("PlayerSwimmingUp", 30);
-        playerSwimmingDown = new Animation("PlayerSwimmingDown", 30);
-        playerSwimmingLeft = new Animation("PlayerSwimmingLeft", 30);
-        playerSwimmingRight = new Animation("PlayerSwimmingRight", 30);
+        playerWalkingUp = new Animation("PlayerWalkingUp", 5);
+        playerWalkingDown = new Animation("PlayerWalkingDown", 5);
+        playerWalkingLeft = new Animation("PlayerWalkingLeft", 5);
+        playerWalkingRight = new Animation("PlayerWalkingRight", 5);
+        playerSwimmingUp = new Animation("PlayerSwimmingUp", 10);
+        playerSwimmingDown = new Animation("PlayerSwimmingDown", 10);
+        playerSwimmingLeft = new Animation("PlayerSwimmingLeft", 10);
+        playerSwimmingRight = new Animation("PlayerSwimmingRight", 10);
         animationTicker.register(playerWalkingUp);
         animationTicker.register(playerWalkingDown);
         animationTicker.register(playerWalkingLeft);

@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package ahuotala.entities;
 
 import ahuotala.game.Game;
@@ -13,6 +8,7 @@ import ahuotala.graphics.animation.Animation;
 import ahuotala.map.Map;
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Rectangle;
 
 /**
  *
@@ -60,6 +56,9 @@ public class Player implements Entity, Tickable {
     private final Animation playerSwimmingDown;
     private final Animation playerSwimmingLeft;
     private final Animation playerSwimmingRight;
+    
+    //Bounds
+    private final Rectangle bounds;
 
     public Player() {
         //XP
@@ -90,6 +89,8 @@ public class Player implements Entity, Tickable {
         animationTicker.register(playerSwimmingDown);
         animationTicker.register(playerSwimmingLeft);
         animationTicker.register(playerSwimmingRight);
+        
+        bounds = new Rectangle(realX, realY, 16, 16);
     }
 
     @Override
@@ -245,7 +246,7 @@ public class Player implements Entity, Tickable {
         //Debug
         if (Game.DEBUG) {
             g.setColor(Color.yellow);
-            g.fill3DRect(realX, realY, 16, 16, true);
+            g.fill3DRect(x, y, 16, 16, true);
         }
         //Player shadow
 //        Game.spriteSheet.paint(g, "player_shadow", realX - 8, realY - 13);
@@ -345,7 +346,11 @@ public class Player implements Entity, Tickable {
                 step = 3;
                 break;
         }
-
+        bounds.setBounds(x, y, 16, 16);
+    }
+    
+    public Rectangle getBounds(){
+        return bounds;
     }
 
 }

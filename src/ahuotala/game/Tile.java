@@ -1,9 +1,7 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package ahuotala.game;
+
+import ahuotala.entities.Player;
+import java.awt.Rectangle;
 
 /**
  * Tile class
@@ -20,6 +18,7 @@ public class Tile {
     private String tileTypeFringe1;
     private String tileTypeFringe2;
     private boolean blocked = false;
+    private Rectangle bounds;
 
     public Tile(int x, int y, String tileTypeBottom, String tileTypeMask, String tileTypeMask2, String tileTypeFringe1, String tileTypeFringe2, boolean blocked) {
         this.x = x;
@@ -30,6 +29,7 @@ public class Tile {
         this.tileTypeFringe1 = tileTypeFringe1;
         this.tileTypeFringe2 = tileTypeFringe2;
         this.blocked = blocked;
+        bounds = new Rectangle(x, y, 16 * Game.SCALE, 16 * Game.SCALE);
     }
 
     public Tile(int x, int y, String tileTypeBottom, String tileTypeMask, String tileTypeMask2, String tileTypeFringe1, String tileTypeFringe2) {
@@ -40,6 +40,21 @@ public class Tile {
         this.tileTypeMask2 = tileTypeMask2;
         this.tileTypeFringe1 = tileTypeFringe1;
         this.tileTypeFringe2 = tileTypeFringe2;
+        bounds = new Rectangle(x, y, 16 * Game.SCALE, 16 * Game.SCALE);
+    }
+
+    public boolean collidesWithPlayer(Player p) {
+        if (!blocked) {
+            return false;
+        }
+        if (bounds.intersects(p.getBounds())) {
+            p.setX(p.getLastX());
+            p.setY(p.getLastY());
+            return true;
+        }
+        p.setLastX(p.getX());
+        p.setLastY(p.getY());
+        return false;
     }
 
     public int getX() {

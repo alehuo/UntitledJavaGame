@@ -19,6 +19,18 @@ public class Tile {
     private String tileTypeMask2;
     private String tileTypeFringe1;
     private String tileTypeFringe2;
+    private boolean blocked = false;
+
+    public Tile(int x, int y, String tileTypeBottom, String tileTypeMask, String tileTypeMask2, String tileTypeFringe1, String tileTypeFringe2, boolean blocked) {
+        this.x = x;
+        this.y = y;
+        this.tileTypeBottom = tileTypeBottom;
+        this.tileTypeMask = tileTypeMask;
+        this.tileTypeMask2 = tileTypeMask2;
+        this.tileTypeFringe1 = tileTypeFringe1;
+        this.tileTypeFringe2 = tileTypeFringe2;
+        this.blocked = blocked;
+    }
 
     public Tile(int x, int y, String tileTypeBottom, String tileTypeMask, String tileTypeMask2, String tileTypeFringe1, String tileTypeFringe2) {
         this.x = x;
@@ -78,10 +90,14 @@ public class Tile {
         tileTypeFringe2 = type;
     }
 
+    public boolean isBlocked() {
+        return blocked;
+    }
+
     @Override
     public String toString() {
-        //x,y,tile_type_bottom,tile_type_mask_1,tile_type_mask2,tile_type_fringe_1,tile_type_fringe_2
-        return x + "," + y + "," + tileTypeBottom + "," + tileTypeMask + "," + tileTypeMask2 + "," + tileTypeFringe1 + "," + tileTypeFringe2;
+        //x,y,tile_type_bottom,tile_type_mask_1,tile_type_mask2,tile_type_fringe_1,tile_type_fringe_2,blocked
+        return x + "," + y + "," + tileTypeBottom + "," + tileTypeMask + "," + tileTypeMask2 + "," + tileTypeFringe1 + "," + tileTypeFringe2 + "," + ((blocked) ? 1 : 0) + "";
     }
 
 }

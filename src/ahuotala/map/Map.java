@@ -224,7 +224,7 @@ public class Map {
             //If we have a collision
             if (gameObj.collidesWithPlayer(p)) {
                 if (Game.DEBUG) {
-                    System.out.println("Collision with gameObject : Direction." + p.getCollisionDirection());
+                    System.out.println("Collision with gameObject");
                 }
             }
         }

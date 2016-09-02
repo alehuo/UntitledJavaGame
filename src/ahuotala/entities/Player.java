@@ -19,6 +19,9 @@ public class Player implements Entity, Tickable {
     private int x;
     private int y;
 
+    public int lastX;
+    public int lastY;
+
     private double xp;
 
     public static int realX;
@@ -56,7 +59,7 @@ public class Player implements Entity, Tickable {
     private final Animation playerSwimmingDown;
     private final Animation playerSwimmingLeft;
     private final Animation playerSwimmingRight;
-    
+
     //Bounds
     private final Rectangle bounds;
 
@@ -89,7 +92,7 @@ public class Player implements Entity, Tickable {
         animationTicker.register(playerSwimmingDown);
         animationTicker.register(playerSwimmingLeft);
         animationTicker.register(playerSwimmingRight);
-        
+
         bounds = new Rectangle(realX, realY, 16, 16);
     }
 
@@ -101,6 +104,18 @@ public class Player implements Entity, Tickable {
     @Override
     public int getY() {
         return y;
+    }
+
+    @Override
+    public void setX(int x) {
+        offsetX = cX - x;
+        this.x = x;
+    }
+
+    @Override
+    public void setY(int y) {
+        offsetY = cY - y;
+        this.y = y;
     }
 
     public double getXp() {
@@ -165,26 +180,6 @@ public class Player implements Entity, Tickable {
         offsetX -= step;
     }
 
-    public void setCollisionDirection(Direction direction) {
-        collisionDirection = direction;
-    }
-
-    public Direction getCollisionDirection() {
-        return collisionDirection;
-    }
-
-    @Override
-    public void setX(int x) {
-        offsetX = cX - x;
-        this.x = x;
-    }
-
-    @Override
-    public void setY(int y) {
-        offsetY = cY - y;
-        this.y = y;
-    }
-
     public void setHealth(int health) {
         if (health > maxHealth) {
             this.health = maxHealth;
@@ -240,6 +235,22 @@ public class Player implements Entity, Tickable {
     @Override
     public String toString() {
         return this.getX() + "," + this.getY();
+    }
+
+    public void setLastX(int x) {
+        lastX = x;
+    }
+
+    public void setLastY(int y) {
+        lastY = y;
+    }
+
+    public int getLastX() {
+        return lastX;
+    }
+
+    public int getLastY() {
+        return lastY;
     }
 
     public void render(Graphics g, Map map) {
@@ -348,8 +359,8 @@ public class Player implements Entity, Tickable {
         }
         bounds.setBounds(x, y, 16, 16);
     }
-    
-    public Rectangle getBounds(){
+
+    public Rectangle getBounds() {
         return bounds;
     }
 

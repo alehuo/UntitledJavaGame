@@ -30,47 +30,13 @@ public class GameObject {
     }
     
     public boolean collidesWithPlayer(Player player) {
-//        if (player.getX() == x - radiusX && player.getY() >= y - radiusY && player.getY() <= y + sprite.getHeight() + radiusY) {
-//            //Left side
-//            player.setCollisionDirection(Direction.RIGHT);
-//            return true;
-//        } else if (player.getX() == x + sprite.getWidth() - radiusX && player.getY() >= y - radiusY && player.getY() <= y + sprite.getHeight() + radiusY) {
-//            //Right side
-//            player.setCollisionDirection(Direction.LEFT);
-//            return true;
-//        } else if (player.getX() >= x - radiusX && player.getX() <= x + sprite.getWidth() + radiusX && player.getY() == y) {
-//            //Bottom side
-//            player.setCollisionDirection(Direction.DOWN);
-//            return true;
-//        } else if (player.getX() >= x - radiusX && player.getX() <= x + sprite.getWidth() + radiusX && player.getY() == y + radiusY + sprite.getHeight()) {
-//            //Top side
-//            player.setCollisionDirection(Direction.UP);
-//            return true;
-//        }
-//        player.setCollisionDirection(Direction.NAN);
-//        return false;
         if (bounds.intersects(player.getBounds())) {
-            if (null != player.getDirection()) {
-                switch (player.getDirection()) {
-                    case DOWN:
-                        player.setCollisionDirection(Direction.DOWN);
-                        break;
-                    case UP:
-                        player.setCollisionDirection(Direction.UP);
-                        break;
-                    case LEFT:
-                        player.setCollisionDirection(Direction.LEFT);
-                        break;
-                    case RIGHT:
-                        player.setCollisionDirection(Direction.RIGHT);
-                        break;
-                    default:
-                        break;
-                }
-            }
+            player.setX(player.getLastX());
+            player.setY(player.getLastY());
             return true;
         }
-        player.setCollisionDirection(Direction.NAN);
+        player.setLastX(player.getX());
+        player.setLastY(player.getY());
         return false;
     }
     

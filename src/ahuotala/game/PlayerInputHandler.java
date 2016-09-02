@@ -122,22 +122,22 @@ public class PlayerInputHandler implements KeyListener, Tickable {
         int yOffset = 2;
         int xOffset = 8;
         if ((up || down || left || right) && !Game.SHOW_INVENTORY) {
-            if (up && player.getY() > map.getMinY() + yOffset && player.getCollisionDirection() != Direction.UP) {
+            if (up && player.getY() > map.getMinY() + yOffset) {
                 player.setDirection(Direction.UP);
                 player.setWalkingState(true);
                 player.goUp();
             }
-            if (down && player.getY() < map.getMaxY() - yOffset && player.getCollisionDirection() != Direction.DOWN) {
+            if (down && player.getY() < map.getMaxY() - yOffset) {
                 player.setDirection(Direction.DOWN);
                 player.setWalkingState(true);
                 player.goDown();
             }
-            if (left && player.getX() > map.getMinX() + xOffset && player.getCollisionDirection() != Direction.LEFT) {
+            if (left && player.getX() > map.getMinX() + xOffset) {
                 player.setDirection(Direction.LEFT);
                 player.setWalkingState(true);
                 player.goLeft();
             }
-            if (right && player.getX() < map.getMaxX() - xOffset && player.getCollisionDirection() != Direction.RIGHT) {
+            if (right && player.getX() < map.getMaxX() - xOffset) {
                 player.setDirection(Direction.RIGHT);
                 player.setWalkingState(true);
                 player.goRight();

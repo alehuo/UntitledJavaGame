@@ -47,6 +47,6 @@ public class GameObject {
 
     public void drawBoundaries(Graphics g, Player p) {
         g.setColor(Color.MAGENTA);
-        g.draw3DRect(x + p.getOffsetX(), y + p.getOffsetY(), width, height, false);
+        g.draw3DRect(x + p.getOffsetX(), y + p.getOffsetY(), width * Game.SCALE, height * Game.SCALE, false);
     }
 }

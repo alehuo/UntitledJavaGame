@@ -248,8 +248,8 @@ public class Map {
             int x = tile.getX();
             int y = tile.getY();
             //Performance optimization: don't load tiles we don't need
-            int radiusX = (int) Math.ceil(0.72 * Game.WINDOW_WIDTH)*Game.SCALE;
-            int radiusY = (int) Math.ceil(0.72 * Game.WINDOW_HEIGHT)*Game.SCALE;
+            int radiusX = (int) Math.ceil(0.72 * Game.WINDOW_WIDTH);
+            int radiusY = (int) Math.ceil(0.72 * Game.WINDOW_HEIGHT);
             if (x < playerX - radiusX || x > playerX + radiusX || y < playerY - radiusY || y > playerY + radiusY) {
                 continue;
             }

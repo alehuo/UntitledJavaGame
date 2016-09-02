@@ -236,7 +236,7 @@ public class Game extends Canvas implements Runnable, Tickable {
             if (save != null) {
                 //Save the game
                 System.out.println("Saving game..");
-                save.saveState(player.getX(), player.getY(), player.getHealth(), player.getXp(), player.getDirection(), inventory.getInventory());
+                save.saveState(player.getX()/Game.SCALE, player.getY()/Game.SCALE, player.getHealth(), player.getXp(), player.getDirection(), inventory.getInventory());
                 FileOutputStream fileOutput = new FileOutputStream(saveFileName);
                 ObjectOutputStream out = new ObjectOutputStream(fileOutput);
                 out.writeObject(save);

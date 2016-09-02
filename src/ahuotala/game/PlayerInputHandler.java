@@ -119,7 +119,8 @@ public class PlayerInputHandler implements KeyListener, Tickable {
 
     @Override
     public void tick() {
-        int yOffset = 2;
+        int yOffset = 4;
+        int yOffsetBottom = 24;
         int xOffset = 8;
         if ((up || down || left || right) && !Game.SHOW_INVENTORY) {
             if (up && player.getY() > map.getMinY() + yOffset) {
@@ -127,7 +128,7 @@ public class PlayerInputHandler implements KeyListener, Tickable {
                 player.setWalkingState(true);
                 player.goUp();
             }
-            if (down && player.getY() < map.getMaxY() - yOffset) {
+            if (down && player.getY() < map.getMaxY() - yOffsetBottom) {
                 player.setDirection(Direction.DOWN);
                 player.setWalkingState(true);
                 player.goDown();

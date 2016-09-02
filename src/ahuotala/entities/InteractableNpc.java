@@ -32,7 +32,7 @@ public class InteractableNpc implements Entity, Interactable, Tickable {
     //NPC name
     private final String name;
     //Movement step
-    private final int step = 1;
+    private final int step = 1*Game.SCALE;
     //Direction
     private Direction direction = Direction.DOWN;
     //Is the NPC walking?
@@ -102,14 +102,14 @@ public class InteractableNpc implements Entity, Interactable, Tickable {
 
     @Override
     public void setX(int x) {
-        this.x = x;
-        startX = x;
+        this.x = x*Game.SCALE;
+        startX = x*Game.SCALE;
     }
 
     @Override
     public void setY(int y) {
-        this.y = y;
-        startY = y;
+        this.y = y*Game.SCALE;
+        startY = y*Game.SCALE;
     }
 
     public void setMovementState(boolean state) {
@@ -227,7 +227,7 @@ public class InteractableNpc implements Entity, Interactable, Tickable {
                 if (count >= interval) {
                     interval = random.nextInt(400) + 50;
                     randomDirection = random.nextInt(7);
-                    moveAmount = random.nextInt(15) + 19;
+                    moveAmount = random.nextInt(15)*Game.SCALE + 19*Game.SCALE;
                     moveTicks = true;
 //                System.out.println("New interval:" + interval);
 //                System.out.println("NPC tick");
@@ -303,12 +303,12 @@ public class InteractableNpc implements Entity, Interactable, Tickable {
 
     @Override
     public void setInteractionRadiusX(int rX) {
-        this.rX = rX;
+        this.rX = rX*Game.SCALE;
     }
 
     @Override
     public void setInteractionRadiusY(int rY) {
-        this.rY = rY;
+        this.rY = rY*Game.SCALE;
     }
 
     @Override

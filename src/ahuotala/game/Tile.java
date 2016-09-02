@@ -18,7 +18,7 @@ public class Tile {
     private String tileTypeFringe1;
     private String tileTypeFringe2;
     private boolean blocked = false;
-    private Rectangle bounds;
+    private final Rectangle bounds;
 
     public Tile(int x, int y, String tileTypeBottom, String tileTypeMask, String tileTypeMask2, String tileTypeFringe1, String tileTypeFringe2, boolean blocked) {
         this.x = x;
@@ -29,7 +29,7 @@ public class Tile {
         this.tileTypeFringe1 = tileTypeFringe1;
         this.tileTypeFringe2 = tileTypeFringe2;
         this.blocked = blocked;
-        bounds = new Rectangle(x, y, 16 * Game.SCALE, 16 * Game.SCALE);
+        bounds = new Rectangle(x, y, 32 * Game.SCALE, 32 * Game.SCALE);
     }
 
     public Tile(int x, int y, String tileTypeBottom, String tileTypeMask, String tileTypeMask2, String tileTypeFringe1, String tileTypeFringe2) {
@@ -40,7 +40,7 @@ public class Tile {
         this.tileTypeMask2 = tileTypeMask2;
         this.tileTypeFringe1 = tileTypeFringe1;
         this.tileTypeFringe2 = tileTypeFringe2;
-        bounds = new Rectangle(x, y, 16 * Game.SCALE, 16 * Game.SCALE);
+        bounds = new Rectangle(x, y, 32 * Game.SCALE, 32 * Game.SCALE);
     }
 
     public boolean collidesWithPlayer(Player p) {
@@ -107,6 +107,14 @@ public class Tile {
 
     public boolean isBlocked() {
         return blocked;
+    }
+
+    public void setBlocked(boolean blocked) {
+        this.blocked = blocked;
+    }
+    
+    public Rectangle getBounds(){
+        return bounds;
     }
 
     @Override

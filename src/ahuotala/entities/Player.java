@@ -28,7 +28,7 @@ public class Player implements Entity, Tickable {
     public static int realY;
 
     //Base stepping speed
-    private int step = 1;
+    private int step = 1 * Game.SCALE;
 
     private int health = 120;
     public static int maxHealth = 120;
@@ -48,8 +48,6 @@ public class Player implements Entity, Tickable {
 
     private int playerTicks = 0;
 
-    private Direction collisionDirection;
-
     //Animations
     private final Animation playerWalkingUp;
     private final Animation playerWalkingDown;
@@ -62,6 +60,8 @@ public class Player implements Entity, Tickable {
 
     //Bounds
     private final Rectangle bounds;
+    private final int width = 16 * Game.SCALE;
+    private final int height = 16 * Game.SCALE;
 
     public Player() {
         //XP
@@ -70,11 +70,9 @@ public class Player implements Entity, Tickable {
         this.cY = Game.CENTERY;
         //Center X
         this.cX = Game.CENTERX;
-        //Real x&t
+        //Real x & y
         realX = cX;
         realY = cY;
-//        radiusX = (int) Math.floor(0.2 * cX);
-//        radiusY = (int) Math.floor(0.2 * cY);
 
         playerWalkingUp = new Animation("PlayerWalkingUp", 5);
         playerWalkingDown = new Animation("PlayerWalkingDown", 5);
@@ -93,7 +91,7 @@ public class Player implements Entity, Tickable {
         animationTicker.register(playerSwimmingLeft);
         animationTicker.register(playerSwimmingRight);
 
-        bounds = new Rectangle(realX, realY, 16, 16);
+        bounds = new Rectangle(realX, realY, width, height);
     }
 
     @Override
@@ -257,7 +255,7 @@ public class Player implements Entity, Tickable {
         //Debug
         if (Game.DEBUG) {
             g.setColor(Color.yellow);
-            g.fill3DRect(x, y, 16, 16, true);
+            g.fill3DRect(x + offsetX, y + offsetY, width, height, true);
         }
         //Player shadow
 //        Game.spriteSheet.paint(g, "player_shadow", realX - 8, realY - 13);
@@ -337,15 +335,15 @@ public class Player implements Entity, Tickable {
         switch (currentTile) {
             case "sand":
                 swimming = false;
-                step = 2;
+                step = 2 * Game.SCALE;
                 break;
             case "water_ani":
                 swimming = true;
-                step = 1;
+                step = 1 * Game.SCALE;
                 break;
             case "lava_ani":
                 swimming = true;
-                step = 1;
+                step = 1 * Game.SCALE;
                 if (playerTicks % 40 == 0 && health > 0) {
                     this.damagePlayer(10);
                     playerTicks = 0;
@@ -354,10 +352,10 @@ public class Player implements Entity, Tickable {
                 break;
             default:
                 swimming = false;
-                step = 3;
+                step = 3 * Game.SCALE;
                 break;
         }
-        bounds.setBounds(x, y, 16, 16);
+        bounds.setBounds(x, y, width, height);
     }
 
     public Rectangle getBounds() {

@@ -156,8 +156,8 @@ public class Map {
                     }
                     lines.add(line);
                     String[] splittedLine = line.split(",", -1);
-                    int x = Integer.parseInt(splittedLine[0]);
-                    int y = Integer.parseInt(splittedLine[1]);
+                    int x = Integer.parseInt(splittedLine[0])*Game.SCALE;
+                    int y = Integer.parseInt(splittedLine[1])*Game.SCALE;
                     //Calculate max x, y and z
                     if (x < minX) {
                         minX = x;
@@ -177,7 +177,8 @@ public class Map {
                     String tileTypeMask2 = splittedLine[4];
                     String tileTypeFringe1 = splittedLine[5];
                     String tileTypeFringe2 = splittedLine[6];
-                    tileEntities.add(new Tile(x, y, tileTypeBottom, tileTypeMask, tileTypeMask2, tileTypeFringe1, tileTypeFringe2));
+                    boolean blocked = Integer.parseInt(splittedLine[7]) != 0;
+                    tileEntities.add(new Tile(x, y, tileTypeBottom, tileTypeMask, tileTypeMask2, tileTypeFringe1, tileTypeFringe2, blocked));
                 }
                 System.out.println("Loaded map file into memory.");
                 System.out.println("Min x:" + minX + ", min y:" + minY + ", max x:" + maxX + ", max y:" + maxY);
@@ -216,7 +217,7 @@ public class Map {
                 return tile;
             }
         }
-        return new Tile(0, 0, "false", null, null, null, null);
+        return new Tile(0, 0, "false", null, null, null, null, false);
     }
 
     public void detectCollision(Player p) {
@@ -247,10 +248,15 @@ public class Map {
             int x = tile.getX();
             int y = tile.getY();
             //Performance optimization: don't load tiles we don't need
-            int radiusX = (int) Math.ceil(0.72 * Game.WINDOW_WIDTH);
-            int radiusY = (int) Math.ceil(0.72 * Game.WINDOW_HEIGHT);
+            int radiusX = (int) Math.ceil(0.72 * Game.WINDOW_WIDTH)*Game.SCALE;
+            int radiusY = (int) Math.ceil(0.72 * Game.WINDOW_HEIGHT)*Game.SCALE;
             if (x < playerX - radiusX || x > playerX + radiusX || y < playerY - radiusY || y > playerY + radiusY) {
                 continue;
+            }
+            if (tile.collidesWithPlayer(player)) {
+                if (Game.DEBUG) {
+                    System.out.println("Collision");
+                }
             }
             tileTypes.add(tile.getTypeBottom());
             tileTypes.add(tile.getTypeMask());
@@ -265,10 +271,12 @@ public class Map {
                 /**
                  * #########################################################################
                  */
+                if (y == maxY && tileType.equals("water_ani")) {
+                    tileType = "water_bottom";
+                } else if (y == maxY && tileType.equals("grass")) {
+                    tileType = "grass_bottom";
+                }
                 if (animations.containsKey(tileType)) {
-                    if (y == maxY && tileType.equals("water_ani")) {
-                        tileType = "water_ani_bottom";
-                    }
                     //Draw next frame
                     animations.get(tileType).nextFrame(g, x + offsetX, y + offsetY);
                     if (Game.DEBUG) {
@@ -278,9 +286,6 @@ public class Map {
                     }
                     tileCount++;
                 } else if (tiles.containsKey(tileType)) {
-                    if (y == maxY && tileType.equals("grass")) {
-                        tileType = "grass_bottom";
-                    }
                     //Draw image
                     g.drawImage(tiles.get(tileType), x + offsetX, y + offsetY, tiles.get(tileType).getWidth() * scale, tiles.get(tileType).getHeight() * scale, null);
                     //Debug
@@ -305,6 +310,11 @@ public class Map {
                         }
                     }
                 }
+            }
+            if (tile.isBlocked()) {
+                Color tmpColor = new Color(1f, 1f, 1f, .2f);
+                g.setColor(tmpColor);
+                g.fill3DRect(x + offsetX, y + offsetY, 32 * Game.SCALE, 32 * Game.SCALE, false);
             }
             //Clear the tileType array
             tileTypes.clear();

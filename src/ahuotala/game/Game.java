@@ -36,7 +36,7 @@ public class Game extends Canvas implements Runnable, Tickable {
     public static final int WINDOW_HEIGHT = WINDOW_WIDTH / 16 * 9;
 
     //Tile scale
-    public static final int SCALE = 1;
+    public static final int SCALE = 2;
 
     //Font scale
     public static final double FONTSCALE = 0.7;
@@ -265,8 +265,8 @@ public class Game extends Canvas implements Runnable, Tickable {
             e.printStackTrace();
         }
         //Set player x, y, health, xp and direction
-        player.setX(save.getX());
-        player.setY(save.getY());
+        player.setX(save.getX()*Game.SCALE);
+        player.setY(save.getY()*Game.SCALE);
         player.setHealth(save.getHealth());
         player.setXp(save.getXp());
         player.setDirection(save.getDirection());
@@ -281,8 +281,8 @@ public class Game extends Canvas implements Runnable, Tickable {
         }
         save = new SaveGame();
         //Set player x, y, health, xp and direction
-        player.setX(save.getX());
-        player.setY(save.getY());
+        player.setX(save.getX()*Game.SCALE);
+        player.setY(save.getY()*Game.SCALE);
         player.setHealth(save.getHealth());
         player.setXp(save.getXp());
         player.setDirection(save.getDirection());
@@ -399,6 +399,7 @@ public class Game extends Canvas implements Runnable, Tickable {
             map.renderMap(g, player);
             //Other objects
             map.renderObjects(g, player);
+            map.detectCollision(player);
 
             //NPCs here
             //Draw npc
@@ -423,14 +424,12 @@ public class Game extends Canvas implements Runnable, Tickable {
             } else {
                 for (int hearts = 0; hearts < playerFullHearts; hearts++) {
                     spriteSheet.paint(g, "full_heart", heartX, heartY);
-                    heartX += 26;
+                    heartX += 26 * Game.SCALE;
                 }
                 if (playerHalfHearts > 0) {
                     spriteSheet.paint(g, "half_a_heart", heartX, heartY);
                 }
             }
-
-            map.detectCollision(player);
 
             if (SHOW_INVENTORY) {
                 inventory.renderInventory(g);

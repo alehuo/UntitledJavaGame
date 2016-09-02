@@ -39,11 +39,11 @@ public class Menu {
                 case MAINMENU:
                     //Singleplayer
                     if (renderCenterText(g, "Singleplayer", 128, true)) {
-                        System.out.println("Clicked singleplayer");
+//                        System.out.println("Clicked singleplayer");
                         Game.menuState = MenuState.SINGLEPLAYER;
                     }   //Multiplayer
                     if (renderCenterText(g, "Multiplayer", 150, true)) {
-                        System.out.println("Clicked multiplayer");
+//                        System.out.println("Clicked multiplayer");
                         Game.menuState = MenuState.MULTIPLAYER_CONNECT;
                         //Connection prompt
                         if (!Game.isConnectedToServer) {

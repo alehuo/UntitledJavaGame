@@ -1,5 +1,6 @@
 package ahuotala.entities;
 
+import ahuotala.game.Game;
 import ahuotala.game.Tickable;
 import java.awt.Color;
 import java.awt.Graphics;
@@ -16,7 +17,7 @@ public class Npc implements Entity, Tickable {
     private int interval = 600;
     private int count = 0;
     private final String name;
-    private final int step = 1;
+    private final int step = 1*Game.SCALE;
 
     //Moving algorithm
     private final Random random;
@@ -49,14 +50,14 @@ public class Npc implements Entity, Tickable {
 
     @Override
     public void setX(int x) {
-        this.x = x;
-        startX = x;
+        this.x = x*Game.SCALE;
+        startX = x*Game.SCALE;
     }
 
     @Override
     public void setY(int y) {
-        this.y = y;
-        startY = y;
+        this.y = y*Game.SCALE;
+        startY = y*Game.SCALE;
     }
 
     @Override

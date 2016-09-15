@@ -36,7 +36,7 @@ public class Game extends Canvas implements Runnable, Tickable {
     public static final int WINDOW_HEIGHT = WINDOW_WIDTH / 16 * 9;
 
     //Tile scale
-    public static final int SCALE = 2;
+    public static final int SCALE = 1;
 
     //Font scale
     public static final double FONTSCALE = 0.7;
@@ -63,7 +63,7 @@ public class Game extends Canvas implements Runnable, Tickable {
     public int tickCount = 0;
 
     //Tickrate; amount of game updates per second
-    public double tickrate = 60D;
+    public static double tickrate = 60D;
 
     //Image
     private final BufferedImage image = new BufferedImage(WINDOW_WIDTH, WINDOW_HEIGHT, BufferedImage.TYPE_INT_RGB);
@@ -73,9 +73,12 @@ public class Game extends Canvas implements Runnable, Tickable {
 
     //Renderer
     private Renderer renderer;
+    
+    //Graphics
+    private Graphics g;
 
     //Sprite sheet
-    public static SpriteSheet spriteSheet = new SpriteSheet("spriteSheet.png");
+    public static SpriteSheet spriteSheet = new SpriteSheet("spriteSheet_2.png");
 
     //Font
     private Font currentFont;
@@ -236,7 +239,7 @@ public class Game extends Canvas implements Runnable, Tickable {
             if (save != null) {
                 //Save the game
                 System.out.println("Saving game..");
-                save.saveState(player.getX()/Game.SCALE, player.getY()/Game.SCALE, player.getHealth(), player.getXp(), player.getDirection(), inventory.getInventory());
+                save.saveState(player.getX() / Game.SCALE, player.getY() / Game.SCALE, player.getHealth(), player.getXp(), player.getDirection(), inventory.getInventory());
                 FileOutputStream fileOutput = new FileOutputStream(saveFileName);
                 ObjectOutputStream out = new ObjectOutputStream(fileOutput);
                 out.writeObject(save);
@@ -265,8 +268,8 @@ public class Game extends Canvas implements Runnable, Tickable {
             e.printStackTrace();
         }
         //Set player x, y, health, xp and direction
-        player.setX(save.getX()*Game.SCALE);
-        player.setY(save.getY()*Game.SCALE);
+        player.setX(save.getX() * Game.SCALE);
+        player.setY(save.getY() * Game.SCALE);
         player.setHealth(save.getHealth());
         player.setXp(save.getXp());
         player.setDirection(save.getDirection());
@@ -281,8 +284,8 @@ public class Game extends Canvas implements Runnable, Tickable {
         }
         save = new SaveGame();
         //Set player x, y, health, xp and direction
-        player.setX(save.getX()*Game.SCALE);
-        player.setY(save.getY()*Game.SCALE);
+        player.setX(save.getX() * Game.SCALE);
+        player.setY(save.getY() * Game.SCALE);
         player.setHealth(save.getHealth());
         player.setXp(save.getXp());
         player.setDirection(save.getDirection());
@@ -372,71 +375,71 @@ public class Game extends Canvas implements Runnable, Tickable {
             createBufferStrategy(3);
             return;
         }
+        try {
+            //Get draw graphics
+            g = bs.getDrawGraphics();
+            //Clear
+            renderer.clear();
+            //Render base image
+            renderer.render();
+            //Base image
+            g.drawImage(image, 0, 0, getWidth(), getHeight(), null);
 
-        //Get draw graphics
-        Graphics g = bs.getDrawGraphics();
-        renderer.render();
 
-        for (int i = 0; i < pixels.length; i++) {
-            pixels[i] = renderer.pixels[i];
-        }
+            //Font
+            currentFont = g.getFont();
+            g.setFont(new Font(currentFont.getName(), Font.BOLD, (int) Math.floor(18 * FONTSCALE)));
 
-//        renderer.renderObject(0, 0, spriteSheet.getSprite("grass", 88, 176, 512));
-        //Base image
-        g.drawImage(image, 0, 0, getWidth(), getHeight(), null);
-//        g.fill3DRect(0, 0, getWidth(), getHeight(), false);
-
-        //Font
-        currentFont = g.getFont();
-        g.setFont(new Font(currentFont.getName(), Font.BOLD, (int) Math.floor(18 * FONTSCALE)));
-
-        if (Game.menuState != MenuState.NONE) {
-            menu.render(g);
-        } else {
-            //If the game is running, render map & npcs
-
-            //Map
-            map.renderMap(g, player);
-            //Other objects
-            map.renderObjects(g, player);
-            map.detectCollision(player);
-
-            //NPCs here
-            //Draw npc
-            npc.renderNpc(g, player);
-
-            player.render(g, map);
-
-            //Player health system
-            int playerFullHearts = (int) Math.floor(player.getHealth() / 20);
-            int playerHalfHearts = (int) Math.floor((player.getHealth() - playerFullHearts * 20) / 10);
-            int heartX = CENTERX - 256;
-            int heartY = 5;
-            g.drawString(player.getHealth() + " / " + player.getMaxHealth() + " LP", heartX - 78, heartY + 22);
-            g.drawString(player.getXp() + " xp", heartX - 78, heartY + 44);
-            if (playerFullHearts == 0 && playerHalfHearts == 0 && player.getHealth() > 0) {
-                playerLowHealth.nextFrame(g, heartX, heartY);
-            } else if (player.getHealth() == 0) {
-                g.setColor(Color.red);
-                //Black background
-                g.drawImage(image, 0, 0, getWidth(), getHeight(), null);
-                g.drawString("YOU DIED", CENTERX - 48, CENTERY);
+            if (Game.menuState != MenuState.NONE) {
+                menu.render(g);
             } else {
-                for (int hearts = 0; hearts < playerFullHearts; hearts++) {
-                    spriteSheet.paint(g, "full_heart", heartX, heartY);
-                    heartX += 26 * Game.SCALE;
-                }
-                if (playerHalfHearts > 0) {
-                    spriteSheet.paint(g, "half_a_heart", heartX, heartY);
-                }
-            }
+                //If the game is running, render map & npcs
 
-            if (SHOW_INVENTORY) {
-                inventory.renderInventory(g);
+                //Map
+                map.renderMap(g, player);
+                //Other objects
+                map.renderObjects(g, player);
+                map.detectCollision(player);
+
+                //NPCs here
+                //Draw npc
+                npc.renderNpc(g, player);
+
+                player.render(g, map);
+
+                //Player health system
+                int playerFullHearts = (int) Math.floor(player.getHealth() / 20);
+                int playerHalfHearts = (int) Math.floor((player.getHealth() - playerFullHearts * 20) / 10);
+                int heartX = CENTERX - 256;
+                int heartY = 5;
+                g.drawString(player.getHealth() + " / " + player.getMaxHealth() + " LP", heartX - 78, heartY + 22);
+                g.drawString(player.getXp() + " xp", heartX - 78, heartY + 44);
+                if (playerFullHearts == 0 && playerHalfHearts == 0 && player.getHealth() > 0) {
+                    playerLowHealth.nextFrame(g, heartX, heartY);
+                } else if (player.getHealth() == 0) {
+                    g.setColor(Color.red);
+                    //Black background
+                    g.drawImage(image, 0, 0, getWidth(), getHeight(), null);
+                    g.drawString("YOU DIED", CENTERX - 48, CENTERY);
+                } else {
+                    for (int hearts = 0; hearts < playerFullHearts; hearts++) {
+                        spriteSheet.paint(g, "full_heart", heartX, heartY);
+                        heartX += 26 * Game.SCALE;
+                    }
+                    if (playerHalfHearts > 0) {
+                        spriteSheet.paint(g, "half_a_heart", heartX, heartY);
+                    }
+                }
+
+                if (SHOW_INVENTORY) {
+                    inventory.renderInventory(g);
+                }
             }
+        } finally {
+            //Empty buffer
+            g.dispose();
         }
-        //Empty buffer
-        g.dispose();
+
         //Show frame
         bs.show();
     }

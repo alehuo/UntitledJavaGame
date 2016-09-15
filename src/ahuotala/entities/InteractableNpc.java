@@ -32,7 +32,7 @@ public class InteractableNpc implements Entity, Interactable, Tickable {
     //NPC name
     private final String name;
     //Movement step
-    private final int step = 1*Game.SCALE;
+    private final int step = 1 * Game.SCALE;
     //Direction
     private Direction direction = Direction.DOWN;
     //Is the NPC walking?
@@ -63,7 +63,7 @@ public class InteractableNpc implements Entity, Interactable, Tickable {
     private final Animation playerWalkingDown;
     private final Animation playerWalkingLeft;
     private final Animation playerWalkingRight;
-
+    
     public InteractableNpc(String name) {
         this.interval = 100;
         this.name = name;
@@ -77,45 +77,45 @@ public class InteractableNpc implements Entity, Interactable, Tickable {
         animationTicker.register(playerWalkingLeft);
         animationTicker.register(playerWalkingRight);
     }
-
+    
     public String getName() {
         return name;
     }
-
+    
     public boolean isWalking() {
         return isWalking;
     }
-
+    
     public void setWalkingState(boolean isWalking) {
         this.isWalking = isWalking;
     }
-
+    
     @Override
     public int getX() {
         return x;
     }
-
+    
     @Override
     public int getY() {
         return y;
     }
-
+    
     @Override
     public void setX(int x) {
-        this.x = x*Game.SCALE;
-        startX = x*Game.SCALE;
+        this.x = x * Game.SCALE;
+        startX = x * Game.SCALE;
     }
-
+    
     @Override
     public void setY(int y) {
-        this.y = y*Game.SCALE;
-        startY = y*Game.SCALE;
+        this.y = y * Game.SCALE;
+        startY = y * Game.SCALE;
     }
-
+    
     public void setMovementState(boolean state) {
         canMove = state;
     }
-
+    
     @Override
     /**
      * Use the tick() -method to add special features to npcs.
@@ -222,25 +222,25 @@ public class InteractableNpc implements Entity, Interactable, Tickable {
                     moveTicks = false;
                     isWalking = false;
                 }
-
+                
             } else {
                 if (count >= interval) {
-                    interval = random.nextInt(400) + 50;
+                    interval = (random.nextInt(400) + 50) * (int) Math.ceil(Game.tickrate / 60);
                     randomDirection = random.nextInt(7);
-                    moveAmount = random.nextInt(15)*Game.SCALE + 19*Game.SCALE;
+                    moveAmount = random.nextInt(15) * Game.SCALE + 19 * Game.SCALE;
                     moveTicks = true;
 //                System.out.println("New interval:" + interval);
 //                System.out.println("NPC tick");
                     count = 0;
                 }
                 count++;
-
+                
             }
-
+            
         }
-
+        
     }
-
+    
     public void renderNpc(Graphics g, Player player) {
 //        spriteSheet.paint(g, "player_shadow", this.getX() + player.getOffsetX() - 8, this.getY() + player.getOffsetY() - 13);
         if (this.isWalking()) {
@@ -278,7 +278,7 @@ public class InteractableNpc implements Entity, Interactable, Tickable {
                     break;
             }
         }
-
+        
         if (Game.DEBUG) {
             //Movement boundaries
             this.drawBoundaries(g, player.getOffsetX(), player.getOffsetY());
@@ -290,55 +290,55 @@ public class InteractableNpc implements Entity, Interactable, Tickable {
             g.drawString("Press E to talk with \"" + this.getName() + "\"", 40, WINDOW_HEIGHT - 32);
         }
     }
-
+    
     public void drawBoundaries(Graphics g, int oX, int oY) {
         g.setColor(Color.yellow);
         g.draw3DRect(startX - movingAreaX + oX, startY - movingAreaY + oY, 2 * movingAreaX + 32, 2 * movingAreaY + 32, false);
     }
-
+    
     public void drawInteractionBoundaries(Graphics g, int oX, int oY) {
         g.setColor(Color.blue);
         g.draw3DRect(x - rX + oX, y - rY + oY, 4 * rX, 4 * rY, false);
     }
-
+    
     @Override
     public void setInteractionRadiusX(int rX) {
-        this.rX = rX*Game.SCALE;
+        this.rX = rX * Game.SCALE;
     }
-
+    
     @Override
     public void setInteractionRadiusY(int rY) {
-        this.rY = rY*Game.SCALE;
+        this.rY = rY * Game.SCALE;
     }
-
+    
     @Override
     public int getInteractionRadiusX() {
         return rX;
     }
-
+    
     @Override
     public int getInteractionRadiusY() {
         return rY;
     }
-
+    
     @Override
     public int getNpcId() {
         return npcId;
     }
-
+    
     @Override
     public void setNpcId(int id) {
         this.npcId = id;
     }
-
+    
     public Direction getDirection() {
         return direction;
     }
-
+    
     public boolean getWalkingState() {
         return moveTicks;
     }
-
+    
     @Override
     public boolean isWithinInteractionDistance(Player player) {
         int offsetX = 8;

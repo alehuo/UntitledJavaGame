@@ -344,7 +344,7 @@ public class Player implements Entity, Tickable {
             case "lava_ani":
                 swimming = true;
                 step = 1 * Game.SCALE;
-                if (playerTicks % 40 == 0 && health > 0) {
+                if (playerTicks % (40 * (int) Math.ceil(Game.tickrate / 60)) == 0 && health > 0) {
                     this.damagePlayer(10);
                     playerTicks = 0;
                 }

@@ -1,6 +1,5 @@
 package ahuotala.game;
 
-import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
 
@@ -24,18 +23,25 @@ public class Renderer {
         for (int y = 0; y < height; y++) {
             for (int x = 0; x < width; x++) {
                 //Set pixel color. You can use either the getColor function or hexadecimal input.
-                pixels[x + y * width] = getColor(0,0,0);
+                pixels[x + y * width] = 0x9e9e9e;
             }
+        }
+    }
+
+    public void clear() {
+        for (int i = 0; i < pixels.length; i++) {
+            pixels[i] = 0x000000;
         }
     }
 
     /**
      * Set an independent pixel's color
+     *
      * @param x
      * @param y
      * @param r
      * @param g
-     * @param b 
+     * @param b
      */
     public void setColor(int x, int y, int r, int g, int b) {
         int rgb = ((r & 0x0ff) << 16) | ((g & 0x0ff) << 8) | (b & 0x0ff);

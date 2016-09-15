@@ -55,7 +55,7 @@ public class Map {
             BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
             if (stream != null) {
                 while ((line = reader.readLine()) != null) {
-                    if (line.contains("#") || line.isEmpty()) {
+                    if (line.trim().startsWith("#") || line.isEmpty()) {
                         continue;
                     }
 
@@ -88,7 +88,7 @@ public class Map {
             BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
             if (stream != null) {
                 while ((line = reader.readLine()) != null) {
-                    if (line.contains("#") || line.isEmpty()) {
+                    if (line.trim().startsWith("#") || line.isEmpty()) {
                         continue;
                     }
 
@@ -119,7 +119,7 @@ public class Map {
             BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
             if (stream != null) {
                 while ((line = reader.readLine()) != null) {
-                    if (line.contains("#") || line.isEmpty()) {
+                    if (line.trim().startsWith("#") || line.isEmpty()) {
                         continue;
                     }
 
@@ -151,7 +151,7 @@ public class Map {
             if (stream != null) {
                 while ((line = reader.readLine()) != null) {
                     //Skip comments
-                    if (line.contains("#") || line.isEmpty()) {
+                    if (line.trim().startsWith("#") || line.isEmpty()) {
                         continue;
                     }
                     lines.add(line);

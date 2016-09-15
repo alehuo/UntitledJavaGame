@@ -27,7 +27,7 @@ public final class Animation {
 
     public Animation(String name, int interval) {
         this.frames = new ArrayList<>();
-        this.interval = interval;
+        this.interval = interval * (int) Math.ceil(Game.tickrate / 60);
         this.name = name;
         this.Load();
     }

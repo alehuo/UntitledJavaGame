@@ -36,7 +36,7 @@ public class Game extends Canvas implements Runnable, Tickable {
     public static final int WINDOW_WIDTH = (int)Math.floor(gd.getDisplayMode().getWidth()*0.80);
 
     //Window height
-    public static final int WINDOW_HEIGHT = WINDOW_WIDTH / 16 * 9;
+    public static final int WINDOW_HEIGHT = (int)Math.floor(WINDOW_WIDTH / 16 * 9);
 
     //Tile scale
     public static final int SCALE = 1;

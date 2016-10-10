@@ -222,14 +222,14 @@ public class Game extends Canvas implements Runnable, Tickable {
      */
     public Game() {
         renderer = new Renderer(WINDOW_WIDTH, WINDOW_HEIGHT);
-        this.setMinimumSize(new Dimension(WINDOW_WIDTH, WINDOW_HEIGHT));
-        this.setMaximumSize(new Dimension(WINDOW_WIDTH, WINDOW_HEIGHT));
-        this.setPreferredSize(new Dimension(WINDOW_WIDTH, WINDOW_HEIGHT));
+        super.setMinimumSize(new Dimension(WINDOW_WIDTH, WINDOW_HEIGHT));
+        super.setMaximumSize(new Dimension(WINDOW_WIDTH, WINDOW_HEIGHT));
+        super.setPreferredSize(new Dimension(WINDOW_WIDTH, WINDOW_HEIGHT));
 
         //Listeners
-        addKeyListener(inputHandler);
-        addMouseListener(mouseHandler);
-        addMouseMotionListener(mouseHandler);
+        super.addKeyListener(inputHandler);
+        super.addMouseListener(mouseHandler);
+        super.addMouseMotionListener(mouseHandler);
 
         /**
          * Load sprites and animations here

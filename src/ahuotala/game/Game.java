@@ -29,8 +29,11 @@ public class Game extends Canvas implements Runnable, Tickable {
 
     public static boolean DEBUG_PLAYER = false;
 
+    //Graphics device
+    public static GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
+    
     //Window width
-    public static final int WINDOW_WIDTH = 1600;
+    public static final int WINDOW_WIDTH = (int)Math.floor(gd.getDisplayMode().getWidth()*0.80);
 
     //Window height
     public static final int WINDOW_HEIGHT = WINDOW_WIDTH / 16 * 9;
@@ -73,7 +76,7 @@ public class Game extends Canvas implements Runnable, Tickable {
 
     //Renderer
     private Renderer renderer;
-    
+
     //Graphics
     private Graphics g;
 
@@ -384,7 +387,6 @@ public class Game extends Canvas implements Runnable, Tickable {
             renderer.render();
             //Base image
             g.drawImage(image, 0, 0, getWidth(), getHeight(), null);
-
 
             //Font
             currentFont = g.getFont();

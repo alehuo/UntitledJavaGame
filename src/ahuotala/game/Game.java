@@ -133,11 +133,6 @@ public class Game extends Canvas implements Runnable, Tickable {
     private Font currentFont;
 
     /**
-     * Player
-     */
-    public static final Player player = new Player();
-
-    /**
      * NPC test
      */
     private final InteractableNpc npc = new InteractableNpc("TestNPC");
@@ -166,6 +161,11 @@ public class Game extends Canvas implements Runnable, Tickable {
      * Map
      */
     public Map map = new Map("map3");
+
+    /**
+     * Player
+     */
+    public static final Player player = new Player();
 
     /**
      * Input handler
@@ -207,12 +207,12 @@ public class Game extends Canvas implements Runnable, Tickable {
      * Menu
      */
     private Menu menu;
-    
+
     /**
      * Menu state
      */
     public static MenuState menuState = MenuState.MAINMENU;
-    
+
     /**
      * Is the menu open?
      */

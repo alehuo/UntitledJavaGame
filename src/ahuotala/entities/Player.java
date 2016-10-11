@@ -82,14 +82,14 @@ public class Player implements Entity, Tickable {
         playerSwimmingDown = new Animation("PlayerSwimmingDown", 10);
         playerSwimmingLeft = new Animation("PlayerSwimmingLeft", 10);
         playerSwimmingRight = new Animation("PlayerSwimmingRight", 10);
-        animationTicker.register(playerWalkingUp);
-        animationTicker.register(playerWalkingDown);
-        animationTicker.register(playerWalkingLeft);
-        animationTicker.register(playerWalkingRight);
-        animationTicker.register(playerSwimmingUp);
-        animationTicker.register(playerSwimmingDown);
-        animationTicker.register(playerSwimmingLeft);
-        animationTicker.register(playerSwimmingRight);
+        Game.animationTicker.register(playerWalkingUp);
+        Game.animationTicker.register(playerWalkingDown);
+        Game.animationTicker.register(playerWalkingLeft);
+        Game.animationTicker.register(playerWalkingRight);
+        Game.animationTicker.register(playerSwimmingUp);
+        Game.animationTicker.register(playerSwimmingDown);
+        Game.animationTicker.register(playerSwimmingLeft);
+        Game.animationTicker.register(playerSwimmingRight);
 
         bounds = new Rectangle(realX, realY, width, height);
     }

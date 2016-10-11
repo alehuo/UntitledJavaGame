@@ -217,6 +217,11 @@ public class Game extends Canvas implements Runnable, Tickable {
      * Is the menu open?
      */
     public static boolean isInMenu = true;
+    
+    /**
+     * Is the save loaded?
+     */
+    public static boolean playing = false;
 
     /**
      * Constructor
@@ -319,7 +324,7 @@ public class Game extends Canvas implements Runnable, Tickable {
     public void save() {
         File saveFile = new File(saveFileName);
         //If the file doesn't exist, create it
-        if (!saveFile.exists()) {
+        if (!saveFile.exists() && playing) {
             try {
                 System.out.println("Save file doesn't exist; Creating a new file..");
                 saveFile.createNewFile();
@@ -328,7 +333,7 @@ public class Game extends Canvas implements Runnable, Tickable {
             }
         }
         try {
-            if (save != null) {
+            if (save != null && playing) {
                 //Save the game
                 System.out.println("Saving game..");
                 save.saveState(player.getX() / Game.SCALE, player.getY() / Game.SCALE, player.getHealth(), player.getXp(), player.getDirection(), inventory.getInventory());

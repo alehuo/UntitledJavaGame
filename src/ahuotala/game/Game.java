@@ -15,6 +15,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.Scanner;
 import javax.swing.JFrame;
 
 /**
@@ -134,7 +135,7 @@ public class Game extends Canvas implements Runnable, Tickable {
     /**
      * Player
      */
-    private final Player player = new Player();
+    public static final Player player = new Player();
 
     /**
      * NPC test
@@ -537,5 +538,6 @@ public class Game extends Canvas implements Runnable, Tickable {
     public static void main(String[] args) {
         //Start the game
         new Game().start();
+        new Console().run();
     }
 }

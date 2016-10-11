@@ -36,7 +36,7 @@ public class Item implements java.io.Serializable {
         return this;
     }
 
-    public Item setEffectValue(int effectAmount) {
+    public Item setEffectValue(int effectValue) {
         this.effectValue = effectValue;
         return this;
     }
@@ -60,15 +60,15 @@ public class Item implements java.io.Serializable {
     public String getName() {
         return name;
     }
-    
-    public boolean isInteractable(){
+
+    public boolean isInteractable() {
         return isInteractable;
     }
-    
+
     /**
      * Interact
      */
-    public void interact(){
-    
+    public void interact() {
+
     }
 }

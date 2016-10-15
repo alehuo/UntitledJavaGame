@@ -292,7 +292,7 @@ public class Game extends Canvas implements Runnable, Tickable {
         });
         frame.addMouseListener(mouseHandler);
         frame.addMouseMotionListener(mouseHandler);
-        
+
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setLayout(new BorderLayout());
         frame.add(this, BorderLayout.CENTER);
@@ -302,13 +302,13 @@ public class Game extends Canvas implements Runnable, Tickable {
         frame.setVisible(true);
         frame.requestFocusInWindow();
     }
-    
+
     public void connectToServer(String host, int port) {
         client = new Client(player, host, port);
         client.start();
         client.send("CLIENT_CONNECTED");
     }
-    
+
     public void init() {
         //Set test NPC x and y
         npc.setX(244);
@@ -323,11 +323,11 @@ public class Game extends Canvas implements Runnable, Tickable {
         itemRegistry.registerItem(ItemId.FOOD).setName("Raw beef").setEffect(Effect.HEAL_40LP, "Heals the player for 40 lifepoints").setInteractable(false);
         menu = new Menu(this);
     }
-    
+
     public JFrame getFrame() {
         return frame;
     }
-    
+
     public void save() {
         File saveFile = new File(saveFileName);
         //If the file doesn't exist, create it
@@ -354,7 +354,7 @@ public class Game extends Canvas implements Runnable, Tickable {
             ex.printStackTrace();
         }
     }
-    
+
     public void loadSaveFile(File file) {
         /**
          * Load from save
@@ -367,7 +367,7 @@ public class Game extends Canvas implements Runnable, Tickable {
             save = (SaveGame) in.readObject();
             in.close();
             fileInput.close();
-            
+
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
@@ -380,7 +380,7 @@ public class Game extends Canvas implements Runnable, Tickable {
         //Set player inventory
         inventory.setInventory(save.getInventory());
     }
-    
+
     public void newGame(String saveFileName) {
         this.saveFileName = saveFileName;
         if (!saveFileName.trim().endsWith(".sav")) {
@@ -396,30 +396,30 @@ public class Game extends Canvas implements Runnable, Tickable {
         //Set player inventory
         inventory.setInventory(save.getInventory());
     }
-    
+
     private synchronized void start() {
         running = true;
         new Thread(this).start();
     }
-    
+
     private synchronized void stop() {
         running = false;
     }
-    
+
     @Override
     public void run() {
         long lastTime = System.nanoTime();
         double nsPerTick = 1000000000D / tickrate;
-        
+
         int frames = 0;
         int ticks = 0;
-        
+
         long lastTimer = System.currentTimeMillis();
         double delta = 0;
 
         //Init
         init();
-        
+
         while (running) {
             long now = System.nanoTime();
             delta += (now - lastTime) / nsPerTick;
@@ -440,13 +440,13 @@ public class Game extends Canvas implements Runnable, Tickable {
                     ex.printStackTrace();
                 }
             }
-            
+
             if (shouldRender) {
                 //Render a new frame
                 frames++;
                 render();
             }
-            
+
             if (System.currentTimeMillis() - lastTimer >= 1000) {
                 lastTimer += 1000;
                 frame.setTitle(NAME + " (" + frames + " frames, " + ticks + " ticks)");
@@ -455,7 +455,7 @@ public class Game extends Canvas implements Runnable, Tickable {
             }
         }
     }
-    
+
     @Override
     public void tick() {
         tickCount++;
@@ -471,7 +471,7 @@ public class Game extends Canvas implements Runnable, Tickable {
             client.tick();
         }
     }
-    
+
     public void render() {
         BufferStrategy bs = getBufferStrategy();
         if (bs == null) {
@@ -490,7 +490,7 @@ public class Game extends Canvas implements Runnable, Tickable {
             //Font
             currentFont = g.getFont();
             g.setFont(new Font(currentFont.getName(), Font.BOLD, (int) Math.floor(18 * FONTSCALE)));
-            
+
             if (Game.menuState != MenuState.NONE) {
                 //Image
                 g.drawImage(image, 0, 0, getWidth(), getHeight(), null);
@@ -507,7 +507,7 @@ public class Game extends Canvas implements Runnable, Tickable {
                 //NPCs here
                 //Draw npc
                 npc.renderNpc(g, renderer, player);
-                
+
                 player.render(renderer, g, map);
 
                 //Player health system
@@ -533,12 +533,13 @@ public class Game extends Canvas implements Runnable, Tickable {
                         spriteSheet.paint(renderer, "half_a_heart", heartX, heartY);
                     }
                 }
-                
+
                 if (SHOW_INVENTORY) {
                     inventory.renderInventory(g);
                 }
                 //Post processing
-                postProcess.applyFilter(new GrayScaleFilter());
+//              postProcess.applyFilter(new NegativeFilter());
+//              postProcess.applyFilter(new GrayScaleFilter());
                 //Final image
                 g.drawImage(image, 0, 0, getWidth(), getHeight(), null);
                 //Debug for player
@@ -553,7 +554,7 @@ public class Game extends Canvas implements Runnable, Tickable {
                     g.drawString("windowHeight " + Game.WINDOW_HEIGHT, 5, 111);
                 }
             }
-            
+
         } finally {
             //Empty buffer
             g.dispose();
@@ -562,7 +563,7 @@ public class Game extends Canvas implements Runnable, Tickable {
         //Show frame
         bs.show();
     }
-    
+
     public static void main(String[] args) {
         //Start the game
         new Game().start();

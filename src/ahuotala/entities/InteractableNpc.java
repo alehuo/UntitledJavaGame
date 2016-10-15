@@ -103,14 +103,14 @@ public class InteractableNpc implements Entity, Interactable, Tickable {
 
     @Override
     public void setX(int x) {
-        this.x = x * Game.SCALE;
-        startX = x * Game.SCALE;
+        this.x = x;
+        startX = x;
     }
 
     @Override
     public void setY(int y) {
-        this.y = y * Game.SCALE;
-        startY = y * Game.SCALE;
+        this.y = y;
+        startY = y;
     }
 
     public void setMovementState(boolean state) {
@@ -228,7 +228,7 @@ public class InteractableNpc implements Entity, Interactable, Tickable {
                 if (count >= interval) {
                     interval = (random.nextInt(400) + 50) * (int) Math.ceil(Game.tickrate / 60);
                     randomDirection = random.nextInt(7);
-                    moveAmount = random.nextInt(15) * Game.SCALE + 19 * Game.SCALE;
+                    moveAmount = random.nextInt(15) + 19;
                     moveTicks = true;
 //                System.out.println("New interval:" + interval);
 //                System.out.println("NPC tick");

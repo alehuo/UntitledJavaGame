@@ -23,12 +23,12 @@ public class GameObject {
     private final Rectangle bounds;
 
     public GameObject(int x, int y, Sprite sprite) {
-        this.x = x * Game.SCALE;
-        this.y = y * Game.SCALE;
+        this.x = x;
+        this.y = y;
         this.sprite = sprite;
         width = sprite.getWidth();
         height = sprite.getHeight();
-        bounds = new Rectangle(x, y, width * Game.SCALE, height * Game.SCALE);
+        bounds = new Rectangle(x, y, width, height);
     }
 
     public boolean collidesWithPlayer(Player player) {
@@ -49,6 +49,6 @@ public class GameObject {
 
     public void drawBoundaries(Graphics g, Player p) {
         g.setColor(Color.MAGENTA);
-        g.draw3DRect(x + p.getOffsetX(), y + p.getOffsetY(), width * Game.SCALE, height * Game.SCALE, false);
+        g.draw3DRect(x + p.getOffsetX(), y + p.getOffsetY(), width, height, false);
     }
 }

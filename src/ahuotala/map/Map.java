@@ -157,8 +157,8 @@ public class Map {
                     }
                     lines.add(line);
                     String[] splittedLine = line.split(",", -1);
-                    int x = Integer.parseInt(splittedLine[0]) * Game.SCALE;
-                    int y = Integer.parseInt(splittedLine[1]) * Game.SCALE;
+                    int x = Integer.parseInt(splittedLine[0]);
+                    int y = Integer.parseInt(splittedLine[1]);
                     //Calculate max x, y and z
                     if (x < minX) {
                         minX = x;
@@ -218,7 +218,7 @@ public class Map {
                 return tile;
             }
         }
-        return new Tile(0, 0, "false", null, null, null, null, false);
+        return null;
     }
 
     public void detectCollision(Player p) {
@@ -282,7 +282,7 @@ public class Map {
                     animations.get(tileType).nextFrame(r, x + offsetX, y + offsetY);
                     if (Game.DEBUG) {
                         if (animations.containsKey(tileType)) {
-                            g.fill3DRect(x + offsetX, y + offsetY, animations.get(tileType).getWidth() * scale, animations.get(tileType).getHeight() * scale, false);
+                            g.fill3DRect(x + offsetX, y + offsetY, animations.get(tileType).getWidth(), animations.get(tileType).getHeight(), false);
                         }
                     }
                     tileCount++;
@@ -293,7 +293,7 @@ public class Map {
                     //Debug
                     if (Game.DEBUG) {
                         g.setColor(Color.red);
-                        g.draw3DRect(x + offsetX, y + offsetY, tiles.get(tileType).getWidth() * scale, tiles.get(tileType).getHeight() * scale, false);
+                        g.draw3DRect(x + offsetX, y + offsetY, tiles.get(tileType).getWidth(), tiles.get(tileType).getHeight(), false);
                     }
                     tileCount++;
                 } else {
@@ -316,7 +316,7 @@ public class Map {
             if (tile.isBlocked()) {
                 Color tmpColor = new Color(1f, 1f, 1f, .2f);
                 g.setColor(tmpColor);
-                g.fill3DRect(x + offsetX, y + offsetY, 32 * Game.SCALE, 32 * Game.SCALE, false);
+                g.fill3DRect(x + offsetX, y + offsetY, 32, 32, false);
             }
             //Clear the tileType array
             tileTypes.clear();

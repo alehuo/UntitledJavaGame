@@ -54,7 +54,7 @@ public class Game extends Canvas implements Runnable, Tickable {
     /**
      * Tile scale
      */
-    public static final int SCALE = 1;
+    public static final int SCALE = 2;
 
     /**
      * Font scale
@@ -478,14 +478,14 @@ public class Game extends Canvas implements Runnable, Tickable {
             renderer.clear();
             //Render base image
             renderer.render();
-            //Base image
-            g.drawImage(image, 0, 0, getWidth(), getHeight(), null);
 
             //Font
             currentFont = g.getFont();
             g.setFont(new Font(currentFont.getName(), Font.BOLD, (int) Math.floor(18 * FONTSCALE)));
 
             if (Game.menuState != MenuState.NONE) {
+                //Image
+                g.drawImage(image, 0, 0, getWidth(), getHeight(), null);
                 menu.render(g);
             } else {
                 //If the game is running, render map & npcs
@@ -519,7 +519,7 @@ public class Game extends Canvas implements Runnable, Tickable {
                 } else {
                     for (int hearts = 0; hearts < playerFullHearts; hearts++) {
                         spriteSheet.paint(renderer, "full_heart", heartX, heartY);
-                        heartX += 26 * Game.SCALE;
+                        heartX += 26;
                     }
                     if (playerHalfHearts > 0) {
                         spriteSheet.paint(renderer, "half_a_heart", heartX, heartY);
@@ -529,7 +529,21 @@ public class Game extends Canvas implements Runnable, Tickable {
                 if (SHOW_INVENTORY) {
                     inventory.renderInventory(g);
                 }
+                //Final image
+                g.drawImage(image, 0, 0, getWidth(), getHeight(), null);
+                //Debug for player
+                g.setColor(Color.white);
+                if (DEBUG_PLAYER) {
+                    g.drawString("x " + player.getX(), 5, 15);
+                    g.drawString("y " + player.getY(), 5, 31);
+                    g.drawString("tileCount " + map.getRenderedTileCount(), 5, 47);
+                    g.drawString("tileX " + map.getCurrentTileX(), 5, 63);
+                    g.drawString("tileY " + map.getCurrentTileY(), 5, 79);
+                    g.drawString("windowWidth " + Game.WINDOW_WIDTH, 5, 95);
+                    g.drawString("windowHeight " + Game.WINDOW_HEIGHT, 5, 111);
+                }
             }
+
         } finally {
             //Empty buffer
             g.dispose();

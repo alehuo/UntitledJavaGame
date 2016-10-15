@@ -318,17 +318,6 @@ public class Player implements Entity, Tickable {
                 break;
         }
 
-        //Debug for player
-        g.setColor(Color.white);
-        if (DEBUG_PLAYER) {
-            g.drawString("x " + this.getX(), 5, 15);
-            g.drawString("y " + this.getY(), 5, 31);
-            g.drawString("tileCount " + map.getRenderedTileCount(), 5, 47);
-            g.drawString("tileX " + map.getCurrentTileX(), 5, 63);
-            g.drawString("tileY " + map.getCurrentTileY(), 5, 79);
-            g.drawString("windowWidth " + Game.WINDOW_WIDTH, 5, 95);
-            g.drawString("windowHeight " + Game.WINDOW_HEIGHT, 5, 111);
-        }
     }
 
     @Override

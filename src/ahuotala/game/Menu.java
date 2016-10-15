@@ -123,7 +123,7 @@ public class Menu {
         boolean hoverEffect = false;
         hoverEffect = hover;
         FontMetrics fm = g.getFontMetrics();
-        int x = ((Game.WINDOW_WIDTH - fm.stringWidth(text)) / 2);
+        int x = ((Game.WINDOW_WIDTH*Game.SCALE - fm.stringWidth(text)) / 2);
 
         if (hoverEffect && ((fm.getStringBounds(text, g).getBounds().getX() + x) < MouseHandler.x) && (fm.getStringBounds(text, g).getBounds().getX() + x + fm.stringWidth(text)) > MouseHandler.x && (fm.getStringBounds(text, g).getBounds().getY() + y) < MouseHandler.y && (fm.getStringBounds(text, g).getBounds().getY() + y + fm.getHeight()) > MouseHandler.y) {
             //We know that the mouse is inside the button area.

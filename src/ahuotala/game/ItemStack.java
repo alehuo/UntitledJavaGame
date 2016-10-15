@@ -1,5 +1,7 @@
 package ahuotala.game;
 
+import java.util.Objects;
+
 /**
  *
  * @author Aleksi Huotala
@@ -9,8 +11,7 @@ public class ItemStack implements java.io.Serializable {
     private final int maxSize = 16;
     private int amount;
     private final Item item;
-    private final String effect = "";
-    private String label = "";
+    private String label;
 
     public ItemStack(Item item, int amount) {
         this.item = item;
@@ -88,6 +89,7 @@ public class ItemStack implements java.io.Serializable {
     public int hashCode() {
         return (item.getItemId() + "").hashCode();
     }
+    
 
     @Override
     public String toString() {

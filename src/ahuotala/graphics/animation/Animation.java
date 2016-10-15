@@ -3,7 +3,6 @@ package ahuotala.graphics.animation;
 import ahuotala.game.Game;
 import ahuotala.game.Renderer;
 import ahuotala.graphics.Sprite;
-import java.awt.Graphics;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;

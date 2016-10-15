@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package ahuotala.game;
 
 import java.awt.Color;
@@ -18,15 +13,15 @@ public class Inventory {
     /**
      * Inventory columns
      */
-    public static final int cols = 6;
+    public static final int COLS = 6;
     /**
      * Inventory rows
      */
-    public static final int rows = 8;
+    public static final int ROWS = 8;
     /**
      * Slot amount
      */
-    private final int slots = cols * rows;
+    private final int slots = COLS * ROWS;
     /**
      * ItemStack
      */
@@ -49,7 +44,7 @@ public class Inventory {
      */
     public Inventory() {
         //Initialize the inventory, an array of ItemStacks
-        inventory = new ItemStack[cols * rows];
+        inventory = new ItemStack[COLS * ROWS];
     }
 
     /**
@@ -193,8 +188,8 @@ public class Inventory {
         //1: (4,4) , 2: (84,4), 3: (164,4), ...
         //9: (4,84), 10: (84,84), 11: (164,84), ...
         int slot = 0;
-        for (int col = 0; col < cols; col++) {
-            for (int row = 0; row < rows; row++) {
+        for (int col = 0; col < COLS; col++) {
+            for (int row = 0; row < ROWS; row++) {
                 int mouseX = MouseHandler.x;
                 int mouseY = MouseHandler.y;
                 if (mouseX >= x + 4 + 80 * row && mouseX < x + 4 + 80 * row + 72 && mouseY >= y + 4 + 80 * col && mouseY < y + 4 + 80 * col + 72) {

@@ -73,6 +73,7 @@ public class Menu {
                             File tmpFile = fc.getSelectedFile();
                             game.loadSaveFile(tmpFile);
                             Game.menuState = MenuState.NONE;
+                            Game.playing = true;
                         }
                     }
                     //New game
@@ -82,6 +83,7 @@ public class Menu {
                             if (!tmpName.isEmpty()) {
                                 game.newGame(tmpName);
                                 Game.menuState = MenuState.NONE;
+                                Game.playing = true;
                             } else {
                                 Game.menuState = MenuState.SINGLEPLAYER;
                             }

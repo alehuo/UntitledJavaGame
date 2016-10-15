@@ -15,6 +15,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.Scanner;
 import javax.swing.JFrame;
 
 /**
@@ -23,122 +24,218 @@ import javax.swing.JFrame;
  */
 public class Game extends Canvas implements Runnable, Tickable {
 
+    /**
+     * SerialVersionUID
+     */
     private static final long serialVersionUID = 1L;
 
+    /**
+     * Debug mode
+     */
     public static boolean DEBUG = false;
 
+    /**
+     * Player debug mode
+     */
     public static boolean DEBUG_PLAYER = false;
 
-    //Window width
-    public static final int WINDOW_WIDTH = 1600;
+    //Graphics device
+    public static GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
 
-    //Window height
+    /**
+     * Window width
+     */
+    public static final int WINDOW_WIDTH = (int) Math.floor(gd.getDisplayMode().getWidth() * 0.80);
+
+    /**
+     * Window height
+     */
     public static final int WINDOW_HEIGHT = WINDOW_WIDTH / 16 * 9;
 
-    //Tile scale
+    /**
+     * Tile scale
+     */
     public static final int SCALE = 1;
 
-    //Font scale
+    /**
+     * Font scale
+     */
     public static final double FONTSCALE = 0.7;
 
-    //Center x coordinate
-    public static final int CENTERX = (int) Math.floor(WINDOW_WIDTH / 2);
+    /**
+     * Center X coordinate
+     */
+    public static final int CENTERX = WINDOW_WIDTH / 2;
 
-    //Center y coordinate
-    public static final int CENTERY = (int) Math.floor(WINDOW_HEIGHT / 2);
+    /**
+     * Center Y coordinate
+     */
+    public static final int CENTERY = WINDOW_HEIGHT / 2;
 
-    //Game name
+    /**
+     * Game title
+     */
     public static final String NAME = "Untitled Game";
 
-    //Save file name
+    /**
+     * Save file name
+     */
     private String saveFileName = "save.sav";
 
-    //JFrame object
+    /**
+     * JFrame
+     */
     private final JFrame frame;
 
-    //Game state
+    /**
+     * Game state
+     */
     public boolean running = false;
 
-    //Tick count
+    /**
+     * Tick count
+     */
     public int tickCount = 0;
 
-    //Tickrate; amount of game updates per second
+    /**
+     * Tick rate
+     */
     public static double tickrate = 60D;
 
-    //Image
+    /**
+     * Image data
+     */
     private final BufferedImage image = new BufferedImage(WINDOW_WIDTH, WINDOW_HEIGHT, BufferedImage.TYPE_INT_RGB);
 
-    //Pixels
+    /**
+     * Pixel array
+     */
     private int[] pixels = ((DataBufferInt) image.getRaster().getDataBuffer()).getData();
 
-    //Renderer
+    /**
+     * Renderer
+     */
     private Renderer renderer;
-    
-    //Graphics
+
+    /**
+     * Graphics object
+     */
     private Graphics g;
 
-    //Sprite sheet
+    /**
+     * SpriteSheet
+     */
     public static SpriteSheet spriteSheet = new SpriteSheet("spriteSheet_2.png");
 
-    //Font
+    /**
+     * Current font
+     */
     private Font currentFont;
 
-    //Player
-    private final Player player = new Player();
-
-    //NPC test
+    /**
+     * NPC test
+     */
     private final InteractableNpc npc = new InteractableNpc("TestNPC");
 
-    //Animation ticker
+    /**
+     * Animation ticker
+     */
     public static final AnimationTicker animationTicker = new AnimationTicker();
 
-    //NPC ticker
+    /**
+     * NPC ticker
+     */
     public static final NpcTicker npcTicker = new NpcTicker();
 
-    //Animations
+    /**
+     * Animation for player low health
+     */
     private final Animation playerLowHealth;
 
-    //Save
+    /**
+     * Save object
+     */
     private SaveGame save;
 
-    //Map
-    Map map = new Map("map3");
+    /**
+     * Map
+     */
+    public Map map = new Map("map3");
 
-    //Input handler
+    /**
+     * Player
+     */
+    public static final Player player = new Player();
+
+    /**
+     * Input handler
+     */
     private final PlayerInputHandler inputHandler = new PlayerInputHandler(player, map, this);
 
-    //Inventory
+    /**
+     * Inventory
+     */
     public static final Inventory inventory = new Inventory();
+
+    /**
+     * Inventory state
+     */
     public static boolean SHOW_INVENTORY = false;
 
-    //ItemRegistry
+    /**
+     * ItemRegistry
+     */
     public static ItemRegistry itemRegistry = new ItemRegistry();
 
-    //Mouse handler
+    /**
+     * MouseHandler
+     */
     private final MouseHandler mouseHandler = new MouseHandler(inventory);
 
-    //Client
+    /**
+     * Client
+     */
     private Client client;
+
+    /**
+     * Connection state Note: Multiplayer functionality is not currently
+     * implemented.
+     */
     public static boolean isConnectedToServer = false;
 
-    //Menu
+    /**
+     * Menu
+     */
     private Menu menu;
+
+    /**
+     * Menu state
+     */
     public static MenuState menuState = MenuState.MAINMENU;
+
+    /**
+     * Is the menu open?
+     */
     public static boolean isInMenu = true;
+    
+    /**
+     * Is the save loaded?
+     */
+    public static boolean playing = false;
 
     /**
      * Constructor
      */
     public Game() {
         renderer = new Renderer(WINDOW_WIDTH, WINDOW_HEIGHT);
-        this.setMinimumSize(new Dimension(WINDOW_WIDTH, WINDOW_HEIGHT));
-        this.setMaximumSize(new Dimension(WINDOW_WIDTH, WINDOW_HEIGHT));
-        this.setPreferredSize(new Dimension(WINDOW_WIDTH, WINDOW_HEIGHT));
+        super.setMinimumSize(new Dimension(WINDOW_WIDTH, WINDOW_HEIGHT));
+        super.setMaximumSize(new Dimension(WINDOW_WIDTH, WINDOW_HEIGHT));
+        super.setPreferredSize(new Dimension(WINDOW_WIDTH, WINDOW_HEIGHT));
 
         //Listeners
-        addKeyListener(inputHandler);
-        addMouseListener(mouseHandler);
-        addMouseMotionListener(mouseHandler);
+        super.addKeyListener(inputHandler);
+        super.addMouseListener(mouseHandler);
+        super.addMouseMotionListener(mouseHandler);
 
         /**
          * Load sprites and animations here
@@ -227,7 +324,7 @@ public class Game extends Canvas implements Runnable, Tickable {
     public void save() {
         File saveFile = new File(saveFileName);
         //If the file doesn't exist, create it
-        if (!saveFile.exists()) {
+        if (!saveFile.exists() && playing) {
             try {
                 System.out.println("Save file doesn't exist; Creating a new file..");
                 saveFile.createNewFile();
@@ -236,7 +333,7 @@ public class Game extends Canvas implements Runnable, Tickable {
             }
         }
         try {
-            if (save != null) {
+            if (save != null && playing) {
                 //Save the game
                 System.out.println("Saving game..");
                 save.saveState(player.getX() / Game.SCALE, player.getY() / Game.SCALE, player.getHealth(), player.getXp(), player.getDirection(), inventory.getInventory());
@@ -385,7 +482,6 @@ public class Game extends Canvas implements Runnable, Tickable {
             //Base image
             g.drawImage(image, 0, 0, getWidth(), getHeight(), null);
 
-
             //Font
             currentFont = g.getFont();
             g.setFont(new Font(currentFont.getName(), Font.BOLD, (int) Math.floor(18 * FONTSCALE)));
@@ -447,5 +543,6 @@ public class Game extends Canvas implements Runnable, Tickable {
     public static void main(String[] args) {
         //Start the game
         new Game().start();
+        new Console().run();
     }
 }

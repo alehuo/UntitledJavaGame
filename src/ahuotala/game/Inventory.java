@@ -15,27 +15,67 @@ import java.awt.image.BufferedImage;
  */
 public class Inventory {
 
+    /**
+     * Inventory columns
+     */
     public static final int cols = 6;
+    /**
+     * Inventory rows
+     */
     public static final int rows = 8;
+    /**
+     * Slot amount
+     */
     private final int slots = cols * rows;
+    /**
+     * ItemStack
+     */
     private ItemStack[] inventory;
+    /**
+     * Slot to move to
+     */
     private int movingSlot = -1;
+    /**
+     * Temporary itemStack
+     */
     private ItemStack tmpStack;
+    /**
+     * Temporary itemStack 2
+     */
     private ItemStack tmpStack2;
 
+    /**
+     * Constructor
+     */
     public Inventory() {
         //Initialize the inventory, an array of ItemStacks
         inventory = new ItemStack[cols * rows];
     }
 
+    /**
+     * Returns the Inventory array
+     *
+     * @return Inventory
+     */
     public ItemStack[] getInventory() {
         return inventory;
     }
 
+    /**
+     * Sets the inventory object
+     *
+     * @param inventory Inventory
+     */
     public void setInventory(ItemStack[] inventory) {
         this.inventory = inventory;
     }
 
+    /**
+     * Add an itemStack to inventory. Stacks combine automatically if there are
+     * stacks that are not full.
+     *
+     * @param stack
+     */
     public void addStack(ItemStack stack) {
         for (int i = 0; i < inventory.length; i++) {
             //We have the same item in the stack and the stack is not full
@@ -70,6 +110,13 @@ public class Inventory {
         }
     }
 
+    /**
+     * Add a new stack NOTE: This method is used in the addStack() -method. Use
+     * that method instead of this!
+     *
+     * @param stack ItemStack
+     * @return Inventory slot ID
+     */
     public int addNewStack(ItemStack stack) {
         for (int i = 0; i < inventory.length; i++) {
             if (inventory[i] == null) {
@@ -80,19 +127,37 @@ public class Inventory {
         return -1;
     }
 
+    /**
+     * Add items to stack
+     *
+     * @param stackId
+     * @param stack
+     * @return Itemstack ID
+     */
     public int addToStack(int stackId, ItemStack stack) {
         return -1;
     }
 
+    /**
+     * Remove stack from inventory
+     *
+     * @param stackId Inventory slot ID
+     */
     public void removeStack(int stackId) {
         inventory[stackId] = null;
     }
 
+    /**
+     * Get itemStack by ID
+     *
+     * @param stackId
+     * @return
+     */
     public ItemStack getItemStack(int stackId) {
         if (inventory.length - 1 > stackId) {
             return inventory[stackId];
         }
-        return inventory[-1];
+        return null;
     }
 
     public int getStackCount() {
@@ -105,11 +170,18 @@ public class Inventory {
         return itemCount;
     }
 
+    /**
+     * Renders the inventory
+     *
+     * @param g
+     */
     public void renderInventory(Graphics g) {
         //Base image
         BufferedImage inventoryImage = Game.spriteSheet.getInventory();
+        //X and Y coordinate
         int x = (int) Math.floor((Game.WINDOW_WIDTH - inventoryImage.getWidth()) / 2);
         int y = (int) Math.floor((Game.WINDOW_HEIGHT - inventoryImage.getHeight()) / 2);
+        //Draw the inventory background
         g.drawImage(inventoryImage, x, y, null);
         //Tooltip
         g.setColor(Color.white);

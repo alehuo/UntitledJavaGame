@@ -29,4 +29,12 @@ public class ItemRegistry {
         return new Item(ItemId.NONE);
     }
 
+    public HashMap<ItemId, Item> getItems() {
+        return items;
+    }
+
+    public void setItems(HashMap<ItemId, Item> items) {
+        this.items = items;
+    }
+
 }

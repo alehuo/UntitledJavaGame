@@ -1,7 +1,6 @@
 package ahuotala.entities;
 
 import ahuotala.game.Game;
-import static ahuotala.game.Game.DEBUG_PLAYER;
 import ahuotala.game.Renderer;
 import ahuotala.game.Tickable;
 import ahuotala.graphics.animation.Animation;
@@ -147,11 +146,7 @@ public class Player implements Entity, Tickable {
     }
 
     public void increaseHealth(int health) {
-        if (this.health + health <= maxHealth) {
-            this.health += health;
-        } else {
-            health = maxHealth;
-        }
+        setHealth(getHealth() + health);
     }
 
     public int getHealth() {

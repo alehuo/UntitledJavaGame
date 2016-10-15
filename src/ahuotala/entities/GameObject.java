@@ -1,6 +1,5 @@
 package ahuotala.entities;
 
-import ahuotala.game.Game;
 import ahuotala.game.Renderer;
 import ahuotala.graphics.Sprite;
 import java.awt.Color;
@@ -17,8 +16,6 @@ public class GameObject {
     private final int y;
     private final int width;
     private final int height;
-    private final int radiusX = 5;
-    private final int radiusY = 5;
     private final Sprite sprite;
     private final Rectangle bounds;
 
@@ -44,7 +41,6 @@ public class GameObject {
 
     public void render(Renderer r, Player p) {
         r.renderSprite(sprite, x + p.getOffsetX(), y + p.getOffsetY());
-//        g.drawImage(sprite, x + p.getOffsetX(), y + p.getOffsetY(), width * Game.SCALE, height * Game.SCALE, null);
     }
 
     public void drawBoundaries(Graphics g, Player p) {

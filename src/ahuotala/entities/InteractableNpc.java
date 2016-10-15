@@ -9,6 +9,7 @@ import ahuotala.game.Game;
 import static ahuotala.game.Game.WINDOW_HEIGHT;
 import static ahuotala.game.Game.animationTicker;
 import static ahuotala.game.Game.spriteSheet;
+import ahuotala.game.Renderer;
 import ahuotala.game.Tickable;
 import ahuotala.graphics.animation.Animation;
 import java.awt.Color;
@@ -32,7 +33,7 @@ public class InteractableNpc implements Entity, Interactable, Tickable {
     //NPC name
     private final String name;
     //Movement step
-    private final int step = 1 * Game.SCALE;
+    private final int step = 1;
     //Direction
     private Direction direction = Direction.DOWN;
     //Is the NPC walking?
@@ -63,7 +64,7 @@ public class InteractableNpc implements Entity, Interactable, Tickable {
     private final Animation playerWalkingDown;
     private final Animation playerWalkingLeft;
     private final Animation playerWalkingRight;
-    
+
     public InteractableNpc(String name) {
         this.interval = 100;
         this.name = name;
@@ -77,45 +78,45 @@ public class InteractableNpc implements Entity, Interactable, Tickable {
         animationTicker.register(playerWalkingLeft);
         animationTicker.register(playerWalkingRight);
     }
-    
+
     public String getName() {
         return name;
     }
-    
+
     public boolean isWalking() {
         return isWalking;
     }
-    
+
     public void setWalkingState(boolean isWalking) {
         this.isWalking = isWalking;
     }
-    
+
     @Override
     public int getX() {
         return x;
     }
-    
+
     @Override
     public int getY() {
         return y;
     }
-    
+
     @Override
     public void setX(int x) {
         this.x = x * Game.SCALE;
         startX = x * Game.SCALE;
     }
-    
+
     @Override
     public void setY(int y) {
         this.y = y * Game.SCALE;
         startY = y * Game.SCALE;
     }
-    
+
     public void setMovementState(boolean state) {
         canMove = state;
     }
-    
+
     @Override
     /**
      * Use the tick() -method to add special features to npcs.
@@ -222,7 +223,7 @@ public class InteractableNpc implements Entity, Interactable, Tickable {
                     moveTicks = false;
                     isWalking = false;
                 }
-                
+
             } else {
                 if (count >= interval) {
                     interval = (random.nextInt(400) + 50) * (int) Math.ceil(Game.tickrate / 60);
@@ -234,28 +235,28 @@ public class InteractableNpc implements Entity, Interactable, Tickable {
                     count = 0;
                 }
                 count++;
-                
+
             }
-            
+
         }
-        
+
     }
-    
-    public void renderNpc(Graphics g, Player player) {
+
+    public void renderNpc(Graphics g, Renderer r, Player player) {
 //        spriteSheet.paint(g, "player_shadow", this.getX() + player.getOffsetX() - 8, this.getY() + player.getOffsetY() - 13);
         if (this.isWalking()) {
             switch (this.getDirection()) {
                 case UP:
-                    playerWalkingUp.nextFrame(g, this.getX() + player.getOffsetX(), this.getY() + player.getOffsetY());
+                    playerWalkingUp.nextFrame(r, this.getX() + player.getOffsetX(), getY() + player.getOffsetY());
                     break;
                 case DOWN:
-                    playerWalkingDown.nextFrame(g, this.getX() + player.getOffsetX(), this.getY() + player.getOffsetY());
+                    playerWalkingDown.nextFrame(r, this.getX() + player.getOffsetX(), getY() + player.getOffsetY());
                     break;
                 case LEFT:
-                    playerWalkingLeft.nextFrame(g, this.getX() + player.getOffsetX(), this.getY() + player.getOffsetY());
+                    playerWalkingLeft.nextFrame(r, this.getX() + player.getOffsetX(), getY() + player.getOffsetY());
                     break;
                 case RIGHT:
-                    playerWalkingRight.nextFrame(g, this.getX() + player.getOffsetX(), this.getY() + player.getOffsetY());
+                    playerWalkingRight.nextFrame(r, this.getX() + player.getOffsetX(), getY() + player.getOffsetY());
                     break;
                 default:
                     break;
@@ -263,22 +264,22 @@ public class InteractableNpc implements Entity, Interactable, Tickable {
         } else {
             switch (this.getDirection()) {
                 case UP:
-                    spriteSheet.paint(g, "player_up", this.getX() + player.getOffsetX(), this.getY() + player.getOffsetY());
+                    spriteSheet.paint(r, "player_up", this.getX() + player.getOffsetX(), getY() + player.getOffsetY());
                     break;
                 case DOWN:
-                    spriteSheet.paint(g, "player_down", this.getX() + player.getOffsetX(), this.getY() + player.getOffsetY());
+                    spriteSheet.paint(r, "player_down", this.getX() + player.getOffsetX(), getY() + player.getOffsetY());
                     break;
                 case LEFT:
-                    spriteSheet.paint(g, "player_left", this.getX() + player.getOffsetX(), this.getY() + player.getOffsetY());
+                    spriteSheet.paint(r, "player_left", this.getX() + player.getOffsetX(), getY() + player.getOffsetY());
                     break;
                 case RIGHT:
-                    spriteSheet.paint(g, "player_right", this.getX() + player.getOffsetX(), this.getY() + player.getOffsetY());
+                    spriteSheet.paint(r, "player_right", this.getX() + player.getOffsetX(), getY() + player.getOffsetY());
                     break;
                 default:
                     break;
             }
         }
-        
+
         if (Game.DEBUG) {
             //Movement boundaries
             this.drawBoundaries(g, player.getOffsetX(), player.getOffsetY());
@@ -290,55 +291,55 @@ public class InteractableNpc implements Entity, Interactable, Tickable {
             g.drawString("Press E to talk with \"" + this.getName() + "\"", 40, WINDOW_HEIGHT - 32);
         }
     }
-    
+
     public void drawBoundaries(Graphics g, int oX, int oY) {
         g.setColor(Color.yellow);
         g.draw3DRect(startX - movingAreaX + oX, startY - movingAreaY + oY, 2 * movingAreaX + 32, 2 * movingAreaY + 32, false);
     }
-    
+
     public void drawInteractionBoundaries(Graphics g, int oX, int oY) {
         g.setColor(Color.blue);
         g.draw3DRect(x - rX + oX, y - rY + oY, 4 * rX, 4 * rY, false);
     }
-    
+
     @Override
     public void setInteractionRadiusX(int rX) {
         this.rX = rX * Game.SCALE;
     }
-    
+
     @Override
     public void setInteractionRadiusY(int rY) {
         this.rY = rY * Game.SCALE;
     }
-    
+
     @Override
     public int getInteractionRadiusX() {
         return rX;
     }
-    
+
     @Override
     public int getInteractionRadiusY() {
         return rY;
     }
-    
+
     @Override
     public int getNpcId() {
         return npcId;
     }
-    
+
     @Override
     public void setNpcId(int id) {
         this.npcId = id;
     }
-    
+
     public Direction getDirection() {
         return direction;
     }
-    
+
     public boolean getWalkingState() {
         return moveTicks;
     }
-    
+
     @Override
     public boolean isWithinInteractionDistance(Player player) {
         int offsetX = 8;

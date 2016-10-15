@@ -1,10 +1,11 @@
 package ahuotala.entities;
 
 import ahuotala.game.Game;
+import ahuotala.game.Renderer;
+import ahuotala.graphics.Sprite;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Rectangle;
-import java.awt.image.BufferedImage;
 
 /**
  *
@@ -18,10 +19,10 @@ public class GameObject {
     private final int height;
     private final int radiusX = 5;
     private final int radiusY = 5;
-    private final BufferedImage sprite;
+    private final Sprite sprite;
     private final Rectangle bounds;
 
-    public GameObject(int x, int y, BufferedImage sprite) {
+    public GameObject(int x, int y, Sprite sprite) {
         this.x = x * Game.SCALE;
         this.y = y * Game.SCALE;
         this.sprite = sprite;
@@ -41,8 +42,9 @@ public class GameObject {
         return false;
     }
 
-    public void render(Graphics g, Player p) {
-        g.drawImage(sprite, x + p.getOffsetX(), y + p.getOffsetY(), width * Game.SCALE, height * Game.SCALE, null);
+    public void render(Renderer r, Player p) {
+        r.renderSprite(sprite, x + p.getOffsetX(), y + p.getOffsetY());
+//        g.drawImage(sprite, x + p.getOffsetX(), y + p.getOffsetY(), width * Game.SCALE, height * Game.SCALE, null);
     }
 
     public void drawBoundaries(Graphics g, Player p) {

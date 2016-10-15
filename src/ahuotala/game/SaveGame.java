@@ -13,7 +13,7 @@ public class SaveGame implements java.io.Serializable {
      * Default variables
      */
     //X
-    private int x = 180;
+    private int x = 580;
     //Y
     private int y = 100;
     //Max health for the player

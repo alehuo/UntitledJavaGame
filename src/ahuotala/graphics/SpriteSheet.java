@@ -1,8 +1,7 @@
 package ahuotala.graphics;
 
-import ahuotala.game.Game;
 import ahuotala.game.ItemId;
-import java.awt.Graphics;
+import ahuotala.game.Renderer;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
@@ -26,7 +25,7 @@ public class SpriteSheet {
     private int[] inventoryImagePixels;
     private boolean imageLoaded = false;
     private boolean inventoryLoaded = false;
-    private HashMap<String, BufferedImage> sprites;
+    private HashMap<String, Sprite> sprites;
 
     public SpriteSheet(String spriteSheetPath) {
         //Alustetaan hajautustaulu
@@ -69,7 +68,9 @@ public class SpriteSheet {
                     int y = Integer.parseInt(lineData[2]);
                     int width = Integer.parseInt(lineData[3]);
                     int height = Integer.parseInt(lineData[4]);
-                    sprites.put(name, image.getSubimage(x, y, width, height));
+                    
+                    sprites.put(name, getSpriteFromImage(x, y, width, height));
+                    System.out.println(sprites.get(name).getPixels().length);
                 }
                 stream.close();
             }
@@ -91,6 +92,24 @@ public class SpriteSheet {
         return null;
     }
 
+    public Sprite getSpriteFromImage(int dx, int dy, int width, int height) {
+        int[] pixelArray = new int[width * height];
+        for (int x = 0; x < width; x++) {
+            for (int y = 0; y < height; y++) {
+                if (x + dx < image.getWidth() & y + dy < image.getHeight()) {
+                    if (imagePixels[x + dx + (y + dy) * image.getWidth()] != 0xeb0bff) {
+                        pixelArray[x + y * width] = imagePixels[x + dx + (y + dy) * image.getWidth()];
+                    }
+                }
+            }
+        }
+        return new Sprite(width, height, pixelArray);
+    }
+
+    public Sprite getSpriteByName(String name) {
+        return sprites.get(name);
+    }
+
     /**
      * Returns the inventory image pixel array
      *
@@ -103,7 +122,7 @@ public class SpriteSheet {
         return null;
     }
 
-    public BufferedImage getItemIcon(ItemId itemId) {
+    public Sprite getItemIcon(ItemId itemId) {
         if (sprites.containsKey(itemId + "")) {
             return sprites.get(itemId + "");
         }
@@ -113,15 +132,15 @@ public class SpriteSheet {
     /**
      * Metodi, jolla piirretään näyttöön haluttu kuva
      *
-     * @param g Grafiikka
+     * @param r Renderöijä
      * @param name Nimi
      * @param x X-koord. johon kuva ladataan
      * @param y Y-koord. johon kuva ladataan
      */
-    public void paint(Graphics g, String name, int x, int y) {
+    public void paint(Renderer r, String name, int x, int y) {
         if (sprites.containsKey(name)) {
-            BufferedImage tmpImg = sprites.get(name);
-            g.drawImage(tmpImg, x, y, Game.SCALE * tmpImg.getWidth(), Game.SCALE * tmpImg.getHeight(), null);
+            Sprite tmpSprite = sprites.get(name);
+            r.renderSprite(tmpSprite, x, y);
         }
     }
 
@@ -135,12 +154,12 @@ public class SpriteSheet {
      * @param height Kuva-alueen korkeus
      * @return BufferedImage
      */
-    public BufferedImage getSprite(String name, int x, int y, int width, int height) {
+    public Sprite getSprite(String name, int x, int y, int width, int height) {
 
         if (!sprites.containsKey(name) && imageLoaded) {
-            BufferedImage tmpImg = image.getSubimage(x, y, width, height);
-            sprites.put(name, tmpImg);
-            return tmpImg;
+            Sprite tmpSprite = getSpriteFromImage(x, y, width, height);
+            sprites.put(name, tmpSprite);
+            return tmpSprite;
         } else {
             return sprites.get(name);
         }
@@ -156,12 +175,12 @@ public class SpriteSheet {
      * @param widthHeight Kuva-alueen leveys ja korkeus
      * @return BufferedImage
      */
-    public BufferedImage getSprite(String name, int x, int y, int widthHeight) {
+    public Sprite getSprite(String name, int x, int y, int widthHeight) {
 
         if (!sprites.containsKey(name) && imageLoaded) {
-            BufferedImage tmpImg = image.getSubimage(x, y, widthHeight, widthHeight);
-            sprites.put(name, tmpImg);
-            return tmpImg;
+            Sprite tmpSprite = getSpriteFromImage(x, y, widthHeight, widthHeight);
+            sprites.put(name, tmpSprite);
+            return tmpSprite;
         } else {
             return sprites.get(name);
         }

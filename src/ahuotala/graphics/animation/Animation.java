@@ -1,8 +1,9 @@
 package ahuotala.graphics.animation;
 
 import ahuotala.game.Game;
+import ahuotala.game.Renderer;
+import ahuotala.graphics.Sprite;
 import java.awt.Graphics;
-import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -15,7 +16,7 @@ import java.util.ArrayList;
  */
 public final class Animation {
 
-    private ArrayList<BufferedImage> frames;
+    private ArrayList<Sprite> frames;
     //Interval in frames
     private final int interval;
     //Count
@@ -36,12 +37,13 @@ public final class Animation {
         count++;
     }
 
-    public void nextFrame(Graphics g, int x, int y) {
+    public void nextFrame(Renderer r, int x, int y) {
         if (count >= interval * frames.size()) {
             count = 0;
         }
         index = (int) Math.floor(count / interval);
-        g.drawImage(frames.get(index), x, y, frames.get(index).getWidth() * Game.SCALE, frames.get(index).getHeight() * Game.SCALE, null);
+//        r.renderSprite(r, x, y, frames.get(index));
+//        g.drawImage(frames.get(index), x, y, frames.get(index).getWidth(), frames.get(index).getHeight(), null);
     }
 
     public int getWidth() {

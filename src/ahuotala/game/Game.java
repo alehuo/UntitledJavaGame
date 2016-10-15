@@ -44,7 +44,7 @@ public class Game extends Canvas implements Runnable, Tickable {
     /**
      * Window width
      */
-    public static final int WINDOW_WIDTH = (int) Math.floor(gd.getDisplayMode().getWidth() * 0.80);
+    public static final int WINDOW_WIDTH = (int) Math.floor(gd.getDisplayMode().getWidth() * 0.40);
 
     /**
      * Window height
@@ -216,7 +216,7 @@ public class Game extends Canvas implements Runnable, Tickable {
      * Is the menu open?
      */
     public static boolean isInMenu = true;
-    
+
     /**
      * Is the save loaded?
      */
@@ -226,10 +226,10 @@ public class Game extends Canvas implements Runnable, Tickable {
      * Constructor
      */
     public Game() {
-        renderer = new Renderer(WINDOW_WIDTH, WINDOW_HEIGHT);
-        super.setMinimumSize(new Dimension(WINDOW_WIDTH, WINDOW_HEIGHT));
-        super.setMaximumSize(new Dimension(WINDOW_WIDTH, WINDOW_HEIGHT));
-        super.setPreferredSize(new Dimension(WINDOW_WIDTH, WINDOW_HEIGHT));
+        renderer = new Renderer(WINDOW_WIDTH, WINDOW_HEIGHT, pixels);
+        super.setMinimumSize(new Dimension(WINDOW_WIDTH * SCALE, WINDOW_HEIGHT * SCALE));
+        super.setMaximumSize(new Dimension(WINDOW_WIDTH * SCALE, WINDOW_HEIGHT * SCALE));
+        super.setPreferredSize(new Dimension(WINDOW_WIDTH * SCALE, WINDOW_HEIGHT * SCALE));
 
         //Listeners
         super.addKeyListener(inputHandler);
@@ -335,7 +335,7 @@ public class Game extends Canvas implements Runnable, Tickable {
             if (save != null && playing) {
                 //Save the game
                 System.out.println("Saving game..");
-                save.saveState(player.getX() / Game.SCALE, player.getY() / Game.SCALE, player.getHealth(), player.getXp(), player.getDirection(), inventory.getInventory());
+                save.saveState(player.getX(), player.getY(), player.getHealth(), player.getXp(), player.getDirection(), inventory.getInventory());
                 FileOutputStream fileOutput = new FileOutputStream(saveFileName);
                 ObjectOutputStream out = new ObjectOutputStream(fileOutput);
                 out.writeObject(save);
@@ -364,8 +364,8 @@ public class Game extends Canvas implements Runnable, Tickable {
             e.printStackTrace();
         }
         //Set player x, y, health, xp and direction
-        player.setX(save.getX() * Game.SCALE);
-        player.setY(save.getY() * Game.SCALE);
+        player.setX(save.getX());
+        player.setY(save.getY());
         player.setHealth(save.getHealth());
         player.setXp(save.getXp());
         player.setDirection(save.getDirection());
@@ -380,8 +380,8 @@ public class Game extends Canvas implements Runnable, Tickable {
         }
         save = new SaveGame();
         //Set player x, y, health, xp and direction
-        player.setX(save.getX() * Game.SCALE);
-        player.setY(save.getY() * Game.SCALE);
+        player.setX(save.getX());
+        player.setY(save.getY());
         player.setHealth(save.getHealth());
         player.setXp(save.getXp());
         player.setDirection(save.getDirection());
@@ -417,7 +417,7 @@ public class Game extends Canvas implements Runnable, Tickable {
             delta += (now - lastTime) / nsPerTick;
             lastTime = now;
             //Use false to limit fps to the number of ticks
-            boolean shouldRender = false;
+            boolean shouldRender = true;
             while (delta >= 1) {
                 //Tick
                 ticks++;
@@ -491,16 +491,16 @@ public class Game extends Canvas implements Runnable, Tickable {
                 //If the game is running, render map & npcs
 
                 //Map
-                map.renderMap(g, player);
+                map.renderMap(g, renderer, player);
                 //Other objects
-                map.renderObjects(g, player);
+                map.renderObjects(g, renderer, player);
                 map.detectCollision(player);
 
                 //NPCs here
                 //Draw npc
-                npc.renderNpc(g, player);
+                npc.renderNpc(g, renderer, player);
 
-                player.render(g, map);
+                player.render(renderer, g, map);
 
                 //Player health system
                 int playerFullHearts = (int) Math.floor(player.getHealth() / 20);
@@ -510,7 +510,7 @@ public class Game extends Canvas implements Runnable, Tickable {
                 g.drawString(player.getHealth() + " / " + player.getMaxHealth() + " LP", heartX - 78, heartY + 22);
                 g.drawString(player.getXp() + " xp", heartX - 78, heartY + 44);
                 if (playerFullHearts == 0 && playerHalfHearts == 0 && player.getHealth() > 0) {
-                    playerLowHealth.nextFrame(g, heartX, heartY);
+                    playerLowHealth.nextFrame(renderer, heartX, heartY);
                 } else if (player.getHealth() == 0) {
                     g.setColor(Color.red);
                     //Black background
@@ -518,11 +518,11 @@ public class Game extends Canvas implements Runnable, Tickable {
                     g.drawString("YOU DIED", CENTERX - 48, CENTERY);
                 } else {
                     for (int hearts = 0; hearts < playerFullHearts; hearts++) {
-                        spriteSheet.paint(g, "full_heart", heartX, heartY);
+                        spriteSheet.paint(renderer, "full_heart", heartX, heartY);
                         heartX += 26 * Game.SCALE;
                     }
                     if (playerHalfHearts > 0) {
-                        spriteSheet.paint(g, "half_a_heart", heartX, heartY);
+                        spriteSheet.paint(renderer, "half_a_heart", heartX, heartY);
                     }
                 }
 

@@ -3,11 +3,12 @@ package ahuotala.map;
 import ahuotala.entities.GameObject;
 import ahuotala.entities.Player;
 import ahuotala.game.Game;
+import ahuotala.game.Renderer;
 import ahuotala.game.Tile;
+import ahuotala.graphics.Sprite;
 import ahuotala.graphics.animation.Animation;
 import java.awt.Color;
 import java.awt.Graphics;
-import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -25,7 +26,7 @@ public class Map {
     private ArrayList<String> lines;
     private ArrayList<Tile> tileEntities;
     private ArrayList<GameObject> gameObjects;
-    private HashMap<String, BufferedImage> tiles;
+    private HashMap<String, Sprite> tiles;
     private HashMap<String, Animation> animations;
     private int scale;
     private int offsetX = 0;
@@ -156,8 +157,8 @@ public class Map {
                     }
                     lines.add(line);
                     String[] splittedLine = line.split(",", -1);
-                    int x = Integer.parseInt(splittedLine[0])*Game.SCALE;
-                    int y = Integer.parseInt(splittedLine[1])*Game.SCALE;
+                    int x = Integer.parseInt(splittedLine[0]) * Game.SCALE;
+                    int y = Integer.parseInt(splittedLine[1]) * Game.SCALE;
                     //Calculate max x, y and z
                     if (x < minX) {
                         minX = x;
@@ -231,7 +232,7 @@ public class Map {
         }
     }
 
-    public void renderMap(Graphics g, Player player) {
+    public void renderMap(Graphics g, Renderer r, Player player) {
         offsetX = player.getOffsetX();
         offsetY = player.getOffsetY();
         ArrayList<String> tileTypes = new ArrayList<>();
@@ -278,7 +279,7 @@ public class Map {
                 }
                 if (animations.containsKey(tileType)) {
                     //Draw next frame
-                    animations.get(tileType).nextFrame(g, x + offsetX, y + offsetY);
+                    animations.get(tileType).nextFrame(r, x + offsetX, y + offsetY);
                     if (Game.DEBUG) {
                         if (animations.containsKey(tileType)) {
                             g.fill3DRect(x + offsetX, y + offsetY, animations.get(tileType).getWidth() * scale, animations.get(tileType).getHeight() * scale, false);
@@ -287,7 +288,8 @@ public class Map {
                     tileCount++;
                 } else if (tiles.containsKey(tileType)) {
                     //Draw image
-                    g.drawImage(tiles.get(tileType), x + offsetX, y + offsetY, tiles.get(tileType).getWidth() * scale, tiles.get(tileType).getHeight() * scale, null);
+                    r.renderSprite(tiles.get(tileType), x + offsetX, y + offsetY);
+//                    g.drawImage(tiles.get(tileType), x + offsetX, y + offsetY, tiles.get(tileType).getWidth() * scale, tiles.get(tileType).getHeight() * scale, null);
                     //Debug
                     if (Game.DEBUG) {
                         g.setColor(Color.red);
@@ -327,9 +329,9 @@ public class Map {
         }
     }
 
-    public void renderObjects(Graphics g, Player p) {
+    public void renderObjects(Graphics g, Renderer r, Player p) {
         for (GameObject gameObj : gameObjects) {
-            gameObj.render(g, p);
+            gameObj.render(r, p);
             if (Game.DEBUG) {
                 gameObj.drawBoundaries(g, p);
             }
@@ -344,8 +346,9 @@ public class Map {
         return currentTileY;
     }
 
-    public void renderObject(Graphics g, int x, int y, String name) {
-        g.drawImage(tiles.get(name), x + offsetX, y + offsetY, tiles.get(name).getWidth() * scale, tiles.get(name).getHeight() * scale, null);
+    public void renderObject(Renderer r, int x, int y, String name) {
+        r.renderSprite(Game.spriteSheet.getSpriteByName(name), x + offsetX, y + offsetY);
+//        g.drawImage(tiles.get(name), x + offsetX, y + offsetY, tiles.get(name).getWidth() * scale, tiles.get(name).getHeight() * scale, null);
     }
 
 }

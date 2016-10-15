@@ -238,7 +238,8 @@ public class Inventory {
                         slotY = mouseY - 36;
                     }
                     //Item icon
-                    g.drawImage(Game.spriteSheet.getItemIcon(inventory[slot].getItemId()), slotX, slotY, 72, 72, null);
+                    //TODO
+//                    g.drawImage(Game.spriteSheet.getItemIcon(inventory[slot].getItemId()), slotX, slotY, 72, 72, null);
                     g.setColor(Color.YELLOW);
                     int fontOffsetX = 2;
                     int fontOffsetY = 68;

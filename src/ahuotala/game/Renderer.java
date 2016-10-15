@@ -115,4 +115,12 @@ public class Renderer {
         return pixels;
     }
 
+    public int getHeight() {
+        return height;
+    }
+
+    public int getWidth() {
+        return width;
+    }
+
 }

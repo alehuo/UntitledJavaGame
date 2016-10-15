@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package ahuotala.graphics;
 
 import ahuotala.game.Game;
@@ -10,6 +5,7 @@ import ahuotala.game.ItemId;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
+import java.awt.image.DataBufferInt;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -23,10 +19,11 @@ import javax.imageio.ImageIO;
  */
 public class SpriteSheet {
 
-    private String spriteSheetPath;
     private String inventoryPath = "inventory.png";
     private BufferedImage image;
+    private int[] imagePixels;
     private BufferedImage inventoryImage;
+    private int[] inventoryImagePixels;
     private boolean imageLoaded = false;
     private boolean inventoryLoaded = false;
     private HashMap<String, BufferedImage> sprites;
@@ -36,23 +33,22 @@ public class SpriteSheet {
         sprites = new HashMap<>();
         //Yritetään ladata kuva
         try {
-            image = ImageIO.read(SpriteSheet.class.getResourceAsStream(spriteSheetPath));
-//            BufferedImage tmpImage = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_ARGB);
-//            Graphics2D g2d = tmpImage.createGraphics();
-//            g2d.drawImage(image, 0, 0, null);
-//            g2d.dispose();
-//            image = tmpImage;
-//            tmpImage = null;
+            /**
+             * Spritesheet
+             */
+            BufferedImage baseImage = ImageIO.read(SpriteSheet.class.getResourceAsStream(spriteSheetPath));
+            image = convert(baseImage);
             imageLoaded = true;
-            
-            inventoryImage = ImageIO.read(SpriteSheet.class.getResourceAsStream(inventoryPath));
-//            BufferedImage tmpInventoryImage = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_ARGB);
-//            Graphics2D g2dInv = tmpInventoryImage.createGraphics();
-//            g2dInv.drawImage(inventoryImage, 0, 0, null);
-//            g2dInv.dispose();
-//            inventoryImage = tmpInventoryImage;
-//            tmpInventoryImage = null;
+            imagePixels = ((DataBufferInt) image.getRaster().getDataBuffer()).getData();
+
+            /**
+             * Inventory image
+             */
+            BufferedImage baseInventoryImage = ImageIO.read(SpriteSheet.class.getResourceAsStream(inventoryPath));
+            inventoryImage = convert(baseInventoryImage);
             inventoryLoaded = true;
+            inventoryImagePixels = ((DataBufferInt) inventoryImage.getRaster().getDataBuffer()).getData();
+
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -92,14 +88,26 @@ public class SpriteSheet {
         if (inventoryLoaded) {
             return inventoryImage;
         }
-        return new BufferedImage(128, 128, BufferedImage.TYPE_INT_ARGB);
+        return null;
+    }
+
+    /**
+     * Returns the inventory image pixel array
+     *
+     * @return BufferedImage Inventory image
+     */
+    public int[] getInventoryPixels() {
+        if (inventoryLoaded) {
+            return inventoryImagePixels;
+        }
+        return null;
     }
 
     public BufferedImage getItemIcon(ItemId itemId) {
         if (sprites.containsKey(itemId + "")) {
             return sprites.get(itemId + "");
         }
-        return new BufferedImage(128, 128, BufferedImage.TYPE_INT_ARGB);
+        return null;
     }
 
     /**
@@ -158,6 +166,14 @@ public class SpriteSheet {
             return sprites.get(name);
         }
 
+    }
+
+    public static BufferedImage convert(BufferedImage image) {
+        BufferedImage tmpImage = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_RGB);
+        Graphics2D g2d = tmpImage.createGraphics();
+        g2d.drawImage(image, 0, 0, null);
+        g2d.dispose();
+        return tmpImage;
     }
 
 }

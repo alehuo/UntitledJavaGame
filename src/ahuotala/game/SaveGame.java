@@ -23,7 +23,7 @@ public class SaveGame implements java.io.Serializable {
     //Down -direction
     private Direction direction = Direction.DOWN;
     //Empty inventory
-    private ItemStack[] inventory = new ItemStack[Inventory.cols * Inventory.rows];
+    private ItemStack[] inventory = new ItemStack[Inventory.COLS * Inventory.ROWS];
 
     /**
      * Get player X

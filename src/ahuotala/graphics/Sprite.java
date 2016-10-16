@@ -14,7 +14,6 @@ public class Sprite {
         this.width = width;
         this.height = height;
         this.pixels = pixels;
-        System.out.println(pixels.length);
     }
 
     public int[] getPixels() {

@@ -248,28 +248,28 @@ public class Game extends Canvas implements Runnable, Tickable {
          * Load sprites and animations here
          */
         //Player picture (up)
-        spriteSheet.getSprite("player_up", 32, 32, 16);
+        spriteSheet.loadSprite("player_up", 32, 32, 16);
         //Player picture (down)
-        spriteSheet.getSprite("player_down", 32, 16, 16);
+        spriteSheet.loadSprite("player_down", 32, 16, 16);
         //Player picture (left)
-        spriteSheet.getSprite("player_left", 32, 64, 16);
+        spriteSheet.loadSprite("player_left", 32, 64, 16);
         //Player picture (right)
-        spriteSheet.getSprite("player_right", 32, 48, 16);
+        spriteSheet.loadSprite("player_right", 32, 48, 16);
         //Swimming:
         //Player picture (up)
-        spriteSheet.getSprite("player_swimming_up", 80, 32, 16);
+        spriteSheet.loadSprite("player_swimming_up", 80, 32, 16);
         //Player picture (down)
-        spriteSheet.getSprite("player_swimming_down", 80, 16, 16);
+        spriteSheet.loadSprite("player_swimming_down", 80, 16, 16);
         //Player picture (left)
-        spriteSheet.getSprite("player_swimming_left", 80, 64, 16);
+        spriteSheet.loadSprite("player_swimming_left", 80, 64, 16);
         //Player picture (right)
-        spriteSheet.getSprite("player_swimming_right", 80, 48, 16);
+        spriteSheet.loadSprite("player_swimming_right", 80, 48, 16);
         //Full heart
-        spriteSheet.getSprite("full_heart", 112, 96, 32);
+        spriteSheet.loadSprite("full_heart", 112, 96, 32);
         //Half heart
-        spriteSheet.getSprite("half_a_heart", 144, 96, 32);
+        spriteSheet.loadSprite("half_a_heart", 144, 96, 32);
         //Player shadow
-        spriteSheet.getSprite("player_shadow", 208, 14, 32, 34);
+        spriteSheet.loadSprite("player_shadow", 208, 14, 32, 34);
         //Animations
         playerLowHealth = new Animation("PlayerLowHealth", 30);
         //Register animations to be tickable
@@ -535,7 +535,7 @@ public class Game extends Canvas implements Runnable, Tickable {
                 }
 
                 if (SHOW_INVENTORY) {
-                    inventory.renderInventory(g);
+                    inventory.renderInventory(g, renderer);
                 }
                 //Post processing
 //              postProcess.applyFilter(new NegativeFilter());

@@ -6,7 +6,7 @@ package ahuotala.game;
  */
 public class Debug {
 
-    private static boolean ENABLED = true;
+    private static boolean ENABLED = false;
 
     public static void log(String message) {
         if (ENABLED) {

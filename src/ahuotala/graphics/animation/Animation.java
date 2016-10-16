@@ -76,7 +76,7 @@ public final class Animation {
                     int width = Integer.parseInt(lineData[2]);
                     int height = Integer.parseInt(lineData[3]);
                     //Add the frame
-                    frames.add(Game.spriteSheet.getSprite("animation_" + name + "_frame" + frameCount, x, y, width, height));
+                    frames.add(Game.spriteSheet.loadSprite("animation_" + name + "_frame" + frameCount, x, y, width, height));
                     frameCount++;
                 }
             }

@@ -70,7 +70,7 @@ public class Map {
                     int height = Integer.parseInt(lineData[4]);
 
                     //Add into tiles array
-                    tiles.put(tileName, Game.spriteSheet.getSprite(tileName, x, y, width, height));
+                    tiles.put(tileName, Game.spriteSheet.loadSprite(tileName, x, y, width, height));
 
                     System.out.println("Loaded tile: " + tileName);
                 }

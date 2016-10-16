@@ -18,11 +18,12 @@ import javax.imageio.ImageIO;
  */
 public class SpriteSheet {
 
-    private String inventoryPath = "inventory.png";
+    private String inventoryPath = "inventory_new.png";
     private BufferedImage image;
     private int[] imagePixels;
     private BufferedImage inventoryImage;
     private int[] inventoryImagePixels;
+    private Sprite inventorySprite;
     private boolean imageLoaded = false;
     private boolean inventoryLoaded = false;
     private HashMap<String, Sprite> sprites;
@@ -47,6 +48,7 @@ public class SpriteSheet {
             inventoryImage = convert(baseInventoryImage);
             inventoryLoaded = true;
             inventoryImagePixels = ((DataBufferInt) inventoryImage.getRaster().getDataBuffer()).getData();
+            inventorySprite = new Sprite(inventoryImage.getWidth(), inventoryImage.getHeight(), inventoryImagePixels);
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -68,9 +70,9 @@ public class SpriteSheet {
                     int y = Integer.parseInt(lineData[2]);
                     int width = Integer.parseInt(lineData[3]);
                     int height = Integer.parseInt(lineData[4]);
-                    
+
                     sprites.put(name, getSpriteFromImage(x, y, width, height));
-                    System.out.println(sprites.get(name).getPixels().length);
+
                 }
                 stream.close();
             }
@@ -91,7 +93,28 @@ public class SpriteSheet {
         }
         return null;
     }
+    
+    /**
+     * Returns the inventory sprite
+     *
+     * @return BufferedImage Inventory image
+     */
+    public Sprite getInventorySprite() {
+        if (inventoryLoaded) {
+            return inventorySprite;
+        }
+        return null;
+    }
 
+    /**
+     * Returns a sprite from larger image
+     *
+     * @param dx
+     * @param dy
+     * @param width
+     * @param height
+     * @return
+     */
     public Sprite getSpriteFromImage(int dx, int dy, int width, int height) {
         int[] pixelArray = new int[width * height];
         for (int x = 0; x < width; x++) {
@@ -106,6 +129,12 @@ public class SpriteSheet {
         return new Sprite(width, height, pixelArray);
     }
 
+    /**
+     * Returns a sprite by name. This has to be registered beforehand.
+     *
+     * @param name
+     * @return
+     */
     public Sprite getSpriteByName(String name) {
         return sprites.get(name);
     }
@@ -154,7 +183,7 @@ public class SpriteSheet {
      * @param height Kuva-alueen korkeus
      * @return BufferedImage
      */
-    public Sprite getSprite(String name, int x, int y, int width, int height) {
+    public Sprite loadSprite(String name, int x, int y, int width, int height) {
 
         if (!sprites.containsKey(name) && imageLoaded) {
             Sprite tmpSprite = getSpriteFromImage(x, y, width, height);
@@ -175,7 +204,7 @@ public class SpriteSheet {
      * @param widthHeight Kuva-alueen leveys ja korkeus
      * @return BufferedImage
      */
-    public Sprite getSprite(String name, int x, int y, int widthHeight) {
+    public Sprite loadSprite(String name, int x, int y, int widthHeight) {
 
         if (!sprites.containsKey(name) && imageLoaded) {
             Sprite tmpSprite = getSpriteFromImage(x, y, widthHeight, widthHeight);

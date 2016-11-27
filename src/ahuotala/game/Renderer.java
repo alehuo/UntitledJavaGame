@@ -33,6 +33,7 @@ public class Renderer {
     /**
      * @param width Width of the window
      * @param height Height of the window
+     * @param pixels Pixel array
      */
     public Renderer(int width, int height, int[] pixels) {
         this.width = width;

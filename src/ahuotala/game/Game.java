@@ -63,7 +63,7 @@ public class Game extends Canvas implements Runnable, Tickable {
     /**
      * Font scale
      */
-    public static final double FONTSCALE = 1;
+    public static final double FONTSCALE = 0.7;
 
     /**
      * Center X coordinate

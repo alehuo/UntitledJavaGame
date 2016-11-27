@@ -10,19 +10,28 @@ import ahuotala.entities.Player;
 public class SaveGame implements java.io.Serializable {
 
     /**
-     * Default variables
+     * X -coordinate
      */
-    //X
     private int x = 580;
-    //Y
+    /**
+     * Y -coordinate
+     */
     private int y = 100;
-    //Max health for the player
+    /**
+     * Max health for the player
+     */
     private int health = Player.maxHealth;
-    //0xp
+    /**
+     * Starting xp
+     */
     private double xp = 0.0;
-    //Down -direction
+    /**
+     * Default direction
+     */
     private Direction direction = Direction.DOWN;
-    //Empty inventory
+    /**
+     * Empty inventory
+     */
     private ItemStack[] inventory = new ItemStack[Inventory.COLS * Inventory.ROWS];
 
     /**

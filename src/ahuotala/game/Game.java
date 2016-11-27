@@ -17,6 +17,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JFrame;
 
 /**
@@ -230,6 +232,11 @@ public class Game extends Canvas implements Runnable, Tickable {
     public static boolean playing = false;
 
     /**
+     * Logger
+     */
+    private static final Logger LOG = Logger.getLogger(Game.class.getName());
+
+    /**
      * Constructor
      */
     public Game() {
@@ -333,16 +340,16 @@ public class Game extends Canvas implements Runnable, Tickable {
         //If the file doesn't exist, create it
         if (!saveFile.exists() && playing) {
             try {
-                System.out.println("Save file doesn't exist; Creating a new file..");
+                LOG.log(Level.INFO, "Save file doesn't exist; Creating a new file..");
                 saveFile.createNewFile();
             } catch (IOException ex) {
-                ex.printStackTrace();
+                LOG.log(Level.SEVERE, null, ex);
             }
         }
         try {
             if (save != null && playing) {
                 //Save the game
-                System.out.println("Saving game..");
+                LOG.log(Level.INFO, "Saving game..");
                 save.saveState(player.getX(), player.getY(), player.getHealth(), player.getXp(), player.getDirection(), inventory.getInventory());
                 FileOutputStream fileOutput = new FileOutputStream(saveFileName);
                 ObjectOutputStream out = new ObjectOutputStream(fileOutput);
@@ -351,7 +358,7 @@ public class Game extends Canvas implements Runnable, Tickable {
                 fileOutput.close();
             }
         } catch (IOException ex) {
-            ex.printStackTrace();
+            LOG.log(Level.SEVERE, null, ex);
         }
     }
 
@@ -369,7 +376,7 @@ public class Game extends Canvas implements Runnable, Tickable {
             fileInput.close();
 
         } catch (IOException | ClassNotFoundException e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, null, e);
         }
         //Set player x, y, health, xp and direction
         player.setX(save.getX());
@@ -437,7 +444,7 @@ public class Game extends Canvas implements Runnable, Tickable {
                 try {
                     Thread.sleep(1);
                 } catch (InterruptedException ex) {
-                    ex.printStackTrace();
+                    LOG.log(Level.SEVERE, null, ex);
                 }
             }
 
@@ -459,14 +466,14 @@ public class Game extends Canvas implements Runnable, Tickable {
     @Override
     public void tick() {
         tickCount++;
+        //Tick animations, input, npcs and player
         if (Game.menuState != MenuState.PAUSED) {
             animationTicker.tick();
             inputHandler.tick();
             npcTicker.tick();
             player.tick();
-        } else {
-//            System.out.println("Game is paused");
         }
+        //Tick the server if we are connected
         if (isConnectedToServer) {
             client.tick();
         }

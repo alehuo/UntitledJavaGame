@@ -4,7 +4,7 @@ import ahuotala.game.postprocess.PostProcessFilter;
 import java.awt.Color;
 
 /**
- *
+ * Negative filter
  * @author Aleksi Huotala
  */
 public class NegativeFilter implements PostProcessFilter {

@@ -4,7 +4,7 @@ import ahuotala.game.postprocess.PostProcessFilter;
 import java.awt.Color;
 
 /**
- *
+ * Grayscale filter
  * @author Aleksi Huotala
  */
 public class GrayScaleFilter implements PostProcessFilter {

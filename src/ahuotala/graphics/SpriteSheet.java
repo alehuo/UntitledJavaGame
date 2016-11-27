@@ -10,6 +10,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.HashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 
 /**
@@ -18,16 +20,56 @@ import javax.imageio.ImageIO;
  */
 public class SpriteSheet {
 
+    /**
+     * Inventory sprite location
+     */
     private String inventoryPath = "inventory_new.png";
+
+    /**
+     * Image
+     */
     private BufferedImage image;
+
+    /**
+     * Image pixel array
+     */
     private int[] imagePixels;
+
+    /**
+     * Inventory image
+     */
     private BufferedImage inventoryImage;
+
+    /**
+     * Pixel array of inventory image
+     */
     private int[] inventoryImagePixels;
+
+    /**
+     * Inventory sprite
+     */
     private Sprite inventorySprite;
+
+    /**
+     * imageLoaded state
+     */
     private boolean imageLoaded = false;
+
+    /**
+     * inventoryLoaded state
+     */
     private boolean inventoryLoaded = false;
+
+    /**
+     * HashMap that contains all sprites
+     */
     private HashMap<String, Sprite> sprites;
 
+    /**
+     * Logger
+     */
+    private static final Logger LOG = Logger.getLogger(SpriteSheet.class.getName());
+    
     public SpriteSheet(String spriteSheetPath) {
         //Alustetaan hajautustaulu
         sprites = new HashMap<>();
@@ -49,9 +91,9 @@ public class SpriteSheet {
             inventoryLoaded = true;
             inventoryImagePixels = ((DataBufferInt) inventoryImage.getRaster().getDataBuffer()).getData();
             inventorySprite = new Sprite(inventoryImage.getWidth(), inventoryImage.getHeight(), inventoryImagePixels);
-
+            
         } catch (IOException e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, null, e);
         }
         try {
             String line = "";
@@ -70,15 +112,15 @@ public class SpriteSheet {
                     int y = Integer.parseInt(lineData[2]);
                     int width = Integer.parseInt(lineData[3]);
                     int height = Integer.parseInt(lineData[4]);
-
+                    
                     sprites.put(name, getSpriteFromImage(x, y, width, height));
-
+                    
                 }
                 stream.close();
             }
             reader.close();
         } catch (IOException e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, null, e);
         }
     }
 
@@ -93,7 +135,7 @@ public class SpriteSheet {
         }
         return null;
     }
-    
+
     /**
      * Returns the inventory sprite
      *
@@ -150,7 +192,7 @@ public class SpriteSheet {
         }
         return null;
     }
-
+    
     public Sprite getItemIcon(ItemId itemId) {
         if (sprites.containsKey(itemId + "")) {
             return sprites.get(itemId + "");
@@ -184,7 +226,7 @@ public class SpriteSheet {
      * @return BufferedImage
      */
     public Sprite loadSprite(String name, int x, int y, int width, int height) {
-
+        
         if (!sprites.containsKey(name) && imageLoaded) {
             Sprite tmpSprite = getSpriteFromImage(x, y, width, height);
             sprites.put(name, tmpSprite);
@@ -192,7 +234,7 @@ public class SpriteSheet {
         } else {
             return sprites.get(name);
         }
-
+        
     }
 
     /**
@@ -205,7 +247,7 @@ public class SpriteSheet {
      * @return BufferedImage
      */
     public Sprite loadSprite(String name, int x, int y, int widthHeight) {
-
+        
         if (!sprites.containsKey(name) && imageLoaded) {
             Sprite tmpSprite = getSpriteFromImage(x, y, widthHeight, widthHeight);
             sprites.put(name, tmpSprite);
@@ -213,9 +255,14 @@ public class SpriteSheet {
         } else {
             return sprites.get(name);
         }
-
+        
     }
-
+    
+    /**
+     * Converts a BufferedImage to correct format
+     * @param image BufferedImage
+     * @return BufferedImage in correct format
+     */
     public static BufferedImage convert(BufferedImage image) {
         BufferedImage tmpImage = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_RGB);
         Graphics2D g2d = tmpImage.createGraphics();
@@ -223,5 +270,5 @@ public class SpriteSheet {
         g2d.dispose();
         return tmpImage;
     }
-
+    
 }

@@ -4,6 +4,8 @@ import ahuotala.graphics.Sprite;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -15,30 +17,41 @@ public class Inventory {
      * Inventory columns
      */
     public static final int COLS = 6;
+
     /**
      * Inventory rows
      */
     public static final int ROWS = 8;
+
     /**
      * Slot amount
      */
     private final int slots = COLS * ROWS;
+
     /**
      * ItemStack
      */
     private ItemStack[] inventory;
+
     /**
      * Slot to move to
      */
     private int movingSlot = -1;
+
     /**
      * Temporary itemStack
      */
     private ItemStack tmpStack;
+
     /**
      * Temporary itemStack 2
      */
     private ItemStack tmpStack2;
+
+    /**
+     * Logger
+     */
+    private static final Logger LOG = Logger.getLogger(Inventory.class.getName());
 
     /**
      * Constructor
@@ -155,7 +168,7 @@ public class Inventory {
         }
         return null;
     }
-    
+
     public int getStackCount() {
         int itemCount = 0;
         for (int i = 0; i < inventory.length; i++) {
@@ -268,12 +281,12 @@ public class Inventory {
                         }
                         if (Game.DEBUG) {
                             if (inventory[slot] != null && inventory[slot].isInteractable()) {
-                                System.out.println("Slot " + slot + " is interactable");
+                                LOG.log(Level.INFO, "Slot " + slot + " is interactable");
                             } else {
-                                System.out.println("Slot " + slot + " is not interactable");
+                                LOG.log(Level.INFO, "Slot " + slot + " is not interactable");
                             }
                         }
-                        
+
                     }
                 } else if (MouseHandler.mouseClicked && mouseX >= x + 4 + 80 * row && mouseX < x + 4 + 80 * row + 72 && mouseY >= y + 4 + 80 * col && mouseY < y + 4 + 80 * col + 72) {
                     //If the slot is empty & we are moving an item
@@ -289,15 +302,23 @@ public class Inventory {
             }
         }
     }
-    
+
+    /**
+     * Set the moving slot
+     * @param slot Slot id
+     */
     public void setMovingSlot(int slot) {
         movingSlot = slot;
     }
-    
+
+    /**
+     * Returns the moving slot
+     * @return Slot id
+     */
     public int getMovingSlot() {
         return movingSlot;
     }
-    
+
     @Override
     public String toString() {
         String tmp = "";
@@ -307,7 +328,7 @@ public class Inventory {
             } else {
                 tmp += i + ": empty\r\n";
             }
-            
+
         }
         return tmp;
     }

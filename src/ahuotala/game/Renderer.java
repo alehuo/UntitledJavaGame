@@ -1,6 +1,8 @@
 package ahuotala.game;
 
 import ahuotala.graphics.Sprite;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -22,6 +24,11 @@ public class Renderer {
      * Pixel array
      */
     private int[] pixels;
+
+    /**
+     * Logger
+     */
+    private static final Logger LOG = Logger.getLogger(Renderer.class.getName());
 
     /**
      * @param width Width of the window
@@ -54,13 +61,13 @@ public class Renderer {
     }
 
     /**
-     * Set an independent pixel's color Alpha channel = 0xeb0bff / (235,11,255)
+     * Set an independent pixel's color (Alpha color = 0xeb0bff / (235,11,255))
      *
-     * @param x
-     * @param y
-     * @param r
-     * @param g
-     * @param b
+     * @param x X -coordinate
+     * @param y Y -coordinate
+     * @param r Red (0-255)
+     * @param g Green (0-255)
+     * @param b Blue (0-255)
      */
     public void setColor(int x, int y, int r, int g, int b) {
         int rgb = ((r & 0x0ff) << 16) | ((g & 0x0ff) << 8) | (b & 0x0ff);
@@ -68,12 +75,12 @@ public class Renderer {
     }
 
     /**
-     * Convert color from RGB to dec Alpha channel = 0xeb0bff / (235,11,255)
+     * Convert color from RGB to dec (Alpha color = 0xeb0bff / (235,11,255))
      *
-     * @param r
-     * @param g
-     * @param b
-     * @return
+     * @param r Red 0-255
+     * @param g Green 0-255
+     * @param b Blue 0-255
+     * @return Color in decimal format
      */
     public int getColor(int r, int g, int b) {
         return ((r & 0x0ff) << 16) | ((g & 0x0ff) << 8) | (b & 0x0ff);
@@ -102,7 +109,7 @@ public class Renderer {
                 }
             }
         } else {
-            System.out.println("Error rendering sprite : Sprite not found!");
+            LOG.log(Level.SEVERE, "Error rendering sprite, Sprite object can't be NULL");
         }
     }
 
@@ -115,10 +122,20 @@ public class Renderer {
         return pixels;
     }
 
+    /**
+     * Returns the height of the Renderer area
+     *
+     * @return Height
+     */
     public int getHeight() {
         return height;
     }
 
+    /**
+     * Returns the width of the Renderer area
+     *
+     * @return Width
+     */
     public int getWidth() {
         return width;
     }

@@ -9,6 +9,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Animation class
@@ -41,6 +43,13 @@ public final class Animation implements Tickable {
      * Current frame index
      */
     private int index = 0;
+    
+    /**
+     * Logger
+     */
+    private static final Logger LOG = Logger.getLogger(Animation.class.getName());
+    
+    
 
     /**
      * Animation constructor
@@ -124,7 +133,7 @@ public final class Animation implements Tickable {
                 }
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, null, e);
         }
 
     }

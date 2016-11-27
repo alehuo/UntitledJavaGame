@@ -15,6 +15,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Map renderer class Used to render the game's map
@@ -38,8 +40,10 @@ public class Map {
     private int currentTileX = Integer.MIN_VALUE;
     private int currentTileY = Integer.MIN_VALUE;
     private int tileCount;
+    private static final Logger LOG = Logger.getLogger(Map.class.getName());
 
     public Map(String name) {
+        LOG.setLevel(Level.SEVERE);
         String line = "";
         this.scale = Game.SCALE;
         tiles = new HashMap<>();
@@ -72,13 +76,14 @@ public class Map {
                     //Add into tiles array
                     tiles.put(tileName, Game.spriteSheet.loadSprite(tileName, x, y, width, height));
 
-                    System.out.println("Loaded tile: " + tileName);
+                    LOG.log(Level.INFO, "Loaded tile: " + tileName);
+
                 }
                 stream.close();
             }
             reader.close();
         } catch (IOException e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, null, e);
         }
         /**
          * Load objects into array
@@ -102,14 +107,14 @@ public class Map {
 
                     //Add into tiles array
                     gameObjects.add(new GameObject(x, y, tiles.get(objectName)));
+                    LOG.log(Level.INFO, "Loaded object: " + objectName);
 
-                    System.out.println("Loaded object: " + objectName);
                 }
                 stream.close();
             }
             reader.close();
         } catch (IOException e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, null, e);
         }
         /**
          * Load animations into array
@@ -135,14 +140,14 @@ public class Map {
                     //Register it to be tickable
                     Game.animationTicker.register(animations.get(animationName));
 
-                    System.out.println("Loaded animated tile: " + animationName);
+                    LOG.log(Level.INFO, "Loaded animated tile: " + animationName);
                 }
                 stream.close();
-                System.out.println("Loaded all tiles.");
+                LOG.log(Level.INFO, "Loaded all tiles.");
             }
             reader.close();
         } catch (IOException e) {
-            e.printStackTrace();
+            LOG.log(Level.WARNING, null, e);
         }
 
         try {
@@ -181,37 +186,69 @@ public class Map {
                     boolean blocked = Integer.parseInt(splittedLine[7]) != 0;
                     tileEntities.add(new Tile(x, y, tileTypeBottom, tileTypeMask, tileTypeMask2, tileTypeFringe1, tileTypeFringe2, blocked));
                 }
-                System.out.println("Loaded map file into memory.");
-                System.out.println("Min x:" + minX + ", min y:" + minY + ", max x:" + maxX + ", max y:" + maxY);
+                LOG.log(Level.INFO, "Loaded map file into memory.");
+                LOG.log(Level.INFO, "Min x:" + minX + ", min y:" + minY + ", max x:" + maxX + ", max y:" + maxY);
                 stream.close();
             }
             reader.close();
         } catch (IOException e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, null, e);
         }
 
     }
 
+    /**
+     * Returns the rendered tile count
+     *
+     * @return
+     */
     public int getRenderedTileCount() {
         return tileCount;
     }
 
+    /**
+     * Returns the minimum x coordinate
+     *
+     * @return X coordinate
+     */
     public int getMinX() {
         return minX;
     }
 
+    /**
+     * Returns the minimum y coordinate
+     *
+     * @return Y coordinate
+     */
     public int getMaxX() {
         return maxX;
     }
 
+    /**
+     * Returns the minimum y coordinate
+     *
+     * @return Y coordinate
+     */
     public int getMinY() {
         return minY;
     }
 
+    /**
+     * Returns the maximum y coordinate
+     *
+     * @return Y coordinate
+     */
     public int getMaxY() {
         return maxY;
     }
 
+    /**
+     * Returns the tile by coordinates
+     *
+     * @param x X coordinate
+     * @param y Y coordinate
+     * @return Tile
+     */
     public Tile getTile(int x, int y) {
         for (Tile tile : tileEntities) {
             if (tile.getX() == x && tile.getY() == y) {
@@ -221,17 +258,27 @@ public class Map {
         return null;
     }
 
+    /**
+     * Collision detector
+     *
+     * @param p
+     */
     public void detectCollision(Player p) {
         for (GameObject gameObj : gameObjects) {
             //If we have a collision
             if (gameObj.collidesWithPlayer(p)) {
-                if (Game.DEBUG) {
-                    System.out.println("Collision with gameObject");
-                }
+                LOG.log(Level.INFO, "Collision with gameObject");
             }
         }
     }
 
+    /**
+     * Renders the map
+     *
+     * @param g Graphics
+     * @param r Renderer
+     * @param player Player
+     */
     public void renderMap(Graphics g, Renderer r, Player player) {
         offsetX = player.getOffsetX();
         offsetY = player.getOffsetY();
@@ -255,9 +302,7 @@ public class Map {
                 continue;
             }
             if (tile.collidesWithPlayer(player)) {
-                if (Game.DEBUG) {
-                    System.out.println("Collision");
-                }
+                LOG.log(Level.INFO, "Collisiin");
             }
             tileTypes.add(tile.getTypeBottom());
             tileTypes.add(tile.getTypeMask());
@@ -297,7 +342,7 @@ public class Map {
                     }
                     tileCount++;
                 } else {
-                    System.err.println("Could not find tile '" + tileType + "'");
+                    LOG.log(Level.SEVERE, "Could not find tile '" + tileType + "'");
                 }
                 if ((player.getRealX() >= x + offsetX && player.getRealX() <= x + offsetX + 32 && player.getRealY() >= y + offsetY - 8 && player.getRealY() <= y + offsetY + 24)) {
                     currentTileX = x;
@@ -324,11 +369,17 @@ public class Map {
              * #########################################################################
              */
         }
-        if (Game.DEBUG) {
-            System.out.println(tileCount + " of " + lines.size() + " tiles rendered this round");
-        }
-    }
 
+        LOG.log(Level.INFO, tileCount + " of " + lines.size() + " tiles rendered this round");
+
+    }
+    
+    /**
+     * Renders objects
+     * @param g Graphics
+     * @param r Renderer
+     * @param p Player
+     */
     public void renderObjects(Graphics g, Renderer r, Player p) {
         for (GameObject gameObj : gameObjects) {
             gameObj.render(r, p);
@@ -338,17 +389,34 @@ public class Map {
         }
     }
 
+    /**
+     * Returns the current tile x
+     * @return Tile x
+     */
     public int getCurrentTileX() {
         return currentTileX;
     }
 
+    /**
+     * Returns the current tile y
+     * @return Tile y
+     */
     public int getCurrentTileY() {
         return currentTileY;
     }
 
+    /**
+     * Render an object
+     * 
+     * Consider reworking this method.
+     * 
+     * @param r Renderer
+     * @param x X
+     * @param y Y
+     * @param name Name of the sprite 
+     */
     public void renderObject(Renderer r, int x, int y, String name) {
         r.renderSprite(Game.spriteSheet.getSpriteByName(name), x + offsetX, y + offsetY);
-//        g.drawImage(tiles.get(name), x + offsetX, y + offsetY, tiles.get(name).getWidth() * scale, tiles.get(name).getHeight() * scale, null);
     }
 
 }

@@ -69,7 +69,7 @@ public class SpriteSheet {
      * Logger
      */
     private static final Logger LOG = Logger.getLogger(SpriteSheet.class.getName());
-    
+
     public SpriteSheet(String spriteSheetPath) {
         //Alustetaan hajautustaulu
         sprites = new HashMap<>();
@@ -91,7 +91,7 @@ public class SpriteSheet {
             inventoryLoaded = true;
             inventoryImagePixels = ((DataBufferInt) inventoryImage.getRaster().getDataBuffer()).getData();
             inventorySprite = new Sprite(inventoryImage.getWidth(), inventoryImage.getHeight(), inventoryImagePixels);
-            
+
         } catch (IOException e) {
             LOG.log(Level.SEVERE, null, e);
         }
@@ -112,9 +112,9 @@ public class SpriteSheet {
                     int y = Integer.parseInt(lineData[2]);
                     int width = Integer.parseInt(lineData[3]);
                     int height = Integer.parseInt(lineData[4]);
-                    
+
                     sprites.put(name, getSpriteFromImage(x, y, width, height));
-                    
+
                 }
                 stream.close();
             }
@@ -162,9 +162,9 @@ public class SpriteSheet {
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
                 if (x + dx < image.getWidth() & y + dy < image.getHeight()) {
-                    if (imagePixels[x + dx + (y + dy) * image.getWidth()] != 0xeb0bff) {
-                        pixelArray[x + y * width] = imagePixels[x + dx + (y + dy) * image.getWidth()];
-                    }
+                    //if (imagePixels[x + dx + (y + dy) * image.getWidth()] != 0xeb0bff) {
+                    pixelArray[x + y * width] = imagePixels[x + dx + (y + dy) * image.getWidth()];
+                    //}
                 }
             }
         }
@@ -192,7 +192,7 @@ public class SpriteSheet {
         }
         return null;
     }
-    
+
     public Sprite getItemIcon(ItemId itemId) {
         if (sprites.containsKey(itemId + "")) {
             return sprites.get(itemId + "");
@@ -226,7 +226,7 @@ public class SpriteSheet {
      * @return BufferedImage
      */
     public Sprite loadSprite(String name, int x, int y, int width, int height) {
-        
+
         if (!sprites.containsKey(name) && imageLoaded) {
             Sprite tmpSprite = getSpriteFromImage(x, y, width, height);
             sprites.put(name, tmpSprite);
@@ -234,7 +234,7 @@ public class SpriteSheet {
         } else {
             return sprites.get(name);
         }
-        
+
     }
 
     /**
@@ -247,7 +247,7 @@ public class SpriteSheet {
      * @return BufferedImage
      */
     public Sprite loadSprite(String name, int x, int y, int widthHeight) {
-        
+
         if (!sprites.containsKey(name) && imageLoaded) {
             Sprite tmpSprite = getSpriteFromImage(x, y, widthHeight, widthHeight);
             sprites.put(name, tmpSprite);
@@ -255,11 +255,12 @@ public class SpriteSheet {
         } else {
             return sprites.get(name);
         }
-        
+
     }
-    
+
     /**
      * Converts a BufferedImage to correct format
+     *
      * @param image BufferedImage
      * @return BufferedImage in correct format
      */
@@ -270,5 +271,5 @@ public class SpriteSheet {
         g2d.dispose();
         return tmpImage;
     }
-    
+
 }

@@ -29,7 +29,7 @@ public class Tile {
         this.tileTypeFringe1 = tileTypeFringe1;
         this.tileTypeFringe2 = tileTypeFringe2;
         this.blocked = blocked;
-        bounds = new Rectangle(x, y, 32 * Game.SCALE, 32 * Game.SCALE);
+        bounds = new Rectangle(x, y, 32, 32);
     }
 
     public Tile(int x, int y, String tileTypeBottom, String tileTypeMask, String tileTypeMask2, String tileTypeFringe1, String tileTypeFringe2) {
@@ -40,7 +40,7 @@ public class Tile {
         this.tileTypeMask2 = tileTypeMask2;
         this.tileTypeFringe1 = tileTypeFringe1;
         this.tileTypeFringe2 = tileTypeFringe2;
-        bounds = new Rectangle(x, y, 32 * Game.SCALE, 32 * Game.SCALE);
+        bounds = new Rectangle(x, y, 32, 32);
     }
 
     public boolean collidesWithPlayer(Player p) {

@@ -1,7 +1,10 @@
 package ahuotala.game;
 
-import java.awt.image.BufferedImage;
-import java.awt.image.DataBufferInt;
+import ahuotala.game.postprocess.filters.NormalFilter;
+import ahuotala.game.postprocess.filters.PostProcessFilter;
+import ahuotala.graphics.Sprite;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -9,39 +12,72 @@ import java.awt.image.DataBufferInt;
  */
 public class Renderer {
 
+    /**
+     * Width
+     */
     private final int width;
-    private final int height;
-    public int[] pixels;
 
-    public Renderer(int width, int height) {
+    /**
+     * Height
+     */
+    private final int height;
+
+    /**
+     * Pixel array
+     */
+    private int[] pixels;
+
+    /**
+     * Logger
+     */
+    private static final Logger LOG = Logger.getLogger(Renderer.class.getName());
+
+    /**
+     * Post process filter
+     * 
+     * Default: normal
+     */
+    private PostProcessFilter f = new NormalFilter();
+
+    /**
+     * @param width Width of the window
+     * @param height Height of the window
+     * @param pixels Pixel array
+     */
+    public Renderer(int width, int height, int[] pixels) {
         this.width = width;
         this.height = height;
-        pixels = new int[width * height];
+        this.pixels = pixels;
     }
 
+    /**
+     * Renders the basic image Alpha channel = 0xeb0bff / (235,11,255)
+     */
     public void render() {
         for (int y = 0; y < height; y++) {
             for (int x = 0; x < width; x++) {
-                //Set pixel color. You can use either the getColor function or hexadecimal input.
-                pixels[x + y * width] = 0x9e9e9e;
+                pixels[x + y * width] = getColor(0, 0, 0);
             }
         }
     }
 
+    /**
+     * Clears the pixel array Alpha channel = 0xeb0bff / (235,11,255)
+     */
     public void clear() {
         for (int i = 0; i < pixels.length; i++) {
-            pixels[i] = 0x000000;
+            pixels[i] = 0x9e9e9e;
         }
     }
 
     /**
-     * Set an independent pixel's color
+     * Set an independent pixel's color (Alpha color = 0xeb0bff / (235,11,255))
      *
-     * @param x
-     * @param y
-     * @param r
-     * @param g
-     * @param b
+     * @param x X -coordinate
+     * @param y Y -coordinate
+     * @param r Red (0-255)
+     * @param g Green (0-255)
+     * @param b Blue (0-255)
      */
     public void setColor(int x, int y, int r, int g, int b) {
         int rgb = ((r & 0x0ff) << 16) | ((g & 0x0ff) << 8) | (b & 0x0ff);
@@ -49,22 +85,99 @@ public class Renderer {
     }
 
     /**
-     * Convert color from RGB to dec
+     * Convert color from RGB to dec (Alpha color = 0xeb0bff / (235,11,255))
      *
-     * @param r
-     * @param g
-     * @param b
-     * @return
+     * @param r Red 0-255
+     * @param g Green 0-255
+     * @param b Blue 0-255
+     * @return Color in decimal format
      */
     public int getColor(int r, int g, int b) {
         return ((r & 0x0ff) << 16) | ((g & 0x0ff) << 8) | (b & 0x0ff);
     }
 
-    public void renderObject(int x, int y, BufferedImage img) {
-        //Extract pixel data from an image
-        int[] pixelArray = ((DataBufferInt) img.getRaster().getDataBuffer()).getData();
-        for (int i = 0; i < pixelArray.length; i++) {
-            pixels[x + y * width + i] = pixelArray[i];
+    /**
+     * Renders a sprite Alpha channel = 0xeb0bff / (235,11,255)
+     *
+     * @param dx X
+     * @param dy Y
+     * @param sprite Sprite
+     */
+    public void renderSprite(Sprite sprite, int dx, int dy) {
+        if (sprite != null) {
+            //Pixel array of the sprite
+            int[] spritePixels = sprite.getPixels();
+            //Loop through y and x coordinates
+            for (int y = 0; y < sprite.getHeight(); y++) {
+                for (int x = 0; x < sprite.getWidth(); x++) {
+                    // Alpha channel = 0xeb0bff / (235,11,255)
+                    // Also make sure that we don't try to write into pixels that don't exist, prevents ArrayIndexOutOfBounds -exception
+                    if (spritePixels[x + y * sprite.getWidth()] != 0xeb0bff && x + dx < width & y + dy < height && x + dx > 0 && y + dy > 0) {
+                        //Set the pixels
+                        pixels[x + dx + (y + dy) * width] = applyFilter(spritePixels[x + y * sprite.getWidth()]);
+
+                    }
+                }
+            }
+        } else {
+            LOG.log(Level.SEVERE, "Error rendering sprite, Sprite object can't be NULL");
         }
     }
+
+    /**
+     * Returns the pixel array
+     *
+     * @return Pixel array
+     */
+    public int[] getPixels() {
+        return pixels;
+    }
+
+    /**
+     * Returns the height of the Renderer area
+     *
+     * @return Height
+     */
+    public int getHeight() {
+        return height;
+    }
+
+    /**
+     * Returns the width of the Renderer area
+     *
+     * @return Width
+     */
+    public int getWidth() {
+        return width;
+    }
+
+    /**
+     * Sets a filter to be used
+     *
+     * @param f
+     */
+    public void setFilter(PostProcessFilter f) {
+        this.f = f;
+    }
+
+    /**
+     * Resets the PP filter to normal
+     */
+    public void resetFilter() {
+        f = new NormalFilter();
+    }
+
+    /**
+     * Returns a color that has been processed by a PP filter
+     *
+     * @param color Color in decimal format
+     * @return Processed color in decimal format
+     */
+    public int applyFilter(int color) {
+        if (f != null) {
+            return f.applyEffect(color);
+        }
+        return color;
+    }
+
 }

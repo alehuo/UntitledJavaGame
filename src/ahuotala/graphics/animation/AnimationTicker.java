@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package ahuotala.graphics.animation;
 
 import ahuotala.game.Tickable;
@@ -14,7 +9,7 @@ import java.util.ArrayList;
  */
 public class AnimationTicker implements Tickable {
 
-    private ArrayList<Animation> animations;
+    private final ArrayList<Animation> animations;
 
     public AnimationTicker() {
         animations = new ArrayList<>();

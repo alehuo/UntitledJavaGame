@@ -1,8 +1,7 @@
 package ahuotala.entities;
 
 import ahuotala.game.Game;
-import static ahuotala.game.Game.DEBUG_PLAYER;
-import static ahuotala.game.Game.animationTicker;
+import ahuotala.game.Renderer;
 import ahuotala.game.Tickable;
 import ahuotala.graphics.animation.Animation;
 import ahuotala.map.Map;
@@ -28,7 +27,7 @@ public class Player implements Entity, Tickable {
     public static int realY;
 
     //Base stepping speed
-    private int step = 1 * Game.SCALE;
+    private int step = 1;
 
     private int health = 120;
     public static int maxHealth = 120;
@@ -60,8 +59,8 @@ public class Player implements Entity, Tickable {
 
     //Bounds
     private final Rectangle bounds;
-    private final int width = 16 * Game.SCALE;
-    private final int height = 16 * Game.SCALE;
+    private final int width = 16;
+    private final int height = 16;
 
     public Player() {
         //XP
@@ -147,11 +146,7 @@ public class Player implements Entity, Tickable {
     }
 
     public void increaseHealth(int health) {
-        if (this.health + health <= maxHealth) {
-            this.health += health;
-        } else {
-            health = maxHealth;
-        }
+        setHealth(getHealth() + health);
     }
 
     public int getHealth() {
@@ -251,7 +246,7 @@ public class Player implements Entity, Tickable {
         return lastY;
     }
 
-    public void render(Graphics g, Map map) {
+    public void render(Renderer r, Graphics g, Map map) {
         //Debug
         if (Game.DEBUG) {
             g.setColor(Color.yellow);
@@ -265,70 +260,59 @@ public class Player implements Entity, Tickable {
             case DOWN:
                 if (this.isWalking()) {
                     if (this.isSwimming()) {
-                        playerSwimmingDown.nextFrame(g, realX, realY);
+                        playerSwimmingDown.nextFrame(r, realX, realY);
                     } else {
-                        playerWalkingDown.nextFrame(g, realX, realY);
+                        playerWalkingDown.nextFrame(r, realX, realY);
                     }
                 } else if (this.isSwimming()) {
-                    Game.spriteSheet.paint(g, "player_swimming_down", realX, realY);
+                    Game.spriteSheet.paint(r, "player_swimming_down", realX, realY);
                 } else {
-                    Game.spriteSheet.paint(g, "player_down", realX, realY);
+                    Game.spriteSheet.paint(r, "player_down", realX, realY);
                 }
                 break;
             case UP:
                 if (this.isWalking()) {
                     if (this.isSwimming()) {
-                        playerSwimmingUp.nextFrame(g, realX, realY);
+                        playerSwimmingUp.nextFrame(r, realX, realY);
                     } else {
-                        playerWalkingUp.nextFrame(g, realX, realY);
+                        playerWalkingUp.nextFrame(r, realX, realY);
                     }
                 } else if (this.isSwimming()) {
-                    Game.spriteSheet.paint(g, "player_swimming_up", realX, realY);
+                    Game.spriteSheet.paint(r, "player_swimming_up", realX, realY);
                 } else {
-                    Game.spriteSheet.paint(g, "player_up", realX, realY);
+                    Game.spriteSheet.paint(r, "player_up", realX, realY);
                 }
                 break;
             case LEFT:
                 if (this.isWalking()) {
                     if (this.isSwimming()) {
-                        playerSwimmingLeft.nextFrame(g, realX, realY);
+                        playerSwimmingLeft.nextFrame(r, realX, realY);
                     } else {
-                        playerWalkingLeft.nextFrame(g, realX, realY);
+                        playerWalkingLeft.nextFrame(r, realX, realY);
                     }
                 } else if (this.isSwimming()) {
-                    Game.spriteSheet.paint(g, "player_swimming_left", realX, realY);
+                    Game.spriteSheet.paint(r, "player_swimming_left", realX, realY);
                 } else {
-                    Game.spriteSheet.paint(g, "player_left", realX, realY);
+                    Game.spriteSheet.paint(r, "player_left", realX, realY);
                 }
                 break;
             case RIGHT:
                 if (this.isWalking()) {
                     if (this.isSwimming()) {
-                        playerSwimmingRight.nextFrame(g, realX, realY);
+                        playerSwimmingRight.nextFrame(r, realX, realY);
                     } else {
-                        playerWalkingRight.nextFrame(g, realX, realY);
+                        playerWalkingRight.nextFrame(r, realX, realY);
                     }
                 } else if (this.isSwimming()) {
-                    Game.spriteSheet.paint(g, "player_swimming_right", realX, realY);
+                    Game.spriteSheet.paint(r, "player_swimming_right", realX, realY);
                 } else {
-                    Game.spriteSheet.paint(g, "player_right", realX, realY);
+                    Game.spriteSheet.paint(r, "player_right", realX, realY);
                 }
                 break;
             default:
                 break;
         }
 
-        //Debug for player
-        g.setColor(Color.white);
-        if (DEBUG_PLAYER) {
-            g.drawString("x " + this.getX(), 5, 15);
-            g.drawString("y " + this.getY(), 5, 31);
-            g.drawString("tileCount " + map.getRenderedTileCount(), 5, 47);
-            g.drawString("tileX " + map.getCurrentTileX(), 5, 63);
-            g.drawString("tileY " + map.getCurrentTileY(), 5, 79);
-            g.drawString("windowWidth " + Game.WINDOW_WIDTH, 5, 95);
-            g.drawString("windowHeight " + Game.WINDOW_HEIGHT, 5, 111);
-        }
     }
 
     @Override
@@ -337,15 +321,15 @@ public class Player implements Entity, Tickable {
         switch (currentTile) {
             case "sand":
                 swimming = false;
-                step = 2 * Game.SCALE;
+                step = 2;
                 break;
             case "water_ani":
                 swimming = true;
-                step = 1 * Game.SCALE;
+                step = 1;
                 break;
             case "lava_ani":
                 swimming = true;
-                step = 1 * Game.SCALE;
+                step = 1;
                 if (playerTicks % (40 * (int) Math.ceil(Game.tickrate / 60)) == 0 && health > 0) {
                     this.damagePlayer(10);
                     playerTicks = 0;
@@ -354,7 +338,7 @@ public class Player implements Entity, Tickable {
                 break;
             default:
                 swimming = false;
-                step = 3 * Game.SCALE;
+                step = 3;
                 break;
         }
         bounds.setBounds(x, y, width, height);

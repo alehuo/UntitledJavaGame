@@ -5,29 +5,45 @@ import ahuotala.entities.Player;
 
 /**
  * Game save class used to load&save the game state
+ *
  * @author Aleksi Huotala
  */
 public class SaveGame implements java.io.Serializable {
 
     /**
-     * Default variables
+     * X -coordinate
      */
-    //X
-    private int x = 180;
-    //Y
+    private int x = 580;
+    /**
+     * Y -coordinate
+     */
     private int y = 100;
-    //Max health for the player
+    /**
+     * Max health for the player
+     */
     private int health = Player.maxHealth;
-    //0xp
+    /**
+     * Starting xp
+     */
     private double xp = 0.0;
-    //Down -direction
+    /**
+     * Default direction
+     */
     private Direction direction = Direction.DOWN;
-    //Empty inventory
-    private ItemStack[] inventory = new ItemStack[Inventory.cols * Inventory.rows];
+    /**
+     * Empty inventory
+     */
+    private ItemStack[] inventory = new ItemStack[Inventory.COLS * Inventory.ROWS];
+
+    /**
+     * Current game time
+     */
+    private int currentGameTime = 900;
 
     /**
      * Get player X
-     * @return 
+     *
+     * @return
      */
     public int getX() {
         return x;
@@ -35,6 +51,7 @@ public class SaveGame implements java.io.Serializable {
 
     /**
      * Get player Y
+     *
      * @return y
      */
     public int getY() {
@@ -43,6 +60,7 @@ public class SaveGame implements java.io.Serializable {
 
     /**
      * Get player health
+     *
      * @return int
      */
     public int getHealth() {
@@ -51,6 +69,7 @@ public class SaveGame implements java.io.Serializable {
 
     /**
      * Get player XP
+     *
      * @return double
      */
     public double getXp() {
@@ -59,6 +78,7 @@ public class SaveGame implements java.io.Serializable {
 
     /**
      * Get player inventory
+     *
      * @return ItemStack[]
      */
     public ItemStack[] getInventory() {
@@ -67,27 +87,35 @@ public class SaveGame implements java.io.Serializable {
 
     /**
      * Get player direction
+     *
      * @return Direction
      */
     public Direction getDirection() {
         return direction;
     }
 
+    public int getCurrentGameTime() {
+        return currentGameTime;
+    }
+
     /**
      * Save game state
+     *
      * @param x
      * @param y
      * @param health
      * @param xp
      * @param direction
-     * @param inventory 
+     * @param currentGameTime
+     * @param inventory
      */
-    public void saveState(int x, int y, int health, double xp, Direction direction, ItemStack[] inventory) {
+    public void saveState(int x, int y, int health, double xp, Direction direction, int currentGameTime, ItemStack[] inventory) {
         this.x = x;
         this.y = y;
         this.health = health;
         this.xp = xp;
         this.direction = direction;
+        this.currentGameTime = currentGameTime;
         this.inventory = inventory;
     }
 }

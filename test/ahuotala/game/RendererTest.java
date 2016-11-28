@@ -1,47 +1,21 @@
 package ahuotala.game;
 
-import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
 /**
+ * Renderer JUnit test class
  *
- * @author Aleksi
+ * @author Aleksi Huotala
  */
 public class RendererTest {
 
     private Renderer renderer;
 
-    public RendererTest() {
-
-    }
-
-    @BeforeClass
-    public static void setUpClass() {
-    }
-
-    @AfterClass
-    public static void tearDownClass() {
-    }
-
     @Before
     public void setUp() {
         renderer = new Renderer(256, 256, new int[256 * 256]);
-    }
-
-    @After
-    public void tearDown() {
-    }
-
-    /**
-     * Test of render method, of class Renderer.
-     */
-    @Test
-    public void testRender() {
-
     }
 
     /**
@@ -49,7 +23,6 @@ public class RendererTest {
      */
     @Test
     public void testSetColor() {
-        System.out.println("Running test setColor");
         renderer.setColor(0, 0, 0, 0, 0);
         renderer.setColor(1, 0, 255, 0, 0);
         renderer.setColor(2, 0, 0, 255, 0);
@@ -68,7 +41,6 @@ public class RendererTest {
      */
     @Test
     public void testGetColor() {
-        System.out.println("Running test getColor");
         int expResult = 0;
         int result = renderer.getColor(0, 0, 0);
         int expResult2 = 16776960;
@@ -78,14 +50,6 @@ public class RendererTest {
         assertEquals(expResult, result);
         assertEquals(expResult2, result2);
         assertEquals(expResult3, result3);
-    }
-
-    /**
-     * Test of renderObject method, of class Renderer.
-     */
-    @Test
-    public void testRenderObject() {
-
     }
 
 }

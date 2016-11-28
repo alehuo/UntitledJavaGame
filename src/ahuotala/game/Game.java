@@ -547,6 +547,7 @@ public class Game extends Canvas implements Runnable, Tickable {
                 //Post processing
 //              postProcess.applyFilter(new NegativeFilter());
 //              postProcess.applyFilter(new GrayScaleFilter());
+//              postProcess.applyFilter(new DarkenFilter());
                 //Final image
                 g.drawImage(image, 0, 0, getWidth(), getHeight(), null);
                 //Debug for player

@@ -1,5 +1,7 @@
 package ahuotala.game;
 
+import ahuotala.game.postprocess.filters.NormalFilter;
+import ahuotala.game.postprocess.filters.PostProcessFilter;
 import ahuotala.graphics.Sprite;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -29,6 +31,13 @@ public class Renderer {
      * Logger
      */
     private static final Logger LOG = Logger.getLogger(Renderer.class.getName());
+
+    /**
+     * Post process filter
+     * 
+     * Default: normal
+     */
+    private PostProcessFilter f = new NormalFilter();
 
     /**
      * @param width Width of the window
@@ -105,7 +114,8 @@ public class Renderer {
                     // Also make sure that we don't try to write into pixels that don't exist, prevents ArrayIndexOutOfBounds -exception
                     if (spritePixels[x + y * sprite.getWidth()] != 0xeb0bff && x + dx < width & y + dy < height && x + dx > 0 && y + dy > 0) {
                         //Set the pixels
-                        pixels[x + dx + (y + dy) * width] = spritePixels[x + y * sprite.getWidth()];
+                        pixels[x + dx + (y + dy) * width] = applyFilter(spritePixels[x + y * sprite.getWidth()]);
+
                     }
                 }
             }
@@ -139,6 +149,35 @@ public class Renderer {
      */
     public int getWidth() {
         return width;
+    }
+
+    /**
+     * Sets a filter to be used
+     *
+     * @param f
+     */
+    public void setFilter(PostProcessFilter f) {
+        this.f = f;
+    }
+
+    /**
+     * Resets the PP filter to normal
+     */
+    public void resetFilter() {
+        f = new NormalFilter();
+    }
+
+    /**
+     * Returns a color that has been processed by a PP filter
+     *
+     * @param color Color in decimal format
+     * @return Processed color in decimal format
+     */
+    public int applyFilter(int color) {
+        if (f != null) {
+            return f.applyEffect(color);
+        }
+        return color;
     }
 
 }

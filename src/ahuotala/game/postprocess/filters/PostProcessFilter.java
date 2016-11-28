@@ -1,4 +1,4 @@
-package ahuotala.game.postprocess;
+package ahuotala.game.postprocess.filters;
 
 /**
  *

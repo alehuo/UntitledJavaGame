@@ -1,6 +1,5 @@
 package ahuotala.game.postprocess.filters;
 
-import ahuotala.game.postprocess.PostProcessFilter;
 import java.awt.Color;
 
 /**

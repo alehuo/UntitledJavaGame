@@ -11,13 +11,15 @@ import ahuotala.entities.Direction;
  *
  * @author alehuo
  */
-public class MpPlayer {
+public class MpPlayer implements java.io.Serializable {
 
     private int x;
     private int y;
     private Direction direction;
+    private String uuid;
 
-    public MpPlayer(int x, int y, Direction direction) {
+    public MpPlayer(String uuid, int x, int y, Direction direction) {
+        this.uuid = uuid;
         this.x = x;
         this.y = y;
         this.direction = direction;
@@ -45,6 +47,14 @@ public class MpPlayer {
 
     public void setDirection(Direction direction) {
         this.direction = direction;
+    }
+
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
+    }
+
+    public String getUuid() {
+        return uuid;
     }
 
 }

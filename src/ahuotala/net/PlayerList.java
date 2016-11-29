@@ -13,18 +13,22 @@ import java.util.HashMap;
  */
 public class PlayerList implements java.io.Serializable {
 
-    private HashMap<String, MpPlayer> playerPos;
+    private HashMap<String, MpPlayer> playerList;
 
     public PlayerList() {
-        playerPos = new HashMap<>();
+        playerList = new HashMap<>();
     }
 
     public void updatePlayer(String uuid, MpPlayer mp) {
-        playerPos.put(uuid, mp);
+        playerList.put(uuid, mp);
     }
 
     public void removePlayer(String uuid) {
-        playerPos.remove(uuid);
+        playerList.remove(uuid);
+    }
+
+    public HashMap<String, MpPlayer> getPlayerList() {
+        return playerList;
     }
 
 }

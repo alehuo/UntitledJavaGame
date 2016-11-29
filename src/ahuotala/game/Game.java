@@ -6,7 +6,6 @@ import ahuotala.graphics.animation.*;
 import ahuotala.graphics.*;
 import ahuotala.map.*;
 import ahuotala.net.Client;
-import ahuotala.net.ClientStatus;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -20,6 +19,9 @@ import java.io.ObjectOutputStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFrame;
+import ahuotala.net.ClientStatus;
+import ahuotala.net.MpPlayer;
+import ahuotala.net.PlayerList;
 
 /**
  *
@@ -48,7 +50,7 @@ public class Game extends Canvas implements Runnable, Tickable {
     /**
      * Window width
      */
-    public static final int WINDOW_WIDTH = (int) Math.floor(gd.getDisplayMode().getWidth() * 0.40);
+    public static final int WINDOW_WIDTH = (int) Math.floor(gd.getDisplayMode().getWidth() * 0.24);
 
     /**
      * Window height
@@ -325,6 +327,7 @@ public class Game extends Canvas implements Runnable, Tickable {
         client.start();
         client.send(ClientStatus.CLIENT_CONNECTED.toString() + ";" + client.getUuid());
         newGame("multiplayer.sav");
+        Game.menuState = MenuState.NONE;
     }
 
     public void init() {
@@ -538,7 +541,17 @@ public class Game extends Canvas implements Runnable, Tickable {
 
                 //Render players
                 if (isConnectedToServer) {
-
+                    PlayerList pList = client.getPlayerList();
+                    for (MpPlayer plr : pList.getPlayerList().values()) {
+                        if (plr.getUuid().equals(client.getUuid())) {
+                            continue;
+                        }
+                        Npc tmpNpc = new Npc(plr.toString());
+                        tmpNpc.setX(plr.getX());
+                        tmpNpc.setY(plr.getY());
+                        tmpNpc.setDirection(plr.getDirection());
+                        tmpNpc.renderNpc(g, renderer, player);
+                    }
                 }
 
                 //Reset filter

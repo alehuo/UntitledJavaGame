@@ -38,14 +38,7 @@ public class Console implements Runnable {
                     Game.inventory.addStack(new ItemStack(new Item(itemId), amount));
                     System.out.println("Added a new stack of item " + itemId + ", amount: " + amount);
                 }
-            }
-            if (command.equals("listitems")) {
-                System.out.println("List of items registered ingame: ");
-                for (ItemId itemId : Game.itemRegistry.getItems().keySet()) {
-                    System.out.println(itemId);
-                }
-            }
-            if (command.startsWith("removestack")) {
+            } else if (command.startsWith("removestack")) {
 
                 String[] cmdArray = command.split(" ");
                 if (cmdArray.length == 2) {
@@ -56,8 +49,7 @@ public class Console implements Runnable {
                     System.out.println("Invalid arguments for command 'removestack'");
                 }
 
-            }
-            if (command.startsWith("sethealth")) {
+            } else if (command.startsWith("sethealth")) {
                 String[] cmdArray = command.split(" ");
                 if (cmdArray.length == 2) {
                     int health = Integer.parseInt(cmdArray[1]);
@@ -69,8 +61,7 @@ public class Console implements Runnable {
                 } else {
                     System.out.println("Invalid arguments for command 'sethealth'");
                 }
-            }
-            if (command.startsWith("setxp")) {
+            } else if (command.startsWith("setxp")) {
                 String[] cmdArray = command.split(" ");
                 if (cmdArray.length == 2) {
                     double xp = Double.parseDouble(cmdArray[1]);
@@ -82,31 +73,35 @@ public class Console implements Runnable {
                 } else {
                     System.out.println("Invalid arguments for command 'sethealth'");
                 }
-            }
-            if (command.equals("help") || command.equals("?")) {
-                System.out.println("### LIST OF COMMANDS ###");
-                System.out.println("sethealth [health]");
-                System.out.println("setxp [xp]");
-                System.out.println("addstack [itemname] [amount]");
-                System.out.println("removestack [stackid]");
-                System.out.println("listitems");
-            }
-
-            if (command.startsWith("sethsb")) {
+            } else if (command.startsWith("sethsb")) {
                 String[] cmdArray = command.split(" ");
                 if (cmdArray.length == 4) {
                     try {
                         float h = Float.parseFloat(cmdArray[1]);
                         float s = Float.parseFloat(cmdArray[2]);
                         float b = Float.parseFloat(cmdArray[3]);
-                        
-                        
+
                     } catch (Exception e) {
 
                     }
 
                 }
+            } else if (command.equals("listitems")) {
+                System.out.println("List of items registered ingame: ");
+                for (ItemId itemId : Game.itemRegistry.getItems().keySet()) {
+                    System.out.println(itemId);
+                }
+            } else if (command.equals("help") || command.equals("?")) {
+                System.out.println("### LIST OF COMMANDS ###");
+                System.out.println("sethealth [health]");
+                System.out.println("setxp [xp]");
+                System.out.println("addstack [itemname] [amount]");
+                System.out.println("removestack [stackid]");
+                System.out.println("listitems");
+            } else {
+                System.out.println("Command not found");
             }
+
         }
     }
 

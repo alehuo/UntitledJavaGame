@@ -6,6 +6,7 @@ import ahuotala.graphics.animation.*;
 import ahuotala.graphics.*;
 import ahuotala.map.*;
 import ahuotala.net.Client;
+import ahuotala.net.ClientStatus;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -293,7 +294,8 @@ public class Game extends Canvas implements Runnable, Tickable {
             @Override
             public void windowClosing(WindowEvent e) {
                 if (isConnectedToServer) {
-                    client.send("CLIENT_DISCONNECTED");
+                    isConnectedToServer = false;
+                    client.send(ClientStatus.CLIENT_DISCONNECTED.toString() + ";" + client.getUuid());
                     client.disconnect();
                 }
                 save();
@@ -312,10 +314,17 @@ public class Game extends Canvas implements Runnable, Tickable {
         frame.requestFocusInWindow();
     }
 
+    /**
+     * Establish a new connection
+     *
+     * @param host Server IP address
+     * @param port Server port
+     */
     public void connectToServer(String host, int port) {
         client = new Client(player, host, port);
         client.start();
-        client.send("CLIENT_CONNECTED");
+        client.send(ClientStatus.CLIENT_CONNECTED.toString() + ";" + client.getUuid());
+        newGame("multiplayer.sav");
     }
 
     public void init() {
@@ -482,7 +491,7 @@ public class Game extends Canvas implements Runnable, Tickable {
             }
         }
         //Tick the server if we are connected
-        if (isConnectedToServer) {
+        if (isConnectedToServer && tickCount % 4 == 0) {
             client.tick();
         }
     }
@@ -526,6 +535,11 @@ public class Game extends Canvas implements Runnable, Tickable {
                 npc.renderNpc(g, renderer, player);
 
                 player.render(renderer, g, map);
+
+                //Render players
+                if (isConnectedToServer) {
+
+                }
 
                 //Reset filter
                 renderer.resetFilter();

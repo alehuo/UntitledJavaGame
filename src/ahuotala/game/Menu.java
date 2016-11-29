@@ -47,7 +47,7 @@ public class Menu {
                         Game.menuState = MenuState.MULTIPLAYER_CONNECT;
                         //Connection prompt
                         if (!Game.isConnectedToServer) {
-                            String data = JOptionPane.showInputDialog(game, "Please enter the IP address and the port of the host to connect to\r\nFor example, 127.0.0.1:1337");
+                            String data = JOptionPane.showInputDialog(game, "Please enter the IP address and the port of the host to connect to\r\nFor example, localhost:9876");
                             if (data != null) {
                                 String[] tmpData = data.split(":");
                                 if (tmpData.length == 2) {

@@ -12,7 +12,7 @@ import java.awt.Color;
  *
  * @author Aleksi Huotala
  */
-public class HSLFilter implements PostProcessFilter {
+public class HSBFilter implements PostProcessFilter {
 
     /**
      * Hue
@@ -34,7 +34,7 @@ public class HSLFilter implements PostProcessFilter {
      * @param saturation Saturation between 0 and 1
      * @param brightness Brightness between 0 and 1
      */
-    public HSLFilter(int hue, float saturation, float brightness) {
+    public HSBFilter(int hue, float saturation, float brightness) {
         if (hue > 360 || hue < 0) {
             throw new IllegalArgumentException("HUE must be between 0 and 360.");
         }

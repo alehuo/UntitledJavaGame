@@ -1,13 +1,11 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package ahuotala.game;
 
+import ahuotala.graphics.Sprite;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -18,38 +16,49 @@ public class Inventory {
     /**
      * Inventory columns
      */
-    public static final int cols = 6;
+    public static final int COLS = 6;
+
     /**
      * Inventory rows
      */
-    public static final int rows = 8;
+    public static final int ROWS = 8;
+
     /**
      * Slot amount
      */
-    private final int slots = cols * rows;
+    private final int slots = COLS * ROWS;
+
     /**
      * ItemStack
      */
     private ItemStack[] inventory;
+
     /**
      * Slot to move to
      */
     private int movingSlot = -1;
+
     /**
      * Temporary itemStack
      */
     private ItemStack tmpStack;
+
     /**
      * Temporary itemStack 2
      */
     private ItemStack tmpStack2;
 
     /**
+     * Logger
+     */
+    private static final Logger LOG = Logger.getLogger(Inventory.class.getName());
+
+    /**
      * Constructor
      */
     public Inventory() {
         //Initialize the inventory, an array of ItemStacks
-        inventory = new ItemStack[cols * rows];
+        inventory = new ItemStack[COLS * ROWS];
     }
 
     /**
@@ -175,40 +184,44 @@ public class Inventory {
      *
      * @param g
      */
-    public void renderInventory(Graphics g) {
+    public void renderInventory(Graphics g, Renderer r) {
         //Base image
         BufferedImage inventoryImage = Game.spriteSheet.getInventory();
+        Sprite inventorySprite = Game.spriteSheet.getInventorySprite();
         //X and Y coordinate
-        int x = (int) Math.floor((Game.WINDOW_WIDTH - inventoryImage.getWidth()) / 2);
-        int y = (int) Math.floor((Game.WINDOW_HEIGHT - inventoryImage.getHeight()) / 2);
+        int x = (int) Math.floor((Game.WINDOW_WIDTH - inventorySprite.getWidth()) / 2);
+        int y = (int) Math.floor((Game.WINDOW_HEIGHT - inventorySprite.getHeight()) / 2);
         //Draw the inventory background
-        g.drawImage(inventoryImage, x, y, null);
+//        g.drawImage(inventoryImage, x, y, null);
+        r.renderSprite(inventorySprite, x, y);
         //Tooltip
         g.setColor(Color.white);
-        g.drawString("[F] Use     [R] Drop         " + this.getStackCount() + " / " + slots + " inventory slots in use", x + 8, y + inventoryImage.getHeight() + 16);
+        g.drawString("[F] Use     [R] Drop         " + this.getStackCount() + " / " + slots + " inventory slots in use", x + 8, y + inventorySprite.getHeight() + 16);
         //Item stacks
-        //Each inventory slot is 72x72 pixels
+        //Each inventory slot is 41x41 pixels
         //First inv slot has an x-offset of 4 and an y-offset of 4.
         //X-offset of 80 afterwards.
         //1: (4,4) , 2: (84,4), 3: (164,4), ...
         //9: (4,84), 10: (84,84), 11: (164,84), ...
         int slot = 0;
-        for (int col = 0; col < cols; col++) {
-            for (int row = 0; row < rows; row++) {
+        int slotWidthHeight = 41;
+        int xOffset = 46;
+        for (int col = 0; col < COLS; col++) {
+            for (int row = 0; row < ROWS; row++) {
                 int mouseX = MouseHandler.x;
                 int mouseY = MouseHandler.y;
-                if (mouseX >= x + 4 + 80 * row && mouseX < x + 4 + 80 * row + 72 && mouseY >= y + 4 + 80 * col && mouseY < y + 4 + 80 * col + 72) {
+                if (mouseX >= x + 4 + xOffset * row && mouseX < x + 4 + xOffset * row + slotWidthHeight && mouseY >= y + 4 + xOffset * col && mouseY < y + 4 + xOffset * col + slotWidthHeight) {
                     if (Game.DEBUG) {
                         g.setColor(Color.LIGHT_GRAY);
-                        g.fill3DRect(x + 4 + 80 * row, y + 4 + 80 * col, 72, 72, false);
+                        g.fill3DRect(x + 4 + xOffset * row, y + 4 + xOffset * col, slotWidthHeight, slotWidthHeight, false);
                     }
                 }
                 //If the slot is not empty
                 if (inventory[slot] != null) {
-                    int slotX = x + 4 + 80 * row;
-                    int slotY = y + 4 + 80 * col;
+                    int slotX = x + 3 + xOffset * row;
+                    int slotY = y + 3 + xOffset * col;
                     //If we clicked a slot
-                    if (MouseHandler.mouseClicked && mouseX >= x + 4 + 80 * row && mouseX < x + 4 + 80 * row + 72 && mouseY >= y + 4 + 80 * col && mouseY < y + 4 + 80 * col + 72) {
+                    if (MouseHandler.mouseClicked && mouseX >= x + 4 + xOffset * row && mouseX < x + 4 + xOffset * row + slotWidthHeight && mouseY >= y + 4 + xOffset * col && mouseY < y + 4 + xOffset * col + slotWidthHeight) {
                         //If we have clicked in before
                         if (this.getMovingSlot() != -1) {
                             //Move the ItemStack to another slot
@@ -238,7 +251,9 @@ public class Inventory {
                         slotY = mouseY - 36;
                     }
                     //Item icon
-                    g.drawImage(Game.spriteSheet.getItemIcon(inventory[slot].getItemId()), slotX, slotY, 72, 72, null);
+                    //TODO
+                    r.renderSprite(Game.spriteSheet.getItemIcon(inventory[slot].getItemId()), slotX, slotY);
+//                    g.drawImage(Game.spriteSheet.getItemIcon(inventory[slot].getItemId()), slotX, slotY, 72, 72, null);
                     g.setColor(Color.YELLOW);
                     int fontOffsetX = 2;
                     int fontOffsetY = 68;
@@ -266,9 +281,9 @@ public class Inventory {
                         }
                         if (Game.DEBUG) {
                             if (inventory[slot] != null && inventory[slot].isInteractable()) {
-                                System.out.println("Slot " + slot + " is interactable");
+                                LOG.log(Level.INFO, "Slot " + slot + " is interactable");
                             } else {
-                                System.out.println("Slot " + slot + " is not interactable");
+                                LOG.log(Level.INFO, "Slot " + slot + " is not interactable");
                             }
                         }
 
@@ -288,10 +303,18 @@ public class Inventory {
         }
     }
 
+    /**
+     * Set the moving slot
+     * @param slot Slot id
+     */
     public void setMovingSlot(int slot) {
         movingSlot = slot;
     }
 
+    /**
+     * Returns the moving slot
+     * @return Slot id
+     */
     public int getMovingSlot() {
         return movingSlot;
     }

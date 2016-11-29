@@ -1,6 +1,7 @@
 package ahuotala.game;
 
 import ahuotala.entities.*;
+import ahuotala.game.postprocess.filters.*;
 import ahuotala.graphics.animation.*;
 import ahuotala.graphics.*;
 import ahuotala.map.*;
@@ -15,7 +16,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.util.Scanner;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JFrame;
 
 /**
@@ -45,7 +47,7 @@ public class Game extends Canvas implements Runnable, Tickable {
     /**
      * Window width
      */
-    public static final int WINDOW_WIDTH = (int) Math.floor(gd.getDisplayMode().getWidth() * 0.80);
+    public static final int WINDOW_WIDTH = (int) Math.floor(gd.getDisplayMode().getWidth() * 0.40);
 
     /**
      * Window height
@@ -55,7 +57,7 @@ public class Game extends Canvas implements Runnable, Tickable {
     /**
      * Tile scale
      */
-    public static final int SCALE = 1;
+    public static final int SCALE = 2;
 
     /**
      * Font scale
@@ -217,20 +219,34 @@ public class Game extends Canvas implements Runnable, Tickable {
      * Is the menu open?
      */
     public static boolean isInMenu = true;
-    
+
     /**
      * Is the save loaded?
      */
     public static boolean playing = false;
 
     /**
+     * Logger
+     */
+    private static final Logger LOG = Logger.getLogger(Game.class.getName());
+
+    /**
+     * GameTime
+     */
+    private static final GameTime gameTime = new GameTime();
+
+    /**
      * Constructor
      */
     public Game() {
-        renderer = new Renderer(WINDOW_WIDTH, WINDOW_HEIGHT);
-        super.setMinimumSize(new Dimension(WINDOW_WIDTH, WINDOW_HEIGHT));
-        super.setMaximumSize(new Dimension(WINDOW_WIDTH, WINDOW_HEIGHT));
-        super.setPreferredSize(new Dimension(WINDOW_WIDTH, WINDOW_HEIGHT));
+        renderer = new Renderer(WINDOW_WIDTH, WINDOW_HEIGHT, pixels);
+
+        //Default time is 12:00
+        gameTime.setGametime(1200);
+
+        super.setMinimumSize(new Dimension(WINDOW_WIDTH * SCALE, WINDOW_HEIGHT * SCALE));
+        super.setMaximumSize(new Dimension(WINDOW_WIDTH * SCALE, WINDOW_HEIGHT * SCALE));
+        super.setPreferredSize(new Dimension(WINDOW_WIDTH * SCALE, WINDOW_HEIGHT * SCALE));
 
         //Listeners
         super.addKeyListener(inputHandler);
@@ -241,28 +257,28 @@ public class Game extends Canvas implements Runnable, Tickable {
          * Load sprites and animations here
          */
         //Player picture (up)
-        spriteSheet.getSprite("player_up", 32, 32, 16);
+        spriteSheet.loadSprite("player_up", 32, 32, 16);
         //Player picture (down)
-        spriteSheet.getSprite("player_down", 32, 16, 16);
+        spriteSheet.loadSprite("player_down", 32, 16, 16);
         //Player picture (left)
-        spriteSheet.getSprite("player_left", 32, 64, 16);
+        spriteSheet.loadSprite("player_left", 32, 64, 16);
         //Player picture (right)
-        spriteSheet.getSprite("player_right", 32, 48, 16);
+        spriteSheet.loadSprite("player_right", 32, 48, 16);
         //Swimming:
         //Player picture (up)
-        spriteSheet.getSprite("player_swimming_up", 80, 32, 16);
+        spriteSheet.loadSprite("player_swimming_up", 80, 32, 16);
         //Player picture (down)
-        spriteSheet.getSprite("player_swimming_down", 80, 16, 16);
+        spriteSheet.loadSprite("player_swimming_down", 80, 16, 16);
         //Player picture (left)
-        spriteSheet.getSprite("player_swimming_left", 80, 64, 16);
+        spriteSheet.loadSprite("player_swimming_left", 80, 64, 16);
         //Player picture (right)
-        spriteSheet.getSprite("player_swimming_right", 80, 48, 16);
+        spriteSheet.loadSprite("player_swimming_right", 80, 48, 16);
         //Full heart
-        spriteSheet.getSprite("full_heart", 112, 96, 32);
+        spriteSheet.loadSprite("full_heart", 112, 96, 32);
         //Half heart
-        spriteSheet.getSprite("half_a_heart", 144, 96, 32);
+        spriteSheet.loadSprite("half_a_heart", 144, 96, 32);
         //Player shadow
-        spriteSheet.getSprite("player_shadow", 208, 14, 32, 34);
+        spriteSheet.loadSprite("player_shadow", 208, 14, 32, 34);
         //Animations
         playerLowHealth = new Animation("PlayerLowHealth", 30);
         //Register animations to be tickable
@@ -326,17 +342,17 @@ public class Game extends Canvas implements Runnable, Tickable {
         //If the file doesn't exist, create it
         if (!saveFile.exists() && playing) {
             try {
-                System.out.println("Save file doesn't exist; Creating a new file..");
+                LOG.log(Level.INFO, "Save file doesn't exist; Creating a new file..");
                 saveFile.createNewFile();
             } catch (IOException ex) {
-                ex.printStackTrace();
+                LOG.log(Level.SEVERE, null, ex);
             }
         }
         try {
             if (save != null && playing) {
                 //Save the game
-                System.out.println("Saving game..");
-                save.saveState(player.getX() / Game.SCALE, player.getY() / Game.SCALE, player.getHealth(), player.getXp(), player.getDirection(), inventory.getInventory());
+                LOG.log(Level.INFO, "Saving game..");
+                save.saveState(player.getX(), player.getY(), player.getHealth(), player.getXp(), player.getDirection(), gameTime.getGametime(), inventory.getInventory());
                 FileOutputStream fileOutput = new FileOutputStream(saveFileName);
                 ObjectOutputStream out = new ObjectOutputStream(fileOutput);
                 out.writeObject(save);
@@ -344,7 +360,7 @@ public class Game extends Canvas implements Runnable, Tickable {
                 fileOutput.close();
             }
         } catch (IOException ex) {
-            ex.printStackTrace();
+            LOG.log(Level.SEVERE, null, ex);
         }
     }
 
@@ -362,14 +378,16 @@ public class Game extends Canvas implements Runnable, Tickable {
             fileInput.close();
 
         } catch (IOException | ClassNotFoundException e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, null, e);
         }
         //Set player x, y, health, xp and direction
-        player.setX(save.getX() * Game.SCALE);
-        player.setY(save.getY() * Game.SCALE);
+        player.setX(save.getX());
+        player.setY(save.getY());
         player.setHealth(save.getHealth());
         player.setXp(save.getXp());
         player.setDirection(save.getDirection());
+        //Set game time
+        gameTime.setGametime(save.getCurrentGameTime());
         //Set player inventory
         inventory.setInventory(save.getInventory());
     }
@@ -381,8 +399,8 @@ public class Game extends Canvas implements Runnable, Tickable {
         }
         save = new SaveGame();
         //Set player x, y, health, xp and direction
-        player.setX(save.getX() * Game.SCALE);
-        player.setY(save.getY() * Game.SCALE);
+        player.setX(save.getX());
+        player.setY(save.getY());
         player.setHealth(save.getHealth());
         player.setXp(save.getXp());
         player.setDirection(save.getDirection());
@@ -430,7 +448,7 @@ public class Game extends Canvas implements Runnable, Tickable {
                 try {
                     Thread.sleep(1);
                 } catch (InterruptedException ex) {
-                    ex.printStackTrace();
+                    LOG.log(Level.SEVERE, null, ex);
                 }
             }
 
@@ -452,14 +470,18 @@ public class Game extends Canvas implements Runnable, Tickable {
     @Override
     public void tick() {
         tickCount++;
+        //Tick animations, input, npcs and player
         if (Game.menuState != MenuState.PAUSED) {
             animationTicker.tick();
             inputHandler.tick();
             npcTicker.tick();
             player.tick();
-        } else {
-//            System.out.println("Game is paused");
+            //Tick tick..
+            if (tickCount % 40 == 0) {
+                gameTime.tick();
+            }
         }
+        //Tick the server if we are connected
         if (isConnectedToServer) {
             client.tick();
         }
@@ -479,29 +501,34 @@ public class Game extends Canvas implements Runnable, Tickable {
             renderer.clear();
             //Render base image
             renderer.render();
-            //Base image
-            g.drawImage(image, 0, 0, getWidth(), getHeight(), null);
 
             //Font
             currentFont = g.getFont();
             g.setFont(new Font(currentFont.getName(), Font.BOLD, (int) Math.floor(18 * FONTSCALE)));
-
             if (Game.menuState != MenuState.NONE) {
+                //Image
+                g.drawImage(image, 0, 0, getWidth(), getHeight(), null);
                 menu.render(g);
             } else {
                 //If the game is running, render map & npcs
 
+                //Apply darken filter
+                renderer.setFilters(new DarkenFilter(gameTime.getFactor()));
+
                 //Map
-                map.renderMap(g, player);
+                map.renderMap(g, renderer, player);
                 //Other objects
-                map.renderObjects(g, player);
+                map.renderObjects(g, renderer, player);
                 map.detectCollision(player);
 
                 //NPCs here
                 //Draw npc
-                npc.renderNpc(g, player);
+                npc.renderNpc(g, renderer, player);
 
-                player.render(g, map);
+                player.render(renderer, g, map);
+
+                //Reset filter
+                renderer.resetFilter();
 
                 //Player health system
                 int playerFullHearts = (int) Math.floor(player.getHealth() / 20);
@@ -511,7 +538,7 @@ public class Game extends Canvas implements Runnable, Tickable {
                 g.drawString(player.getHealth() + " / " + player.getMaxHealth() + " LP", heartX - 78, heartY + 22);
                 g.drawString(player.getXp() + " xp", heartX - 78, heartY + 44);
                 if (playerFullHearts == 0 && playerHalfHearts == 0 && player.getHealth() > 0) {
-                    playerLowHealth.nextFrame(g, heartX, heartY);
+                    playerLowHealth.nextFrame(renderer, heartX, heartY);
                 } else if (player.getHealth() == 0) {
                     g.setColor(Color.red);
                     //Black background
@@ -519,18 +546,36 @@ public class Game extends Canvas implements Runnable, Tickable {
                     g.drawString("YOU DIED", CENTERX - 48, CENTERY);
                 } else {
                     for (int hearts = 0; hearts < playerFullHearts; hearts++) {
-                        spriteSheet.paint(g, "full_heart", heartX, heartY);
-                        heartX += 26 * Game.SCALE;
+                        spriteSheet.paint(renderer, "full_heart", heartX, heartY);
+                        heartX += 26;
                     }
                     if (playerHalfHearts > 0) {
-                        spriteSheet.paint(g, "half_a_heart", heartX, heartY);
+                        spriteSheet.paint(renderer, "half_a_heart", heartX, heartY);
                     }
                 }
 
                 if (SHOW_INVENTORY) {
-                    inventory.renderInventory(g);
+                    inventory.renderInventory(g, renderer);
+                }
+
+                //Final image
+                g.drawImage(image, 0, 0, getWidth(), getHeight(), null);
+
+                //Debug for player
+                g.setColor(Color.white);
+
+                if (DEBUG_PLAYER) {
+                    g.drawString("x " + player.getX(), 5, 15);
+                    g.drawString("y " + player.getY(), 5, 31);
+                    g.drawString("tileCount " + map.getRenderedTileCount(), 5, 47);
+                    g.drawString("tileX " + map.getCurrentTileX(), 5, 63);
+                    g.drawString("tileY " + map.getCurrentTileY(), 5, 79);
+                    g.drawString("windowWidth " + Game.WINDOW_WIDTH, 5, 95);
+                    g.drawString("windowHeight " + Game.WINDOW_HEIGHT, 5, 111);
+                    g.drawString("gameTime (0 - 2359) " + gameTime.getGametime() + ", " + String.format("%.5f", gameTime.getFactor()), 5, 127);
                 }
             }
+
         } finally {
             //Empty buffer
             g.dispose();

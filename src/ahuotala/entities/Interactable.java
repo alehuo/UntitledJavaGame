@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package ahuotala.entities;
 
 /**
@@ -12,44 +7,44 @@ package ahuotala.entities;
 interface Interactable {
 
     /**
-     * Set x-radius
+     * Returns the x-radius
      *
-     * @param int rX
+     * @param int X -radius
      */
     void setInteractionRadiusX(int rX);
 
     /**
-     * Set y-radius
+     * Returns the y-radius
      *
-     * @param int rY
+     * @param int Y -radius
      */
     void setInteractionRadiusY(int rY);
 
     /**
-     * Get the x-radius
+     * Returns the X-radius
      *
-     * @return int
+     * @return int X -radius
      */
     int getInteractionRadiusX();
 
     /**
-     * Get the y-radius
+     * Returns the y-radius
      *
-     * @return int
+     * @return int Y -radius
      */
     int getInteractionRadiusY();
 
     /**
-     * Get the NPC id
+     * Returns the NPC id
      *
-     * @return int
+     * @return int NPC id
      */
     int getNpcId();
 
     /**
-     * Set the NPC id
+     * Sets the NPC id
      *
-     * @param int id
+     * @param int NPC id
      */
     void setNpcId(int id);
 

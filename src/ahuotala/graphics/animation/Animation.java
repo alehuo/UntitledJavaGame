@@ -1,30 +1,62 @@
 package ahuotala.graphics.animation;
 
 import ahuotala.game.Game;
-import java.awt.Graphics;
-import java.awt.image.BufferedImage;
+import ahuotala.game.Renderer;
+import ahuotala.game.Tickable;
+import ahuotala.graphics.Sprite;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
+ * Animation class
  *
  * @author Aleksi Huotala
  */
-public final class Animation {
+public final class Animation implements Tickable {
 
-    private ArrayList<BufferedImage> frames;
-    //Interval in frames
+    /**
+     * List of sprites that make up the animation
+     */
+    private ArrayList<Sprite> frames;
+
+    /**
+     * Frame interval
+     */
     private final int interval;
-    //Count
-    private int count = 0;
-    //Name
-    private final String name;
-    //Index
-    private int index = 0;
 
+    /**
+     * Current tick count
+     */
+    private int count = 0;
+
+    /**
+     * Current animation name
+     */
+    private final String name;
+
+    /**
+     * Current frame index
+     */
+    private int index = 0;
+    
+    /**
+     * Logger
+     */
+    private static final Logger LOG = Logger.getLogger(Animation.class.getName());
+    
+    
+
+    /**
+     * Animation constructor
+     *
+     * @param name Animation name
+     * @param interval Animation interval in ticks
+     */
     public Animation(String name, int interval) {
         this.frames = new ArrayList<>();
         this.interval = interval * (int) Math.ceil(Game.tickrate / 60);
@@ -32,22 +64,43 @@ public final class Animation {
         this.Load();
     }
 
+    /**
+     * Tick method as we implement the Tickable -interface
+     */
+    @Override
     public void tick() {
         count++;
     }
 
-    public void nextFrame(Graphics g, int x, int y) {
+    /**
+     * Renders the next frame in order
+     *
+     * @param r Renderer
+     * @param x x-coordinate
+     * @param y y-coordinate
+     */
+    public void nextFrame(Renderer r, int x, int y) {
         if (count >= interval * frames.size()) {
             count = 0;
         }
         index = (int) Math.floor(count / interval);
-        g.drawImage(frames.get(index), x, y, frames.get(index).getWidth() * Game.SCALE, frames.get(index).getHeight() * Game.SCALE, null);
+        r.renderSprite(frames.get(index), x, y);
     }
 
+    /**
+     * Returns the width of the current frame
+     *
+     * @return Current frame width
+     */
     public int getWidth() {
         return frames.get(index).getWidth();
     }
 
+    /**
+     * Returns the height of the current frame
+     *
+     * @return Current frame height
+     */
     public int getHeight() {
         return frames.get(index).getHeight();
     }
@@ -75,12 +128,12 @@ public final class Animation {
                     int width = Integer.parseInt(lineData[2]);
                     int height = Integer.parseInt(lineData[3]);
                     //Add the frame
-                    frames.add(Game.spriteSheet.getSprite("animation_" + name + "_frame" + frameCount, x, y, width, height));
+                    frames.add(Game.spriteSheet.loadSprite("animation_" + name + "_frame" + frameCount, x, y, width, height));
                     frameCount++;
                 }
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, null, e);
         }
 
     }

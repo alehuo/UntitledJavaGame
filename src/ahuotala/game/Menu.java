@@ -120,14 +120,13 @@ public class Menu {
     }
 
     public boolean renderCenterText(Graphics g, String text, int y, boolean hover) {
-        boolean hoverEffect = false;
-        hoverEffect = hover;
-        FontMetrics fm = g.getFontMetrics();
-        int x = ((Game.WINDOW_WIDTH - fm.stringWidth(text)) / 2);
 
-        if (hoverEffect && ((fm.getStringBounds(text, g).getBounds().getX() + x) < MouseHandler.x) && (fm.getStringBounds(text, g).getBounds().getX() + x + fm.stringWidth(text)) > MouseHandler.x && (fm.getStringBounds(text, g).getBounds().getY() + y) < MouseHandler.y && (fm.getStringBounds(text, g).getBounds().getY() + y + fm.getHeight()) > MouseHandler.y) {
+        FontMetrics fm = g.getFontMetrics();
+        int x = ((Game.WINDOW_WIDTH * Game.SCALE - fm.stringWidth(text)) / 2);
+
+        if (hover && ((fm.getStringBounds(text, g).getBounds().getX() + x) < MouseHandler.x) && (fm.getStringBounds(text, g).getBounds().getX() + x + fm.stringWidth(text)) > MouseHandler.x && (fm.getStringBounds(text, g).getBounds().getY() + y) < MouseHandler.y && (fm.getStringBounds(text, g).getBounds().getY() + y + fm.getHeight()) > MouseHandler.y) {
             //We know that the mouse is inside the button area.
-            if (MouseHandler.mouseClicked && hoverEffect) {
+            if (MouseHandler.mouseClicked && hover) {
                 MouseHandler.mouseClicked = false;
                 g.setColor(Color.blue);
                 g.drawString(text, x, y);

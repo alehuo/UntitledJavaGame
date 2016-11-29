@@ -34,10 +34,10 @@ public class Renderer {
 
     /**
      * Post process filter
-     * 
+     *
      * Default: normal
      */
-    private PostProcessFilter f = new NormalFilter();
+    private PostProcessFilter[] filters;
 
     /**
      * @param width Width of the window
@@ -45,6 +45,9 @@ public class Renderer {
      * @param pixels Pixel array
      */
     public Renderer(int width, int height, int[] pixels) {
+        filters = new PostProcessFilter[64];
+        PostProcessFilter n = new NormalFilter();
+        filters[0] = n;
         this.width = width;
         this.height = height;
         this.pixels = pixels;
@@ -154,17 +157,19 @@ public class Renderer {
     /**
      * Sets a filter to be used
      *
-     * @param f
+     * @param filters List of filters
      */
-    public void setFilter(PostProcessFilter f) {
-        this.f = f;
+    public void setFilters(PostProcessFilter... filters) {
+        this.filters = filters;
     }
 
     /**
      * Resets the PP filter to normal
      */
     public void resetFilter() {
-        f = new NormalFilter();
+        filters = null;
+        filters = new PostProcessFilter[64];
+        filters[0] = new NormalFilter();
     }
 
     /**
@@ -174,8 +179,15 @@ public class Renderer {
      * @return Processed color in decimal format
      */
     public int applyFilter(int color) {
-        if (f != null) {
-            return f.applyEffect(color);
+        int tmpColor = color;
+        if (filters != null && filters.length != 0) {
+            for (int i = 0; i < filters.length; i++) {
+                if (filters[i] != null) {
+                    PostProcessFilter ppF = filters[i];
+                    tmpColor = ppF.applyEffect(tmpColor);
+                }
+            }
+            return tmpColor;
         }
         return color;
     }

@@ -15,7 +15,7 @@ public class GameTime implements Tickable {
      * Game time
      */
     private int gametime = 0;
-
+    
     /**
      * Returns the gametime value
      *

@@ -494,7 +494,7 @@ public class Game extends Canvas implements Runnable, Tickable {
             }
         }
         //Tick the server if we are connected
-        if (isConnectedToServer && tickCount % 4 == 0) {
+        if (isConnectedToServer) {
             client.tick();
         }
     }

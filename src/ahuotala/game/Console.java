@@ -91,6 +91,22 @@ public class Console implements Runnable {
                 System.out.println("removestack [stackid]");
                 System.out.println("listitems");
             }
+
+            if (command.startsWith("sethsb")) {
+                String[] cmdArray = command.split(" ");
+                if (cmdArray.length == 4) {
+                    try {
+                        float h = Float.parseFloat(cmdArray[1]);
+                        float s = Float.parseFloat(cmdArray[2]);
+                        float b = Float.parseFloat(cmdArray[3]);
+                        
+                        
+                    } catch (Exception e) {
+
+                    }
+
+                }
+            }
         }
     }
 

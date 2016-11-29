@@ -5,6 +5,7 @@
  */
 package ahuotala.net;
 
+import ahuotala.entities.MpPlayer;
 import java.util.HashMap;
 
 /**

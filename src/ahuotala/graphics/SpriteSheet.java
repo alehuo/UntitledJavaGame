@@ -23,7 +23,7 @@ public class SpriteSheet {
     /**
      * Inventory sprite location
      */
-    private String inventoryPath = "inventory_new.png";
+    private String inventoryPath = "inventory_small.png";
 
     /**
      * Image
@@ -98,27 +98,27 @@ public class SpriteSheet {
         try {
             String line = "";
             InputStream stream = getClass().getResourceAsStream("items.itm");
-            BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
-            if (stream != null) {
-                while ((line = reader.readLine()) != null) {
-                    if (line.contains("#") || line.isEmpty()) {
-                        continue;
+            try (BufferedReader reader = new BufferedReader(new InputStreamReader(stream))) {
+                if (stream != null) {
+                    while ((line = reader.readLine()) != null) {
+                        if (line.contains("#") || line.isEmpty()) {
+                            continue;
+                        }
+                        
+                        //Parse variables
+                        String[] lineData = line.split(",", -1);
+                        String name = lineData[0];
+                        int x = Integer.parseInt(lineData[1]);
+                        int y = Integer.parseInt(lineData[2]);
+                        int width = Integer.parseInt(lineData[3]);
+                        int height = Integer.parseInt(lineData[4]);
+                        
+                        sprites.put(name, getSpriteFromImage(x, y, width, height));
+                        
                     }
-
-                    //Parse variables
-                    String[] lineData = line.split(",", -1);
-                    String name = lineData[0];
-                    int x = Integer.parseInt(lineData[1]);
-                    int y = Integer.parseInt(lineData[2]);
-                    int width = Integer.parseInt(lineData[3]);
-                    int height = Integer.parseInt(lineData[4]);
-
-                    sprites.put(name, getSpriteFromImage(x, y, width, height));
-
+                    stream.close();
                 }
-                stream.close();
             }
-            reader.close();
         } catch (IOException e) {
             LOG.log(Level.SEVERE, null, e);
         }

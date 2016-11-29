@@ -20,7 +20,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFrame;
 import ahuotala.net.ClientStatus;
-import ahuotala.net.MpPlayer;
+import ahuotala.entities.MpPlayer;
 import ahuotala.net.PlayerList;
 
 /**
@@ -130,17 +130,12 @@ public class Game extends Canvas implements Runnable, Tickable {
     /**
      * SpriteSheet
      */
-    public static SpriteSheet spriteSheet = new SpriteSheet("spriteSheet_2.png");
+    public static SpriteSheet spriteSheet = new SpriteSheet("spriteSheet.png");
 
     /**
      * Current font
      */
     private Font currentFont;
-
-    /**
-     * NPC test
-     */
-    private final InteractableNpc npc = new InteractableNpc("TestNPC");
 
     /**
      * Animation ticker
@@ -331,13 +326,6 @@ public class Game extends Canvas implements Runnable, Tickable {
     }
 
     public void init() {
-        //Set test NPC x and y
-        npc.setX(244);
-        npc.setY(270);
-        npc.setInteractionRadiusX(16);
-        npc.setInteractionRadiusY(16);
-        //Register the new NPC to be tickable
-        npcTicker.register(npc);
         //Register items to the game
         itemRegistry.registerItem(ItemId.POTIONOFHEALING_20LP).setName("Potion of healing").setEffect(Effect.HEAL_20LP, "Heals the player for 20 lifepoints").setInteractable(true);
         itemRegistry.registerItem(ItemId.POTIONOFHEALING_60LP).setName("Grand potion of healing").setEffect(Effect.HEAL_60LP, "Heals the player for 60 lifepoints").setInteractable(true);
@@ -365,11 +353,9 @@ public class Game extends Canvas implements Runnable, Tickable {
                 //Save the game
                 LOG.log(Level.INFO, "Saving game..");
                 save.saveState(player.getX(), player.getY(), player.getHealth(), player.getXp(), player.getDirection(), gameTime.getGametime(), inventory.getInventory());
-                FileOutputStream fileOutput = new FileOutputStream(saveFileName);
-                ObjectOutputStream out = new ObjectOutputStream(fileOutput);
-                out.writeObject(save);
-                out.close();
-                fileOutput.close();
+                try (FileOutputStream fileOutput = new FileOutputStream(saveFileName); ObjectOutputStream out = new ObjectOutputStream(fileOutput)) {
+                    out.writeObject(save);
+                }
             }
         } catch (IOException ex) {
             LOG.log(Level.SEVERE, null, ex);
@@ -534,23 +520,17 @@ public class Game extends Canvas implements Runnable, Tickable {
                 map.detectCollision(player);
 
                 //NPCs here
-                //Draw npc
-                npc.renderNpc(g, renderer, player);
 
                 player.render(renderer, g, map);
 
-                //Render players
+                //Render MP players
                 if (isConnectedToServer) {
                     PlayerList pList = client.getPlayerList();
                     for (MpPlayer plr : pList.getPlayerList().values()) {
                         if (plr.getUuid().equals(client.getUuid())) {
                             continue;
                         }
-                        Npc tmpNpc = new Npc(plr.toString());
-                        tmpNpc.setX(plr.getX());
-                        tmpNpc.setY(plr.getY());
-                        tmpNpc.setDirection(plr.getDirection());
-                        tmpNpc.renderNpc(g, renderer, player);
+                        plr.renderMpPlayer(g, renderer, player);
                     }
                 }
 

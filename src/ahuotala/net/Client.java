@@ -46,7 +46,7 @@ public class Client extends Thread implements Tickable {
 
     @Override
     public void run() {
-        System.out.println("Starting game client...");
+//        System.out.println("Starting game client...");
         while (true) {
             byte[] dataArray = new byte[4096];
             DatagramPacket packet = new DatagramPacket(dataArray, dataArray.length);
@@ -69,7 +69,7 @@ public class Client extends Thread implements Tickable {
                     Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
-            System.out.println("SERVER [" + packet.getAddress().getHostAddress() + ":" + packet.getPort() + "] " + message.trim());
+//            System.out.println("SERVER [" + packet.getAddress().getHostAddress() + ":" + packet.getPort() + "] " + message.trim());
 
         }
     }

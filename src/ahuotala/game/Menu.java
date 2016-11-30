@@ -1,11 +1,17 @@
 package ahuotala.game;
 
 import static ahuotala.game.Game.FONTSCALE;
+import static ahuotala.game.Game.isConnectedToServer;
+import ahuotala.net.Client;
+import ahuotala.net.ClientStatus;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
+import java.awt.event.WindowEvent;
 import java.io.File;
+import java.net.SocketException;
+import java.net.UnknownHostException;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 
@@ -51,10 +57,20 @@ public class Menu {
                             if (data != null) {
                                 String[] tmpData = data.split(":");
                                 if (tmpData.length == 2) {
-                                    game.connectToServer(tmpData[0], Integer.parseInt(tmpData[1]));
-                                    Game.isConnectedToServer = true;
+                                    try {
+                                        game.connectToServer(tmpData[0].trim(), Integer.parseInt(tmpData[1].trim()));
+                                        Game.isConnectedToServer = true;
+                                        Game.menuState = MenuState.NONE;
+                                    } catch (NumberFormatException | UnknownHostException | SocketException e) {
+                                        JOptionPane.showMessageDialog(game, "Error connecting to server: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                                        Game.menuState = MenuState.MAINMENU;
+                                    }
+                                } else {
+                                    JOptionPane.showMessageDialog(game, "Error connecting to server: malformed server address", "Error", JOptionPane.ERROR_MESSAGE);
+                                    Game.menuState = MenuState.MAINMENU;
                                 }
                             } else {
+                                JOptionPane.showMessageDialog(game, "Error connecting to server: server address can't be null", "Error", JOptionPane.ERROR_MESSAGE);
                                 Game.menuState = MenuState.MAINMENU;
                             }
                         }
@@ -65,6 +81,7 @@ public class Menu {
                         System.exit(1);
                     }
                     break;
+
                 case SINGLEPLAYER:
                     //Load game
                     if (renderCenterText(g, "Load game", 128, true)) {
@@ -108,6 +125,10 @@ public class Menu {
                     }
 //Exit
                     if (renderCenterText(g, "Exit game", 173, true)) {
+                        if (Game.isConnectedToServer) {
+                            //Close the server
+                            Game.frame.dispatchEvent(new WindowEvent(Game.frame, WindowEvent.WINDOW_CLOSING));
+                        }
                         game.save();
                         System.exit(1);
                     }

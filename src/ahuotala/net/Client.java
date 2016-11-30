@@ -1,6 +1,7 @@
 package ahuotala.net;
 
 import ahuotala.entities.Player;
+import ahuotala.game.Game;
 import ahuotala.game.Tickable;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -13,6 +14,7 @@ import java.net.UnknownHostException;
 import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -27,21 +29,16 @@ public class Client extends Thread implements Tickable {
     private Player player;
     private String uuid;
     private PlayerList playerList;
+    private final Game game;
 
-    public Client(Player player, String host, int port) {
-        try {
-            this.player = player;
-            this.socket = new DatagramSocket();
-            this.host = InetAddress.getByName(host);
-            this.port = port;
-            playerList = new PlayerList();
-            uuid = UUID.randomUUID().toString();
-        } catch (SocketException ex) {
-            ex.printStackTrace();
-        } catch (UnknownHostException ex) {
-            ex.printStackTrace();
-        }
-
+    public Client(Game game, Player player, String host, int port) throws SocketException, UnknownHostException {
+        this.player = player;
+        this.socket = new DatagramSocket();
+        this.host = InetAddress.getByName(host);
+        this.port = port;
+        this.game = game;
+        playerList = new PlayerList();
+        uuid = UUID.randomUUID().toString();
     }
 
     @Override
@@ -53,7 +50,9 @@ public class Client extends Thread implements Tickable {
             try {
                 socket.receive(packet);
             } catch (IOException ex) {
+                JOptionPane.showMessageDialog(game, "Network error: " + ex.toString(), "Error", JOptionPane.ERROR_MESSAGE);
                 ex.printStackTrace();
+                System.exit(0);
             }
             String message = new String(packet.getData());
             if (message.trim().equalsIgnoreCase(ServerStatus.PLAYER_CONNECTED.toString())) {
@@ -64,9 +63,13 @@ public class Client extends Thread implements Tickable {
                     ObjectInputStream oos = new ObjectInputStream(baos);
                     playerList = (PlayerList) oos.readObject();
                 } catch (IOException ex) {
+                    JOptionPane.showMessageDialog(game, "Error: " + ex.toString(), "Error", JOptionPane.ERROR_MESSAGE);
                     Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+                    System.exit(0);
                 } catch (ClassNotFoundException ex) {
+                    JOptionPane.showMessageDialog(game, "Error: " + ex.toString(), "Error", JOptionPane.ERROR_MESSAGE);
                     Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+                    System.exit(0);
                 }
             }
 //            System.out.println("SERVER [" + packet.getAddress().getHostAddress() + ":" + packet.getPort() + "] " + message.trim());
@@ -103,7 +106,9 @@ public class Client extends Thread implements Tickable {
         try {
             socket.send(packet);
         } catch (IOException ex) {
+            JOptionPane.showMessageDialog(game, "Network error: " + ex.toString(), "Error", JOptionPane.ERROR_MESSAGE);
             ex.printStackTrace();
+            System.exit(0);
         }
     }
 

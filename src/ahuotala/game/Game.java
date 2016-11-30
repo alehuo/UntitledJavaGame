@@ -22,6 +22,9 @@ import javax.swing.JFrame;
 import ahuotala.net.ClientStatus;
 import ahuotala.entities.MpPlayer;
 import ahuotala.net.PlayerList;
+import java.net.SocketException;
+import java.net.UnknownHostException;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -90,7 +93,7 @@ public class Game extends Canvas implements Runnable, Tickable {
     /**
      * JFrame
      */
-    private final JFrame frame;
+    public static JFrame frame;
 
     /**
      * Game state
@@ -317,12 +320,11 @@ public class Game extends Canvas implements Runnable, Tickable {
      * @param host Server IP address
      * @param port Server port
      */
-    public void connectToServer(String host, int port) {
-        client = new Client(player, host, port);
+    public void connectToServer(String host, int port) throws SocketException, UnknownHostException {
+        client = new Client(this, player, host, port);
         client.start();
         client.send(ClientStatus.CLIENT_CONNECTED.toString() + ";" + client.getUuid());
         newGame("multiplayer.sav");
-        Game.menuState = MenuState.NONE;
     }
 
     public void init() {
@@ -345,7 +347,9 @@ public class Game extends Canvas implements Runnable, Tickable {
                 LOG.log(Level.INFO, "Save file doesn't exist; Creating a new file..");
                 saveFile.createNewFile();
             } catch (IOException ex) {
+                JOptionPane.showMessageDialog(this, "Error saving game: " + ex.toString(), "Error", JOptionPane.ERROR_MESSAGE);
                 LOG.log(Level.SEVERE, null, ex);
+                System.exit(0);
             }
         }
         try {
@@ -358,6 +362,7 @@ public class Game extends Canvas implements Runnable, Tickable {
                 }
             }
         } catch (IOException ex) {
+            JOptionPane.showMessageDialog(this, "Error saving game: " + ex.toString(), "Error", JOptionPane.ERROR_MESSAGE);
             LOG.log(Level.SEVERE, null, ex);
         }
     }
@@ -520,17 +525,21 @@ public class Game extends Canvas implements Runnable, Tickable {
                 map.detectCollision(player);
 
                 //NPCs here
-
                 player.render(renderer, g, map);
 
                 //Render MP players
                 if (isConnectedToServer) {
                     PlayerList pList = client.getPlayerList();
                     for (MpPlayer plr : pList.getPlayerList().values()) {
-                        if (plr.getUuid().equals(client.getUuid())) {
-                            continue;
+                        try {
+                            if (plr.getUuid().equals(client.getUuid())) {
+                                continue;
+                            }
+                            plr.renderMpPlayer(g, renderer, player);
+                        } catch (Exception e) {
+                            JOptionPane.showMessageDialog(this, "Error rendering player(s): " + e.toString(), "Error", JOptionPane.ERROR_MESSAGE);
                         }
-                        plr.renderMpPlayer(g, renderer, player);
+
                     }
                 }
 

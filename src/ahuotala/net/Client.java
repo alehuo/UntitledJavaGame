@@ -9,7 +9,6 @@ import java.io.ObjectInputStream;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
-import java.net.Socket;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.UUID;
@@ -43,26 +42,14 @@ public final class Client extends Thread implements Tickable {
         playerList = new PlayerList();
         uuid = UUID.randomUUID().toString();
         LOG.log(Level.INFO, "Connecting to " + host + ":" + port + " with player UUID " + uuid);
-        connect();
-    }
-
-    public boolean connect() {
-        try {
-            Socket clientSocket = new Socket(host.getHostAddress(), port);
-            connected = true;
-            clientSocket.close();
-            return true;
-        } catch (IOException ex) {
-            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
-            JOptionPane.showMessageDialog(game, "Network error: " + ex.toString(), "Error", JOptionPane.ERROR_MESSAGE);
-            return false;
-        }
     }
 
     @Override
     public void run() {
 
-        while (connected) {
+        new Thread(new TcpClient(game, host, port)).start();
+
+        while (TcpClient.connected) {
             byte[] dataArray = new byte[4096];
             DatagramPacket packet = new DatagramPacket(dataArray, dataArray.length);
             try {

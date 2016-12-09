@@ -319,12 +319,16 @@ public class Game extends Canvas implements Runnable, Tickable {
      *
      * @param host Server IP address
      * @param port Server port
+     * @throws java.net.SocketException
+     * @throws java.net.UnknownHostException
      */
     public void connectToServer(String host, int port) throws SocketException, UnknownHostException {
         client = new Client(this, player, host, port);
         client.start();
-        client.send(ClientStatus.CLIENT_CONNECTED.toString() + ";" + client.getUuid());
-        newGame("multiplayer.sav");
+        if (client.connect()) {
+            client.send(ClientStatus.CLIENT_CONNECTED.toString() + ";" + client.getUuid());
+            newGame("multiplayer.sav");
+        }
     }
 
     public void init() {

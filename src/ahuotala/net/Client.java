@@ -9,6 +9,7 @@ import java.io.ObjectInputStream;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.net.Socket;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.UUID;
@@ -20,18 +21,20 @@ import javax.swing.JOptionPane;
  *
  * @author Aleksi Huotala
  */
-public class Client extends Thread implements Tickable {
+public final class Client extends Thread implements Tickable {
 
     private DatagramSocket socket;
-    private InetAddress host;
-    private int port;
+    private final InetAddress host;
+    private final int port;
     private boolean connected = false;
-    private Player player;
-    private String uuid;
+    private final Player player;
+    private final String uuid;
     private PlayerList playerList;
+    private static final Logger LOG = Logger.getLogger(Client.class.getName());
     private final Game game;
 
     public Client(Game game, Player player, String host, int port) throws SocketException, UnknownHostException {
+
         this.player = player;
         this.socket = new DatagramSocket();
         this.host = InetAddress.getByName(host);
@@ -39,12 +42,27 @@ public class Client extends Thread implements Tickable {
         this.game = game;
         playerList = new PlayerList();
         uuid = UUID.randomUUID().toString();
+        LOG.log(Level.INFO, "Connecting to " + host + ":" + port + " with player UUID " + uuid);
+        connect();
+    }
+
+    public boolean connect() {
+        try {
+            Socket clientSocket = new Socket(host.getHostAddress(), port);
+            connected = true;
+            clientSocket.close();
+            return true;
+        } catch (IOException ex) {
+            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+            JOptionPane.showMessageDialog(game, "Network error: " + ex.toString(), "Error", JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
     }
 
     @Override
     public void run() {
-//        System.out.println("Starting game client...");
-        while (true) {
+
+        while (connected) {
             byte[] dataArray = new byte[4096];
             DatagramPacket packet = new DatagramPacket(dataArray, dataArray.length);
             try {

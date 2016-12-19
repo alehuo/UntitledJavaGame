@@ -6,7 +6,6 @@ import static ahuotala.game.Game.spriteSheet;
 import ahuotala.game.Renderer;
 import ahuotala.game.Tickable;
 import ahuotala.graphics.animation.Animation;
-import ahuotala.game.Debug;
 import java.awt.Graphics;
 import java.util.Random;
 import java.util.logging.Level;

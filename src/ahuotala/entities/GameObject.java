@@ -10,18 +10,15 @@ import java.awt.Rectangle;
  *
  * @author Aleksi Huotala
  */
-public class GameObject {
+public class GameObject extends Entity {
 
-    private final int x;
-    private final int y;
     private final int width;
     private final int height;
     private final Sprite sprite;
     private final Rectangle bounds;
 
     public GameObject(int x, int y, Sprite sprite) {
-        this.x = x;
-        this.y = y;
+        super(x, y);
         this.sprite = sprite;
         width = sprite.getWidth();
         height = sprite.getHeight();
@@ -40,11 +37,11 @@ public class GameObject {
     }
 
     public void render(Renderer r, Player p) {
-        r.renderSprite(sprite, x + p.getOffsetX(), y + p.getOffsetY());
+        r.renderSprite(sprite, getX() + p.getOffsetX(), getY() + p.getOffsetY());
     }
 
     public void drawBoundaries(Graphics g, Player p) {
         g.setColor(Color.MAGENTA);
-        g.draw3DRect(x + p.getOffsetX(), y + p.getOffsetY(), width, height, false);
+        g.draw3DRect(getX() + p.getOffsetX(), getY() + p.getOffsetY(), width, height, false);
     }
 }

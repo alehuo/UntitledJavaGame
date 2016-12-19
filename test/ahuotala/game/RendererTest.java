@@ -1,4 +1,4 @@
-package ahuotala.game;
+package com.ahuotala.untitledjavagame.game;
 
 import org.junit.Before;
 import org.junit.Test;

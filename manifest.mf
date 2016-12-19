@@ -1,2 +1,2 @@
 Manifest-Version: 1.0
-Main-Class: ahuotala.game.Game
+Main-Class: com.ahuotala.untitledjavagame.Main

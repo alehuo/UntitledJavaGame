@@ -242,6 +242,8 @@ public class Game extends JFrame implements Runnable, Tickable {
      * Constructor
      */
     public Game() {
+        this.start();
+        
         renderer = new Renderer(WINDOW_WIDTH, WINDOW_HEIGHT, pixels);
 
         //Default time is 12:00
@@ -605,11 +607,5 @@ public class Game extends JFrame implements Runnable, Tickable {
 
         //Show frame
         bs.show();
-    }
-
-    public static void main(String[] args) {
-        //Start the game
-        new Game().start();
-        new Console().run();
     }
 }

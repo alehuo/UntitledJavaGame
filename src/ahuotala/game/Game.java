@@ -30,7 +30,7 @@ import javax.swing.JOptionPane;
  *
  * @author Aleksi Huotala
  */
-public class Game extends Canvas implements Runnable, Tickable {
+public class Game extends JFrame implements Runnable, Tickable {
 
     /**
      * SerialVersionUID
@@ -306,14 +306,14 @@ public class Game extends Canvas implements Runnable, Tickable {
 
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setLayout(new BorderLayout());
-        frame.add(this, BorderLayout.CENTER);
+        frame.add(new Menu(this), BorderLayout.CENTER);
         frame.pack();
         frame.setResizable(false);
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
         frame.requestFocusInWindow();
     }
-
+    
     /**
      * Establish a new connection
      *
@@ -513,7 +513,7 @@ public class Game extends Canvas implements Runnable, Tickable {
             if (Game.menuState != MenuState.NONE) {
                 //Image
                 g.drawImage(image, 0, 0, getWidth(), getHeight(), null);
-                menu.render(g);
+//                menu.render(g);
             } else {
                 //If the game is running, render map & npcs
 

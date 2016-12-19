@@ -13,10 +13,7 @@ import java.awt.Rectangle;
  *
  * @author Aleksi Huotala
  */
-public class Player implements Entity, Tickable {
-
-    private int x;
-    private int y;
+public class Player extends Entity implements Tickable {
 
     public int lastX;
     public int lastY;
@@ -94,25 +91,15 @@ public class Player implements Entity, Tickable {
     }
 
     @Override
-    public int getX() {
-        return x;
-    }
-
-    @Override
-    public int getY() {
-        return y;
-    }
-
-    @Override
     public void setX(int x) {
-        offsetX = cX - x;
-        this.x = x;
+        super.setX(x);
+        offsetX = cX - super.getX();
     }
 
     @Override
     public void setY(int y) {
-        offsetY = cY - y;
-        this.y = y;
+        super.setY(y);
+        offsetY = cY - super.getY();
     }
 
     public double getXp() {
@@ -154,22 +141,22 @@ public class Player implements Entity, Tickable {
     }
 
     public void goUp() {
-        y -= step;
+        super.incrementY(-step);
         offsetY += step;
     }
 
     public void goDown() {
-        y += step;
+        super.incrementY(step);
         offsetY -= step;
     }
 
     public void goLeft() {
-        x -= step;
+        super.incrementX(-step);
         offsetX += step;
     }
 
     public void goRight() {
-        x += step;
+        super.incrementX(step);
         offsetX -= step;
     }
 
@@ -247,10 +234,12 @@ public class Player implements Entity, Tickable {
     }
 
     public void render(Renderer r, Graphics g, Map map) {
+        int playerX = super.getX();
+        int playerY = super.getY();
         //Debug
         if (Game.DEBUG) {
             g.setColor(Color.yellow);
-            g.fill3DRect(x + offsetX, y + offsetY, width, height, true);
+            g.fill3DRect(playerX + offsetX, playerY + offsetY, width, height, true);
         }
         //Player shadow
 //        Game.spriteSheet.paint(g, "player_shadow", realX - 8, realY - 13);

@@ -17,12 +17,8 @@ import java.util.logging.Logger;
  *
  * @author Aleksi Huotala
  */
-public class Npc implements Entity, Tickable {
+public class Npc extends Entity implements Tickable {
 
-    //x
-    private int x = 0;
-    //y
-    private int y = 0;
     //Ticking interval
     private int interval;
     //Tick count

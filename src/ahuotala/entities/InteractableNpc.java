@@ -16,7 +16,7 @@ import java.util.Random;
  *
  * @author Aleksi
  */
-public class InteractableNpc implements Entity, Interactable, Tickable {
+public class InteractableNpc extends Entity implements Interactable, Tickable {
 
     //x
     private int x = 0;
@@ -88,24 +88,14 @@ public class InteractableNpc implements Entity, Interactable, Tickable {
     }
 
     @Override
-    public int getX() {
-        return x;
-    }
-
-    @Override
-    public int getY() {
-        return y;
-    }
-
-    @Override
     public void setX(int x) {
-        this.x = x;
+        super.setX(x);
         startX = x;
     }
 
     @Override
     public void setY(int y) {
-        this.y = y;
+        super.setY(y);
         startY = y;
     }
 

@@ -100,7 +100,7 @@ public class TcpClient implements Runnable {
      *
      * @return Connection state
      */
-    public boolean isConnected() {
+    public synchronized boolean isConnected() {
         return connected;
     }
     

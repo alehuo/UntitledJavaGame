@@ -104,7 +104,7 @@ public class Client extends Thread implements Tickable {
      *
      * @return
      */
-    public boolean isConnected() {
+    public synchronized boolean isConnected() {
         return connected;
     }
 
@@ -125,7 +125,7 @@ public class Client extends Thread implements Tickable {
      *
      * @param cmd
      */
-    public void send(String cmd) {
+    public synchronized void send(String cmd) {
         byte[] dataArray = cmd.getBytes();
         DatagramPacket packet = new DatagramPacket(dataArray, dataArray.length, host, port);
         try {

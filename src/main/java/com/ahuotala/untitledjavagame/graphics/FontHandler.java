@@ -19,6 +19,10 @@ public class FontHandler {
     private BufferedImage[] charset = new BufferedImage[charMap.length];
     private double scale;
 
+    /**
+     *
+     * @param path
+     */
     public FontHandler(String path) {
         this.scale = Game.FONTSCALE;
         try {
@@ -36,6 +40,13 @@ public class FontHandler {
         }
     }
 
+    /**
+     *
+     * @param g
+     * @param text
+     * @param x
+     * @param y
+     */
     public void drawText(Graphics g, String text, int x, int y) {
         text = text.toLowerCase();
         char[] chars = text.toCharArray();

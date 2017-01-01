@@ -17,6 +17,7 @@ import java.util.logging.Logger;
  * @author Aleksi Huotala
  */
 public class Npc extends Entity implements Tickable {
+    private static final Logger LOG = Logger.getLogger(Npc.class.getName());
 
     //Ticking interval
     private int interval;
@@ -41,7 +42,6 @@ public class Npc extends Entity implements Tickable {
     private int startX;
     private int startY;
 
-    private static final Logger LOG = Logger.getLogger(Npc.class.getName());
 
     //Can the NPC move around?
     private boolean canMove = true;
@@ -52,6 +52,10 @@ public class Npc extends Entity implements Tickable {
     private final Animation playerWalkingLeft;
     private final Animation playerWalkingRight;
 
+    /**
+     *
+     * @param name
+     */
     public Npc(String name) {
         this.interval = 100;
         this.name = name;
@@ -66,44 +70,79 @@ public class Npc extends Entity implements Tickable {
         animationTicker.register(playerWalkingRight);
     }
 
+    /**
+     *
+     * @return
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     *
+     * @return
+     */
     public boolean isWalking() {
         return isWalking;
     }
 
+    /**
+     *
+     * @param isWalking
+     */
     public void setWalkingState(boolean isWalking) {
         this.isWalking = isWalking;
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public int getX() {
         return x;
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public int getY() {
         return y;
     }
 
+    /**
+     *
+     * @param x
+     */
     @Override
     public void setX(int x) {
         this.x = x;
         startX = x;
     }
 
+    /**
+     *
+     * @param y
+     */
     @Override
     public void setY(int y) {
         this.y = y;
         startY = y;
     }
 
+    /**
+     *
+     * @param state
+     */
     public void setMovementState(boolean state) {
         canMove = state;
     }
 
+    /**
+     *
+     */
     @Override
     /**
      * Use the tick() -method to add special features to npcs.
@@ -225,6 +264,12 @@ public class Npc extends Entity implements Tickable {
 
     }
 
+    /**
+     *
+     * @param g
+     * @param r
+     * @param player
+     */
     public void renderNpc(Graphics g, Renderer r, Player player) {
 
         if (this.isWalking()) {
@@ -265,10 +310,18 @@ public class Npc extends Entity implements Tickable {
 
     }
 
+    /**
+     *
+     * @return
+     */
     public Direction getDirection() {
         return direction;
     }
 
+    /**
+     *
+     * @return
+     */
     public boolean getWalkingState() {
         return moveTicks;
     }

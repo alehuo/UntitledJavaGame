@@ -1,9 +1,5 @@
 package com.ahuotala.untitledjavagame.game;
 
-import java.awt.*;
-import java.awt.image.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import com.ahuotala.untitledjavagame.entities.MpPlayer;
 import com.ahuotala.untitledjavagame.entities.NpcTicker;
 import com.ahuotala.untitledjavagame.entities.Player;
@@ -23,6 +19,10 @@ import com.ahuotala.untitledjavagame.graphics.animation.AnimationTicker;
 import com.ahuotala.untitledjavagame.map.Map;
 import com.ahuotala.untitledjavagame.net.Client;
 import com.ahuotala.untitledjavagame.net.PlayerList;
+import java.awt.*;
+import java.awt.image.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 
 /**
@@ -30,6 +30,59 @@ import javax.swing.JOptionPane;
  * @author Aleksi Huotala
  */
 public class GameWindow extends Canvas implements Runnable, Tickable {
+    /**
+     * SpriteSheet
+     */
+    public static SpriteSheet spriteSheet = new SpriteSheet("spriteSheet.png");
+    /**
+     * Animation ticker
+     */
+    public static final AnimationTicker animationTicker = new AnimationTicker();
+    /**
+     * NPC ticker
+     */
+    public static final NpcTicker npcTicker = new NpcTicker();
+    /**
+     * Player
+     */
+    public static final Player player = new Player();
+    /**
+     * Inventory
+     */
+    public static final Inventory inventory = new Inventory();
+    /**
+     * Inventory state
+     */
+    public static boolean SHOW_INVENTORY = false;
+    /**
+     * ItemRegistry
+     */
+    public static ItemRegistry itemRegistry = new ItemRegistry();
+    /**
+     * Connection state Note: Multiplayer functionality is not currently
+     * implemented.
+     */
+    public static boolean isConnectedToServer = false;
+    /**
+     * Menu state
+     */
+    public static MenuState menuState = MenuState.MAINMENU;
+    /**
+     * Is the menu open?
+     */
+    public static boolean isInMenu = true;
+    /**
+     * Is the save loaded?
+     */
+    public static boolean playing = false;
+    /**
+     * Logger
+     */
+    private static final Logger LOG = Logger.getLogger(Game.class.getName());
+    /**
+     * GameTime
+     */
+    private static final GameTime gameTime = new GameTime();
 
     /**
      * Save file name
@@ -66,25 +119,12 @@ public class GameWindow extends Canvas implements Runnable, Tickable {
      */
     private Graphics g;
 
-    /**
-     * SpriteSheet
-     */
-    public static SpriteSheet spriteSheet = new SpriteSheet("spriteSheet.png");
 
     /**
      * Current font
      */
     private Font currentFont;
 
-    /**
-     * Animation ticker
-     */
-    public static final AnimationTicker animationTicker = new AnimationTicker();
-
-    /**
-     * NPC ticker
-     */
-    public static final NpcTicker npcTicker = new NpcTicker();
 
     /**
      * Animation for player low health
@@ -101,25 +141,6 @@ public class GameWindow extends Canvas implements Runnable, Tickable {
      */
     public Map map = new Map("map3");
 
-    /**
-     * Player
-     */
-    public static final Player player = new Player();
-
-    /**
-     * Inventory
-     */
-    public static final Inventory inventory = new Inventory();
-
-    /**
-     * Inventory state
-     */
-    public static boolean SHOW_INVENTORY = false;
-
-    /**
-     * ItemRegistry
-     */
-    public static ItemRegistry itemRegistry = new ItemRegistry();
 
     /**
      * MouseHandler
@@ -131,41 +152,12 @@ public class GameWindow extends Canvas implements Runnable, Tickable {
      */
     private Client client;
 
-    /**
-     * Connection state Note: Multiplayer functionality is not currently
-     * implemented.
-     */
-    public static boolean isConnectedToServer = false;
 
     /**
      * Menu
      */
     private Menu menu;
 
-    /**
-     * Menu state
-     */
-    public static MenuState menuState = MenuState.MAINMENU;
-
-    /**
-     * Is the menu open?
-     */
-    public static boolean isInMenu = true;
-
-    /**
-     * Is the save loaded?
-     */
-    public static boolean playing = false;
-
-    /**
-     * Logger
-     */
-    private static final Logger LOG = Logger.getLogger(Game.class.getName());
-
-    /**
-     * GameTime
-     */
-    private static final GameTime gameTime = new GameTime();
 
     /**
      * Constructor
@@ -208,6 +200,9 @@ public class GameWindow extends Canvas implements Runnable, Tickable {
         
     }
 
+    /**
+     *
+     */
     public void init() {
 
     }
@@ -271,6 +266,9 @@ public class GameWindow extends Canvas implements Runnable, Tickable {
         }
     }
 
+    /**
+     *
+     */
     @Override
     public void tick() {
         tickCount++;
@@ -290,6 +288,9 @@ public class GameWindow extends Canvas implements Runnable, Tickable {
         }
     }
 
+    /**
+     *
+     */
     public void render() {
         BufferStrategy bs = getBufferStrategy();
         if (bs == null) {

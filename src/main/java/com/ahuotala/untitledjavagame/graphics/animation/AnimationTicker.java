@@ -11,14 +11,24 @@ public class AnimationTicker implements Tickable {
 
     private final ArrayList<Animation> animations;
 
+    /**
+     *
+     */
     public AnimationTicker() {
         animations = new ArrayList<>();
     }
 
+    /**
+     *
+     * @param animation
+     */
     public void register(Animation animation) {
         animations.add(animation);
     }
 
+    /**
+     *
+     */
     @Override
     public void tick() {
         if (!animations.isEmpty()) {

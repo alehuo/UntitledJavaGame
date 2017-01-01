@@ -38,6 +38,10 @@ public class Menu extends JPanel implements ActionListener {
     private final JButton saveButton;
     private final JButton continueButton;
 
+    /**
+     *
+     * @param game
+     */
     public Menu(Game game) {
         this.game = game;
         super.setLayout(new FlowLayout());
@@ -300,6 +304,10 @@ public class Menu extends JPanel implements ActionListener {
         super.repaint();
     }
 
+    /**
+     *
+     * @param m
+     */
     public void loadMenuState(MenuState m) {
         if (null != m) {
             switch (m) {

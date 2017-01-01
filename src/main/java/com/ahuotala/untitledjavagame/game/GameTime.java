@@ -34,6 +34,9 @@ public class GameTime implements Tickable {
         this.time = time;
     }
 
+    /**
+     *
+     */
     @Override
     public void tick() {
         if (time < 2359) {

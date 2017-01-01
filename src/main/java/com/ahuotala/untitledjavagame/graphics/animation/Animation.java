@@ -17,7 +17,11 @@ import java.util.logging.Logger;
  *
  * @author Aleksi Huotala
  */
-public final class Animation implements Tickable {
+public class Animation implements Tickable {
+    /**
+     * Logger
+     */
+    private static final Logger LOG = Logger.getLogger(Animation.class.getName());
 
     /**
      * List of sprites that make up the animation
@@ -44,10 +48,6 @@ public final class Animation implements Tickable {
      */
     private int index = 0;
 
-    /**
-     * Logger
-     */
-    private static final Logger LOG = Logger.getLogger(Animation.class.getName());
 
     /**
      * Animation constructor

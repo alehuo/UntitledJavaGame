@@ -61,6 +61,10 @@ public class InteractableNpc extends Entity implements Interactable, Tickable {
     private final Animation playerWalkingLeft;
     private final Animation playerWalkingRight;
 
+    /**
+     *
+     * @param name
+     */
     public InteractableNpc(String name) {
         this.interval = 100;
         this.name = name;
@@ -75,34 +79,61 @@ public class InteractableNpc extends Entity implements Interactable, Tickable {
         animationTicker.register(playerWalkingRight);
     }
 
+    /**
+     *
+     * @return
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     *
+     * @return
+     */
     public boolean isWalking() {
         return isWalking;
     }
 
+    /**
+     *
+     * @param isWalking
+     */
     public void setWalkingState(boolean isWalking) {
         this.isWalking = isWalking;
     }
 
+    /**
+     *
+     * @param x
+     */
     @Override
     public void setX(int x) {
         super.setX(x);
         startX = x;
     }
 
+    /**
+     *
+     * @param y
+     */
     @Override
     public void setY(int y) {
         super.setY(y);
         startY = y;
     }
 
+    /**
+     *
+     * @param state
+     */
     public void setMovementState(boolean state) {
         canMove = state;
     }
 
+    /**
+     *
+     */
     @Override
     /**
      * Use the tick() -method to add special features to npcs.
@@ -224,6 +255,12 @@ public class InteractableNpc extends Entity implements Interactable, Tickable {
 
     }
 
+    /**
+     *
+     * @param g
+     * @param r
+     * @param player
+     */
     public void renderNpc(Graphics g, Renderer r, Player player) {
 //        spriteSheet.paint(g, "player_shadow", this.getX() + player.getOffsetX() - 8, this.getY() + player.getOffsetY() - 13);
         if (this.isWalking()) {
@@ -274,11 +311,23 @@ public class InteractableNpc extends Entity implements Interactable, Tickable {
         }
     }
 
+    /**
+     *
+     * @param g
+     * @param oX
+     * @param oY
+     */
     public void drawBoundaries(Graphics g, int oX, int oY) {
         g.setColor(Color.yellow);
         g.draw3DRect(startX - movingAreaX + oX, startY - movingAreaY + oY, 2 * movingAreaX + 32, 2 * movingAreaY + 32, false);
     }
 
+    /**
+     *
+     * @param g
+     * @param oX
+     * @param oY
+     */
     public void drawInteractionBoundaries(Graphics g, int oX, int oY) {
         g.setColor(Color.blue);
         g.draw3DRect(x - rX + oX, y - rY + oY, 4 * rX, 4 * rY, false);
@@ -314,10 +363,18 @@ public class InteractableNpc extends Entity implements Interactable, Tickable {
         this.npcId = id;
     }
 
+    /**
+     *
+     * @return
+     */
     public Direction getDirection() {
         return direction;
     }
 
+    /**
+     *
+     * @return
+     */
     public boolean getWalkingState() {
         return moveTicks;
     }

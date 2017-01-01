@@ -1,11 +1,11 @@
 package com.ahuotala.untitledjavagame.map;
 
-import com.ahuotala.untitledjavagame.graphics.Sprite;
 import com.ahuotala.untitledjavagame.entities.GameObject;
 import com.ahuotala.untitledjavagame.entities.Player;
 import com.ahuotala.untitledjavagame.game.Game;
 import com.ahuotala.untitledjavagame.game.Renderer;
 import com.ahuotala.untitledjavagame.game.Tile;
+import com.ahuotala.untitledjavagame.graphics.Sprite;
 import com.ahuotala.untitledjavagame.graphics.animation.Animation;
 import java.awt.Color;
 import java.awt.Graphics;
@@ -24,6 +24,7 @@ import java.util.logging.Logger;
  * @author Aleksi Huotala
  */
 public class Map {
+    private static final Logger LOG = Logger.getLogger(Map.class.getName());
 
     private ArrayList<String> lines;
     private ArrayList<Tile> tileEntities;
@@ -40,8 +41,11 @@ public class Map {
     private int currentTileX = Integer.MIN_VALUE;
     private int currentTileY = Integer.MIN_VALUE;
     private int tileCount;
-    private static final Logger LOG = Logger.getLogger(Map.class.getName());
 
+    /**
+     *
+     * @param name
+     */
     public Map(String name) {
         LOG.setLevel(Level.SEVERE);
         String line = "";

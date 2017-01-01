@@ -7,7 +7,6 @@ package com.ahuotala.untitledjavagame.game;
 
 import com.ahuotala.untitledjavagame.entities.Player;
 import static com.ahuotala.untitledjavagame.game.Game.inventory;
-import static com.ahuotala.untitledjavagame.game.Game.player;
 import static com.ahuotala.untitledjavagame.game.Game.playing;
 import java.io.File;
 import java.io.FileInputStream;
@@ -25,6 +24,7 @@ import javax.swing.JOptionPane;
  * @author alehuo
  */
 public class Singleplayer {
+    private static final Logger LOG = Logger.getLogger(Singleplayer.class.getName());
 
     private final Player player;
 
@@ -37,22 +37,38 @@ public class Singleplayer {
      */
     private SaveGame save;
 
-    private static final Logger LOG = Logger.getLogger(Singleplayer.class.getName());
-
+    /**
+     *
+     * @param g
+     * @param p
+     */
     public Singleplayer(Game g, Player p) {
         player = p;
         game = g;
     }
 
+    /**
+     *
+     * @return
+     */
     public String getSaveFileName() {
         return saveFileName;
     }
 
+    /**
+     *
+     * @param saveFileName
+     */
     public void setSaveFileName(String saveFileName) {
         this.saveFileName = saveFileName;
     }
 
     /*##############################################*/
+
+    /**
+     *
+     */
+
     public void save() {
 
         File saveDir = new File("saves");
@@ -62,7 +78,7 @@ public class Singleplayer {
         //If the file doesn't exist, create it
         if (!saveFile.exists() && playing) {
             try {
-                LOG.log(Level.INFO, "Save file doesn't exist; Creating a new file..");
+                LOG.log(Level.INFO, "Saving game.. Save file doesn't exist; Creating a new file..");
                 saveFile.createNewFile();
             } catch (IOException ex) {
                 JOptionPane.showMessageDialog(game, "Error saving game: " + ex.toString(), "Error", JOptionPane.ERROR_MESSAGE);
@@ -77,6 +93,7 @@ public class Singleplayer {
                 save.saveState(player.getX(), player.getY(), player.getHealth(), player.getXp(), player.getDirection(), game.getGameTime().getTime(), inventory.getInventory());
                 try (FileOutputStream fileOutput = new FileOutputStream(saveFileName); ObjectOutputStream out = new ObjectOutputStream(fileOutput)) {
                     out.writeObject(save);
+                    LOG.log(Level.INFO, "Game saved successfully.");
                 }
             }
         } catch (IOException ex) {
@@ -85,6 +102,10 @@ public class Singleplayer {
         }
     }
 
+    /**
+     *
+     * @param file
+     */
     public void loadSaveFile(File file) {
         /**
          * Load from save
@@ -97,7 +118,7 @@ public class Singleplayer {
             save = (SaveGame) in.readObject();
             in.close();
             fileInput.close();
-
+            LOG.log(Level.INFO, "Loaded a gamesave from ''{0}''", saveFileName);
         } catch (IOException | ClassNotFoundException e) {
             LOG.log(Level.SEVERE, null, e);
         }
@@ -113,11 +134,16 @@ public class Singleplayer {
         inventory.setInventory(save.getInventory());
     }
 
+    /**
+     *
+     * @param saveFileName
+     */
     public void newGame(String saveFileName) {
         this.saveFileName = saveFileName;
         if (!saveFileName.trim().endsWith(".sav")) {
             this.saveFileName += ".sav";
         }
+        LOG.log(Level.INFO, "Player started a new game: ''{0}''", saveFileName);
         save = new SaveGame();
         //Set player x, y, health, xp and direction
         player.setX(save.getX());

@@ -20,6 +20,17 @@ public class Tile {
     private boolean blocked = false;
     private final Rectangle bounds;
 
+    /**
+     *
+     * @param x
+     * @param y
+     * @param tileTypeBottom
+     * @param tileTypeMask
+     * @param tileTypeMask2
+     * @param tileTypeFringe1
+     * @param tileTypeFringe2
+     * @param blocked
+     */
     public Tile(int x, int y, String tileTypeBottom, String tileTypeMask, String tileTypeMask2, String tileTypeFringe1, String tileTypeFringe2, boolean blocked) {
         this.x = x;
         this.y = y;
@@ -32,6 +43,16 @@ public class Tile {
         bounds = new Rectangle(x, y, 32, 32);
     }
 
+    /**
+     *
+     * @param x
+     * @param y
+     * @param tileTypeBottom
+     * @param tileTypeMask
+     * @param tileTypeMask2
+     * @param tileTypeFringe1
+     * @param tileTypeFringe2
+     */
     public Tile(int x, int y, String tileTypeBottom, String tileTypeMask, String tileTypeMask2, String tileTypeFringe1, String tileTypeFringe2) {
         this.x = x;
         this.y = y;
@@ -43,6 +64,11 @@ public class Tile {
         bounds = new Rectangle(x, y, 32, 32);
     }
 
+    /**
+     *
+     * @param p
+     * @return
+     */
     public boolean collidesWithPlayer(Player p) {
         if (!blocked) {
             return false;
@@ -57,62 +83,122 @@ public class Tile {
         return false;
     }
 
+    /**
+     *
+     * @return
+     */
     public int getX() {
         return x;
     }
 
+    /**
+     *
+     * @return
+     */
     public int getY() {
         return y;
     }
 
+    /**
+     *
+     * @return
+     */
     public String getTypeBottom() {
         return tileTypeBottom;
     }
 
+    /**
+     *
+     * @return
+     */
     public String getTypeMask() {
         return tileTypeMask;
     }
 
+    /**
+     *
+     * @return
+     */
     public String getTypeMask2() {
         return tileTypeMask2;
     }
 
+    /**
+     *
+     * @return
+     */
     public String getTypeFringe1() {
         return tileTypeFringe1;
     }
 
+    /**
+     *
+     * @return
+     */
     public String getTypeFringe2() {
         return tileTypeFringe1;
     }
 
+    /**
+     *
+     * @param type
+     */
     public void setTypeBottom(String type) {
         tileTypeBottom = type;
     }
 
+    /**
+     *
+     * @param type
+     */
     public void setTypeMask(String type) {
         tileTypeMask = type;
     }
 
+    /**
+     *
+     * @param type
+     */
     public void setTypeMask2(String type) {
         tileTypeMask2 = type;
     }
 
+    /**
+     *
+     * @param type
+     */
     public void setTypeFringe1(String type) {
         tileTypeFringe1 = type;
     }
 
+    /**
+     *
+     * @param type
+     */
     public void setTypeFringe2(String type) {
         tileTypeFringe2 = type;
     }
 
+    /**
+     *
+     * @return
+     */
     public boolean isBlocked() {
         return blocked;
     }
 
+    /**
+     *
+     * @param blocked
+     */
     public void setBlocked(boolean blocked) {
         this.blocked = blocked;
     }
     
+    /**
+     *
+     * @return
+     */
     public Rectangle getBounds(){
         return bounds;
     }

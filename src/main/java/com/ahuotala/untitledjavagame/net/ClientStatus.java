@@ -10,5 +10,19 @@ package com.ahuotala.untitledjavagame.net;
  * @author alehuo
  */
 public enum ClientStatus {
-    CLIENT_CONNECTED, CLIENT_DISCONNECTED, CLIENT_POSUPD;
+
+    /**
+     *
+     */
+    CLIENT_CONNECTED, 
+
+    /**
+     *
+     */
+    CLIENT_DISCONNECTED, 
+
+    /**
+     *
+     */
+    CLIENT_POSUPD;
 }

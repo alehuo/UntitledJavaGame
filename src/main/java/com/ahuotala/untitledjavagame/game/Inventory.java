@@ -22,6 +22,10 @@ public class Inventory {
      * Inventory rows
      */
     public static final int ROWS = 8;
+    /**
+     * Logger
+     */
+    private static final Logger LOG = Logger.getLogger(Inventory.class.getName());
 
     /**
      * Slot amount
@@ -48,10 +52,6 @@ public class Inventory {
      */
     private ItemStack tmpStack2;
 
-    /**
-     * Logger
-     */
-    private static final Logger LOG = Logger.getLogger(Inventory.class.getName());
 
     /**
      * Constructor
@@ -169,6 +169,10 @@ public class Inventory {
         return null;
     }
 
+    /**
+     *
+     * @return
+     */
     public int getStackCount() {
         int itemCount = 0;
         for (int i = 0; i < inventory.length; i++) {
@@ -183,6 +187,7 @@ public class Inventory {
      * Renders the inventory
      *
      * @param g
+     * @param r
      */
     public void renderInventory(Graphics g, Renderer r) {
         //Base image

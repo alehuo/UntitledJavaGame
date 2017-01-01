@@ -11,6 +11,10 @@ import java.util.logging.Logger;
  * @author Aleksi Huotala
  */
 public class Renderer {
+    /**
+     * Logger
+     */
+    private static final Logger LOG = Logger.getLogger(Renderer.class.getName());
 
     /**
      * Width
@@ -27,10 +31,6 @@ public class Renderer {
      */
     private int[] pixels;
 
-    /**
-     * Logger
-     */
-    private static final Logger LOG = Logger.getLogger(Renderer.class.getName());
 
     /**
      * Post process filter

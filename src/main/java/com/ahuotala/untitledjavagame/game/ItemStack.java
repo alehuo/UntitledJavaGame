@@ -8,6 +8,10 @@ import java.util.logging.Logger;
  * @author Aleksi Huotala
  */
 public class ItemStack implements java.io.Serializable {
+    /**
+     * Logger
+     */
+    private static final Logger LOG = Logger.getLogger(ItemStack.class.getName());
 
     /**
      * Stack max size
@@ -30,10 +34,10 @@ public class ItemStack implements java.io.Serializable {
     private String label;
 
     /**
-     * Logger
+     *
+     * @param item
+     * @param amount
      */
-    private static final Logger LOG = Logger.getLogger(ItemStack.class.getName());
-
     public ItemStack(Item item, int amount) {
         this.item = item;
         if (this.amount > maxSize) {

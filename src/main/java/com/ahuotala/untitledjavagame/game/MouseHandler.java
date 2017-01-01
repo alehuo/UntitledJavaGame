@@ -10,14 +10,52 @@ import java.awt.event.MouseWheelEvent;
  */
 public class MouseHandler extends MouseAdapter {
 
-    private final Inventory i;
-
+    /**
+     *
+     */
     public static int x = 0;
+
+    /**
+     *
+     */
     public static int y = 0;
+
+    /**
+     *
+     */
     public static boolean mouseClicked = false;
+
+    /**
+     *
+     */
     public static boolean pressed = false;
+
+    /**
+     *
+     */
     public static int slot = -1;
 
+    /**
+     *
+     * @param slot
+     */
+    public static void setClickedSlot(int slot) {
+        MouseHandler.slot = slot;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public static int getClickedSlot() {
+        return slot;
+    }
+    private final Inventory i;
+
+    /**
+     *
+     * @param i
+     */
     public MouseHandler(Inventory i) {
         this.i = i;
     }
@@ -29,13 +67,6 @@ public class MouseHandler extends MouseAdapter {
 //        }
     }
 
-    public static void setClickedSlot(int slot) {
-        MouseHandler.slot = slot;
-    }
-
-    public static int getClickedSlot() {
-        return slot;
-    }
 
     @Override
     public void mouseEntered(MouseEvent e) {

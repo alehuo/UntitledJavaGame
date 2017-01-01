@@ -18,6 +18,9 @@ import java.util.logging.Logger;
  */
 public class TcpClient implements Runnable {
 
+    /**
+     *
+     */
     public boolean connected = false;
 
     private boolean running = true;
@@ -30,6 +33,12 @@ public class TcpClient implements Runnable {
     //Interval of heartbeat
     private final int rate = 5;
 
+    /**
+     *
+     * @param g
+     * @param host
+     * @param port
+     */
     public TcpClient(Game g, InetAddress host, int port) {
         this.g = g;
         this.host = host;
@@ -45,6 +54,11 @@ public class TcpClient implements Runnable {
         }
     }
 
+    /**
+     *
+     * @param host
+     * @param port
+     */
     public TcpClient(InetAddress host, int port) {
         this.host = host;
         this.port = port;
@@ -90,6 +104,9 @@ public class TcpClient implements Runnable {
         return connected;
     }
     
+    /**
+     *
+     */
     public void disconnect(){
         running = false;
         connected = false;

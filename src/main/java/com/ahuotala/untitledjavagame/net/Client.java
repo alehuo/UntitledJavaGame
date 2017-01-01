@@ -21,7 +21,8 @@ import javax.swing.JOptionPane;
  *
  * @author Aleksi Huotala
  */
-public final class Client extends Thread implements Tickable {
+public class Client extends Thread implements Tickable {
+    private static final Logger LOG = Logger.getLogger(Client.class.getName());
 
     private DatagramSocket socket;
     private final InetAddress host;
@@ -30,7 +31,6 @@ public final class Client extends Thread implements Tickable {
     private final Player player;
     private final String uuid;
     private PlayerList playerList;
-    private static final Logger LOG = Logger.getLogger(Client.class.getName());
     private final Game game;
     private final TcpClient tcpClient;
 
@@ -93,10 +93,17 @@ public final class Client extends Thread implements Tickable {
         }
     }
 
+    /**
+     *
+     */
     public void disconnect() {
         this.socket.close();
     }
 
+    /**
+     *
+     * @return
+     */
     public boolean isConnected() {
         return connected;
     }
@@ -130,10 +137,18 @@ public final class Client extends Thread implements Tickable {
         }
     }
 
+    /**
+     *
+     * @return
+     */
     public String getUuid() {
         return uuid;
     }
 
+    /**
+     *
+     * @return
+     */
     public PlayerList getPlayerList() {
         return playerList;
     }

@@ -18,7 +18,24 @@ import javax.imageio.ImageIO;
  *
  * @author Aleksi Huotala
  */
-public class SpriteSheet {
+public final class SpriteSheet {
+    /**
+     * Logger
+     */
+    private static final Logger LOG = Logger.getLogger(SpriteSheet.class.getName());
+    /**
+     * Converts a BufferedImage to correct format
+     *
+     * @param image BufferedImage
+     * @return BufferedImage in correct format
+     */
+    public static BufferedImage convert(BufferedImage image) {
+        BufferedImage tmpImage = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_RGB);
+        Graphics2D g2d = tmpImage.createGraphics();
+        g2d.drawImage(image, 0, 0, null);
+        g2d.dispose();
+        return tmpImage;
+    }
 
     /**
      * Inventory sprite location
@@ -66,10 +83,9 @@ public class SpriteSheet {
     private HashMap<String, Sprite> sprites;
 
     /**
-     * Logger
+     *
+     * @param spriteSheetPath
      */
-    private static final Logger LOG = Logger.getLogger(SpriteSheet.class.getName());
-
     public SpriteSheet(String spriteSheetPath) {
         //Alustetaan hajautustaulu
         sprites = new HashMap<>();
@@ -194,6 +210,11 @@ public class SpriteSheet {
         return null;
     }
 
+    /**
+     *
+     * @param itemId
+     * @return
+     */
     public Sprite getItemIcon(ItemId itemId) {
         if (sprites.containsKey(itemId + "")) {
             return sprites.get(itemId + "");
@@ -259,18 +280,5 @@ public class SpriteSheet {
 
     }
 
-    /**
-     * Converts a BufferedImage to correct format
-     *
-     * @param image BufferedImage
-     * @return BufferedImage in correct format
-     */
-    public static BufferedImage convert(BufferedImage image) {
-        BufferedImage tmpImage = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_RGB);
-        Graphics2D g2d = tmpImage.createGraphics();
-        g2d.drawImage(image, 0, 0, null);
-        g2d.dispose();
-        return tmpImage;
-    }
 
 }

@@ -94,6 +94,10 @@ public class SaveGame implements java.io.Serializable {
         return direction;
     }
 
+    /**
+     *
+     * @return
+     */
     public int getCurrentGameTime() {
         return currentGameTime;
     }

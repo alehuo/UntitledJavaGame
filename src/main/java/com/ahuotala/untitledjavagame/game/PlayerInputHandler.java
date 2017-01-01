@@ -1,10 +1,10 @@
 package com.ahuotala.untitledjavagame.game;
 
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import com.ahuotala.untitledjavagame.entities.Direction;
 import com.ahuotala.untitledjavagame.entities.Player;
 import com.ahuotala.untitledjavagame.map.Map;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 
 /**
  *

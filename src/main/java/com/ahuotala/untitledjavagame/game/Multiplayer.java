@@ -1,12 +1,7 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package com.ahuotala.untitledjavagame.game;
 
 import com.ahuotala.untitledjavagame.entities.Player;
-import static com.ahuotala.untitledjavagame.game.Game.player;
 import com.ahuotala.untitledjavagame.net.Client;
 import com.ahuotala.untitledjavagame.net.ClientStatus;
 import com.ahuotala.untitledjavagame.net.TcpClient;
@@ -22,6 +17,7 @@ import java.util.logging.Logger;
  * @author alehuo
  */
 public class Multiplayer {
+    private static final Logger LOG = Logger.getLogger(Multiplayer.class.getName());
 
     /**
      * UdpClient handles data connection
@@ -54,13 +50,24 @@ public class Multiplayer {
      */
     private int port;
 
-    private static final Logger LOG = Logger.getLogger(Multiplayer.class.getName());
-
+    /**
+     *
+     * @param g
+     * @param p
+     */
     public Multiplayer(Game g, Player p) {
         this.game = g;
         this.player = p;
     }
 
+    /**
+     *
+     * @param host
+     * @param port
+     * @return
+     * @throws SocketException
+     * @throws UnknownHostException
+     */
     public boolean connect(InetAddress host, int port) throws SocketException, UnknownHostException {
 
         LOG.log(Level.INFO, "Player wants to connect to {0}:{1}", new Object[]{host.getHostAddress(), port});
@@ -132,50 +139,98 @@ public class Multiplayer {
         }
     }
 
+    /**
+     *
+     * @return
+     */
     public Client getUdpClient() {
         return udpClient;
     }
 
+    /**
+     *
+     * @param udpClient
+     */
     public void setUdpClient(Client udpClient) {
         this.udpClient = udpClient;
     }
 
+    /**
+     *
+     * @return
+     */
     public TcpClient getTcpClient() {
         return tcpClient;
     }
 
+    /**
+     *
+     * @param tcpClient
+     */
     public void setTcpClient(TcpClient tcpClient) {
         this.tcpClient = tcpClient;
     }
 
+    /**
+     *
+     * @return
+     */
     public Game getGame() {
         return game;
     }
 
+    /**
+     *
+     * @param game
+     */
     public void setGame(Game game) {
         this.game = game;
     }
 
+    /**
+     *
+     * @return
+     */
     public Player getPlayer() {
         return player;
     }
 
+    /**
+     *
+     * @param player
+     */
     public void setPlayer(Player player) {
         this.player = player;
     }
 
+    /**
+     *
+     * @return
+     */
     public InetAddress getHost() {
         return host;
     }
 
+    /**
+     *
+     * @param host
+     */
     public void setHost(InetAddress host) {
         this.host = host;
     }
 
+    /**
+     *
+     * @return
+     */
     public int getPort() {
         return port;
     }
 
+    /**
+     *
+     * @param port
+     */
     public void setPort(int port) {
         this.port = port;
     }

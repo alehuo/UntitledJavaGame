@@ -15,19 +15,38 @@ import java.awt.Rectangle;
  */
 public class Player extends Entity implements Tickable {
 
+    /**
+     *
+     */
+    public static int realX;
+
+    /**
+     *
+     */
+    public static int realY;
+
+    /**
+     *
+     */
+    public static int maxHealth = 120;
+
+    /**
+     *
+     */
     public int lastX;
+
+    /**
+     *
+     */
     public int lastY;
 
     private double xp;
 
-    public static int realX;
-    public static int realY;
 
     //Base stepping speed
     private int step = 1;
 
     private int health = 120;
-    public static int maxHealth = 120;
 
     private Direction direction = Direction.DOWN;
 
@@ -37,9 +56,19 @@ public class Player extends Entity implements Tickable {
     private final int cY;
     private final int cX;
 
+    /**
+     *
+     */
     public int offsetX = Game.CENTERX;
+
+    /**
+     *
+     */
     public int offsetY = Game.CENTERY;
 
+    /**
+     *
+     */
     public String currentTile = "";
 
     private int playerTicks = 0;
@@ -59,6 +88,9 @@ public class Player extends Entity implements Tickable {
     private final int width = 16;
     private final int height = 16;
 
+    /**
+     *
+     */
     public Player() {
         //XP
         xp = 0.0;
@@ -94,76 +126,136 @@ public class Player extends Entity implements Tickable {
         Game.animationTicker.register(playerSwimmingRight);
     }
 
+    /**
+     *
+     * @param x
+     */
     @Override
     public void setX(int x) {
         super.setX(x);
         offsetX = cX - super.getX();
     }
 
+    /**
+     *
+     * @param y
+     */
     @Override
     public void setY(int y) {
         super.setY(y);
         offsetY = cY - super.getY();
     }
 
+    /**
+     *
+     * @return
+     */
     public double getXp() {
         return xp;
     }
 
+    /**
+     *
+     * @param xp
+     */
     public void setXp(double xp) {
         this.xp = xp;
     }
 
+    /**
+     *
+     * @return
+     */
     public int getRealX() {
         return realX;
     }
 
+    /**
+     *
+     * @return
+     */
     public int getRealY() {
         return realY;
     }
 
+    /**
+     *
+     * @return
+     */
     public int getOffsetX() {
         return offsetX;
     }
 
+    /**
+     *
+     * @return
+     */
     public int getOffsetY() {
         return offsetY;
     }
 
+    /**
+     *
+     * @param health
+     */
     public void damagePlayer(int health) {
         if (this.health - health >= 0) {
             this.health -= health;
         }
     }
 
+    /**
+     *
+     * @param health
+     */
     public void increaseHealth(int health) {
         setHealth(getHealth() + health);
     }
 
+    /**
+     *
+     * @return
+     */
     public int getHealth() {
         return health;
     }
 
+    /**
+     *
+     */
     public void goUp() {
         super.incrementY(-step);
         offsetY += step;
     }
 
+    /**
+     *
+     */
     public void goDown() {
         super.incrementY(step);
         offsetY -= step;
     }
 
+    /**
+     *
+     */
     public void goLeft() {
         super.incrementX(-step);
         offsetX += step;
     }
 
+    /**
+     *
+     */
     public void goRight() {
         super.incrementX(step);
         offsetX -= step;
     }
 
+    /**
+     *
+     * @param health
+     */
     public void setHealth(int health) {
         if (health > maxHealth) {
             this.health = maxHealth;
@@ -172,46 +264,91 @@ public class Player extends Entity implements Tickable {
         }
     }
 
+    /**
+     *
+     * @return
+     */
     public int getMaxHealth() {
         return maxHealth;
     }
 
+    /**
+     *
+     * @param tile
+     */
     public void setCurrentTile(String tile) {
         currentTile = tile;
     }
 
+    /**
+     *
+     * @param tile
+     * @return
+     */
     public String getCurrentTile(String tile) {
         return currentTile;
     }
 
+    /**
+     *
+     * @param step
+     */
     public void setStep(int step) {
         this.step = step;
     }
 
+    /**
+     *
+     * @param direction
+     */
     public void setDirection(Direction direction) {
         this.direction = direction;
     }
 
+    /**
+     *
+     * @return
+     */
     public Direction getDirection() {
         return direction;
     }
 
+    /**
+     *
+     * @return
+     */
     public boolean getWalkingState() {
         return walking;
     }
 
+    /**
+     *
+     * @param walking
+     */
     public void setWalkingState(boolean walking) {
         this.walking = walking;
     }
 
+    /**
+     *
+     * @param swimming
+     */
     public void setSwimmingState(boolean swimming) {
         this.swimming = swimming;
     }
 
+    /**
+     *
+     * @return
+     */
     public boolean isWalking() {
         return walking;
     }
 
+    /**
+     *
+     * @return
+     */
     public boolean isSwimming() {
         return swimming;
     }
@@ -221,22 +358,44 @@ public class Player extends Entity implements Tickable {
         return this.getX() + "," + this.getY();
     }
 
+    /**
+     *
+     * @param x
+     */
     public void setLastX(int x) {
         lastX = x;
     }
 
+    /**
+     *
+     * @param y
+     */
     public void setLastY(int y) {
         lastY = y;
     }
 
+    /**
+     *
+     * @return
+     */
     public int getLastX() {
         return lastX;
     }
 
+    /**
+     *
+     * @return
+     */
     public int getLastY() {
         return lastY;
     }
 
+    /**
+     *
+     * @param r
+     * @param g
+     * @param map
+     */
     public void render(Renderer r, Graphics g, Map map) {
         int playerX = super.getX();
         int playerY = super.getY();
@@ -308,6 +467,9 @@ public class Player extends Entity implements Tickable {
 
     }
 
+    /**
+     *
+     */
     @Override
     public void tick() {
         //Slow the player down if we are walking on a sand
@@ -337,6 +499,10 @@ public class Player extends Entity implements Tickable {
         bounds.setBounds(x, y, width, height);
     }
 
+    /**
+     *
+     * @return
+     */
     public Rectangle getBounds() {
         return bounds;
     }

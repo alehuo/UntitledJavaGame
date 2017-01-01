@@ -1,7 +1,7 @@
 package com.ahuotala.untitledjavagame.game;
 
-import com.ahuotala.untitledjavagame.entities.InteractableGameObject;
 import com.ahuotala.untitledjavagame.entities.GameObject;
+import com.ahuotala.untitledjavagame.entities.InteractableGameObject;
 import com.ahuotala.untitledjavagame.entities.InteractableNpc;
 import com.ahuotala.untitledjavagame.entities.Npc;
 import com.ahuotala.untitledjavagame.map.Map;

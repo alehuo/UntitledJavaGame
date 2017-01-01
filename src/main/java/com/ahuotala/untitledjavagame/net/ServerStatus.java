@@ -10,5 +10,19 @@ package com.ahuotala.untitledjavagame.net;
  * @author alehuo
  */
 public enum ServerStatus {
-    PLAYER_CONNECTED, PLAYER_DISCONNECTED, PLAYER_POS_UPD;
+
+    /**
+     *
+     */
+    PLAYER_CONNECTED, 
+
+    /**
+     *
+     */
+    PLAYER_DISCONNECTED, 
+
+    /**
+     *
+     */
+    PLAYER_POS_UPD;
 }

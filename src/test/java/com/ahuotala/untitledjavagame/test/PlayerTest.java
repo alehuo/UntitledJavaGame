@@ -20,11 +20,17 @@ public class PlayerTest {
 
     private Player p;
 
+    /**
+     *
+     */
     @Before
     public void init() {
         p = new Player();
     }
 
+    /**
+     *
+     */
     @Ignore
     @Test
     public void testSettingUpCoordinatesWorks() {
@@ -38,6 +44,9 @@ public class PlayerTest {
         assertEquals("Y-coordinate is incorrect", y, p.getY());
     }
 
+    /**
+     *
+     */
     @Ignore
     @Test
     public void testSettingDirectionWorks() {

@@ -17,6 +17,12 @@ public class GameObject extends Entity {
     private final Sprite sprite;
     private final Rectangle bounds;
 
+    /**
+     *
+     * @param x
+     * @param y
+     * @param sprite
+     */
     public GameObject(int x, int y, Sprite sprite) {
         super(x, y);
         this.sprite = sprite;
@@ -25,6 +31,11 @@ public class GameObject extends Entity {
         bounds = new Rectangle(x, y, width, height);
     }
 
+    /**
+     *
+     * @param player
+     * @return
+     */
     public boolean collidesWithPlayer(Player player) {
         if (bounds.intersects(player.getBounds())) {
             player.setX(player.getLastX());
@@ -36,10 +47,20 @@ public class GameObject extends Entity {
         return false;
     }
 
+    /**
+     *
+     * @param r
+     * @param p
+     */
     public void render(Renderer r, Player p) {
         r.renderSprite(sprite, getX() + p.getOffsetX(), getY() + p.getOffsetY());
     }
 
+    /**
+     *
+     * @param g
+     * @param p
+     */
     public void drawBoundaries(Graphics g, Player p) {
         g.setColor(Color.MAGENTA);
         g.draw3DRect(getX() + p.getOffsetX(), getY() + p.getOffsetY(), width, height, false);

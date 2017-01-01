@@ -11,6 +11,10 @@ public class MapGenerator {
 
     private static final int BLOCKSIZE = 32;
 
+    /**
+     *
+     * @param args
+     */
     public static void main(String[] args) {
         try {
             FileWriter fw = new FileWriter("src/ahuotala/map/map3.map");

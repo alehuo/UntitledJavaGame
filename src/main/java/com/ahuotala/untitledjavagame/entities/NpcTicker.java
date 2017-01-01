@@ -12,19 +12,33 @@ public class NpcTicker implements Tickable {
     private final ArrayList<Npc> npcs;
     private final ArrayList<InteractableNpc> interactableNpcs;
 
+    /**
+     *
+     */
     public NpcTicker() {
         npcs = new ArrayList<>();
         interactableNpcs = new ArrayList<>();
     }
 
+    /**
+     *
+     * @param npc
+     */
     public void register(Npc npc) {
         npcs.add(npc);
     }
 
+    /**
+     *
+     * @param npc
+     */
     public void register(InteractableNpc npc) {
         interactableNpcs.add(npc);
     }
 
+    /**
+     *
+     */
     @Override
     public void tick() {
         if (!npcs.isEmpty()) {

@@ -20,6 +20,13 @@ public class MpPlayer extends Entity implements java.io.Serializable {
     private Direction direction;
     private String uuid;
 
+    /**
+     *
+     * @param uuid
+     * @param x
+     * @param y
+     * @param direction
+     */
     public MpPlayer(String uuid, int x, int y, Direction direction) {
         this.uuid = uuid;
         this.x = x;
@@ -27,22 +34,44 @@ public class MpPlayer extends Entity implements java.io.Serializable {
         this.direction = direction;
     }
 
+    /**
+     *
+     * @return
+     */
     public Direction getDirection() {
         return direction;
     }
 
+    /**
+     *
+     * @param direction
+     */
     public void setDirection(Direction direction) {
         this.direction = direction;
     }
 
+    /**
+     *
+     * @param uuid
+     */
     public void setUuid(String uuid) {
         this.uuid = uuid;
     }
 
+    /**
+     *
+     * @return
+     */
     public String getUuid() {
         return uuid;
     }
 
+    /**
+     *
+     * @param g
+     * @param r
+     * @param player
+     */
     public void renderMpPlayer(Graphics g, Renderer r, Player player) {
         switch (this.getDirection()) {
             case UP:

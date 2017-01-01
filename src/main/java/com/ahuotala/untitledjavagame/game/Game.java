@@ -347,11 +347,19 @@ public class Game extends JFrame implements Runnable, Tickable {
         return frame;
     }
 
+    public String getSaveFileName() {
+        return saveFileName;
+    }
+
+    public void setSaveFileName(String saveFileName) {
+        this.saveFileName = saveFileName;
+    }
+
     public void save() {
-        
+
         File saveDir = new File("saves");
         saveDir.mkdir();
-        
+
         File saveFile = new File(saveFileName);
         //If the file doesn't exist, create it
         if (!saveFile.exists() && playing) {

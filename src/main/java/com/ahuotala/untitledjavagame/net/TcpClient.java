@@ -75,7 +75,7 @@ public class TcpClient implements Runnable {
 
     @Override
     public void run() {
-        while (running) {
+        while (running && connected) {
             try {
                 //Sleep
                 Thread.sleep(rate * 1000);
@@ -103,11 +103,11 @@ public class TcpClient implements Runnable {
     public synchronized boolean isConnected() {
         return connected;
     }
-    
+
     /**
      *
      */
-    public void disconnect(){
+    public void disconnect() {
         running = false;
         connected = false;
     }

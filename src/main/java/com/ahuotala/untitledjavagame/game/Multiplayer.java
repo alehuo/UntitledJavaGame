@@ -1,4 +1,3 @@
-
 package com.ahuotala.untitledjavagame.game;
 
 import com.ahuotala.untitledjavagame.entities.Player;
@@ -17,6 +16,7 @@ import java.util.logging.Logger;
  * @author alehuo
  */
 public class Multiplayer {
+
     private static final Logger LOG = Logger.getLogger(Multiplayer.class.getName());
 
     /**
@@ -68,7 +68,7 @@ public class Multiplayer {
      * @throws SocketException
      * @throws UnknownHostException
      */
-    public boolean connect(InetAddress host, int port) throws SocketException, UnknownHostException {
+    public boolean connect(InetAddress host, int port) {
 
         LOG.log(Level.INFO, "Player wants to connect to {0}:{1}", new Object[]{host.getHostAddress(), port});
 
@@ -88,15 +88,25 @@ public class Multiplayer {
 
         //Initialize UdpClient if we can connect
         if (isConnected()) {
-            udpClient = new Client(this);
-            udpClientThread = new Thread(udpClient);
-            udpClientThread.setDaemon(true);
-            //Start the thread
-            LOG.info("Starting UDP Client thread");
-            udpClientThread.start();
-            udpClient.send(ClientStatus.CLIENT_CONNECTED.toString() + ";" + udpClient.getUuid());
-            return true;
+            try {
+                udpClient = new Client(this);
+                udpClientThread = new Thread(udpClient);
+                udpClientThread.setDaemon(true);
+                //Start the thread
+                LOG.info("Starting UDP Client thread");
+                udpClientThread.start();
+                udpClient.send(ClientStatus.CLIENT_CONNECTED.toString() + ";" + udpClient.getUuid());
+                return true;
+            } catch (SocketException ex) {
+                Logger.getLogger(Multiplayer.class.getName()).log(Level.SEVERE, null, ex);
+                return false;
+            } catch (UnknownHostException ex) {
+                Logger.getLogger(Multiplayer.class.getName()).log(Level.SEVERE, null, ex);
+                return false;
+            }
         } else {
+            udpClientThread.interrupt();
+            tcpClientThread.interrupt();
             LOG.log(Level.SEVERE, "Error connecting to {0}:{1}. Server didn't respond to TCP Client's request.", new Object[]{host.getHostAddress(), port});
             return false;
         }

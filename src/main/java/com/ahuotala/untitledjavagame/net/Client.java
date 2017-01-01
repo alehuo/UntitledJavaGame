@@ -22,17 +22,19 @@ import javax.swing.JOptionPane;
  * @author Aleksi Huotala
  */
 public class Client extends Thread implements Tickable {
+
     private static final Logger LOG = Logger.getLogger(Client.class.getName());
 
     private DatagramSocket socket;
-    private final InetAddress host;
-    private final int port;
+    private InetAddress host;
+    private int port;
     private boolean connected = false;
-    private final Player player;
-    private final String uuid;
+    private boolean ready = false;
+    private Player player;
+    private String uuid;
     private PlayerList playerList;
-    private final Game game;
-    private final TcpClient tcpClient;
+    private Game game;
+    private TcpClient tcpClient;
 
     /**
      *
@@ -40,18 +42,28 @@ public class Client extends Thread implements Tickable {
      * @throws SocketException
      * @throws UnknownHostException
      */
-    public Client(Multiplayer m) throws SocketException, UnknownHostException {
+    public Client(Multiplayer m) {
 
-        this.player = m.getPlayer();
-        this.socket = new DatagramSocket();
-        this.host = InetAddress.getByName(m.getHost().toString());
-        this.port = m.getPort();
-        this.game = m.getGame();
-        this.tcpClient = m.getTcpClient();
+        try {
+            this.player = m.getPlayer();
+            this.socket = new DatagramSocket();
+            this.host = m.getHost();
+            this.port = m.getPort();
+            this.game = m.getGame();
+            this.tcpClient = m.getTcpClient();
 
-        playerList = new PlayerList();
-        uuid = UUID.randomUUID().toString();
-        LOG.log(Level.INFO, "Connecting to {0}:{1} with player UUID {2}", new Object[]{host, port, uuid});
+            playerList = new PlayerList();
+            uuid = UUID.randomUUID().toString();
+            LOG.log(Level.INFO, "Connecting to {0}:{1} with player UUID {2}", new Object[]{host, port, uuid});
+
+            ready = true;
+        } catch (SocketException ex) {
+            LOG.log(Level.INFO, "Failed to connect to {0}:{1}", new Object[]{host, port});
+        }
+    }
+
+    public boolean isReady() {
+        return ready;
     }
 
     @Override
@@ -65,13 +77,15 @@ public class Client extends Thread implements Tickable {
         while (tcpClient.isConnected()) {
             byte[] dataArray = new byte[4096];
             DatagramPacket packet = new DatagramPacket(dataArray, dataArray.length);
-            try {
-                socket.receive(packet);
-            } catch (IOException ex) {
+            if (socket.isConnected()) {
+                try {
+                    socket.receive(packet);
+                } catch (IOException ex) {
 //                JOptionPane.showMessageDialog(game, "Network error: " + ex.toString(), "Error", JOptionPane.ERROR_MESSAGE);
-                ex.printStackTrace();
-                System.exit(0);
+                    System.exit(0);
+                }
             }
+
             String message = new String(packet.getData());
             if (message.trim().equalsIgnoreCase(ServerStatus.PLAYER_CONNECTED.toString())) {
                 connected = true;

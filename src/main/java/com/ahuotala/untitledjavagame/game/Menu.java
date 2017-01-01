@@ -254,7 +254,7 @@ public class Menu extends JPanel implements ActionListener {
                         try {
                             game.getMp().connect(InetAddress.getByName(tmpData[0].trim()), Integer.parseInt(tmpData[1].trim()));
                             Game.menuState = MenuState.NONE;
-                        } catch (NumberFormatException | UnknownHostException | SocketException e) {
+                        } catch (NumberFormatException | UnknownHostException e) {
                             JOptionPane.showMessageDialog(game, "Error connecting to server: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                             Game.menuState = MenuState.MAINMENU;
                         }

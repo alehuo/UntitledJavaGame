@@ -65,8 +65,6 @@ public class Multiplayer {
      * @param host
      * @param port
      * @return
-     * @throws SocketException
-     * @throws UnknownHostException
      */
     public boolean connect(InetAddress host, int port) {
 
@@ -88,8 +86,8 @@ public class Multiplayer {
 
         //Initialize UdpClient if we can connect
         if (isConnected()) {
-            try {
-                udpClient = new Client(this);
+            udpClient = new Client(this);
+            if (udpClient.isReady()) {
                 udpClientThread = new Thread(udpClient);
                 udpClientThread.setDaemon(true);
                 //Start the thread
@@ -97,13 +95,11 @@ public class Multiplayer {
                 udpClientThread.start();
                 udpClient.send(ClientStatus.CLIENT_CONNECTED.toString() + ";" + udpClient.getUuid());
                 return true;
-            } catch (SocketException ex) {
-                Logger.getLogger(Multiplayer.class.getName()).log(Level.SEVERE, null, ex);
-                return false;
-            } catch (UnknownHostException ex) {
-                Logger.getLogger(Multiplayer.class.getName()).log(Level.SEVERE, null, ex);
+            } else {
+                LOG.log(Level.SEVERE, "Error initializing UDP client.");
                 return false;
             }
+
         } else {
             udpClientThread.interrupt();
             tcpClientThread.interrupt();

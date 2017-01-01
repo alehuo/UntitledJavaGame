@@ -65,6 +65,7 @@ public class TcpClient implements Runnable {
 
         try {
             clientSocket = new Socket(host.getHostAddress(), port);
+            clientSocket.getOutputStream().write("CONNECTION_TEST".getBytes());
             clientSocket.close();
             connected = true;
         } catch (IOException ex) {
@@ -88,7 +89,7 @@ public class TcpClient implements Runnable {
                 clientSocket.getOutputStream().write("PING".getBytes());
                 clientSocket.close();
             } catch (IOException ex) {
-                Logger.getLogger(TcpClient.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(TcpClient.class.getName()).log(Level.SEVERE, "Could not send heartbeat packet to server");
 //                JOptionPane.showMessageDialog(g, "Error: " + ex.toString(), "Error", JOptionPane.ERROR_MESSAGE);
                 connected = false;
             }

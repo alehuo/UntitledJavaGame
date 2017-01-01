@@ -56,7 +56,7 @@ public class Map {
          */
         try {
 
-            InputStream stream = getClass().getResourceAsStream("map/cfg/tiles.cfg");
+            InputStream stream = Thread.currentThread().getContextClassLoader().getResourceAsStream("tiles/tiles.cfg");
             BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
             if (stream != null) {
                 while ((line = reader.readLine()) != null) {
@@ -90,7 +90,7 @@ public class Map {
          */
         try {
 
-            InputStream stream = getClass().getResourceAsStream("objects_" + name + ".obj");
+            InputStream stream = Thread.currentThread().getContextClassLoader().getResourceAsStream("map/objects_" + name + ".obj");
             BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
             if (stream != null) {
                 while ((line = reader.readLine()) != null) {
@@ -121,7 +121,7 @@ public class Map {
          */
         try {
 
-            InputStream stream = getClass().getResourceAsStream("cfg/animatedTiles.cfg");
+            InputStream stream = Thread.currentThread().getContextClassLoader().getResourceAsStream("tiles/animatedTiles.cfg");
             BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
             if (stream != null) {
                 while ((line = reader.readLine()) != null) {
@@ -152,7 +152,7 @@ public class Map {
 
         try {
 
-            InputStream stream = getClass().getResourceAsStream(name + ".map");
+            InputStream stream = Thread.currentThread().getContextClassLoader().getResourceAsStream("map/" + name + ".map");
             BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
             if (stream != null) {
                 while ((line = reader.readLine()) != null) {

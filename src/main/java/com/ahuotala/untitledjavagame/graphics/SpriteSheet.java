@@ -75,10 +75,11 @@ public class SpriteSheet {
         sprites = new HashMap<>();
         //Yritetään ladata kuva
         try {
+            ClassLoader classloader = Thread.currentThread().getContextClassLoader();
             /**
              * Spritesheet
              */
-            BufferedImage baseImage = ImageIO.read(SpriteSheet.class.getResourceAsStream(spriteSheetPath));
+            BufferedImage baseImage = ImageIO.read(Thread.currentThread().getContextClassLoader().getResourceAsStream(spriteSheetPath));
             image = convert(baseImage);
             imageLoaded = true;
             imagePixels = ((DataBufferInt) image.getRaster().getDataBuffer()).getData();
@@ -86,7 +87,7 @@ public class SpriteSheet {
             /**
              * Inventory image
              */
-            BufferedImage baseInventoryImage = ImageIO.read(SpriteSheet.class.getResourceAsStream(inventoryPath));
+            BufferedImage baseInventoryImage = ImageIO.read(Thread.currentThread().getContextClassLoader().getResourceAsStream("sprites/inventory_small.png"));
             inventoryImage = convert(baseInventoryImage);
             inventoryLoaded = true;
             inventoryImagePixels = ((DataBufferInt) inventoryImage.getRaster().getDataBuffer()).getData();
@@ -97,14 +98,14 @@ public class SpriteSheet {
         }
         try {
             String line = "";
-            InputStream stream = getClass().getResourceAsStream("items.itm");
+            InputStream stream = Thread.currentThread().getContextClassLoader().getResourceAsStream("items/items.itm");
             try (BufferedReader reader = new BufferedReader(new InputStreamReader(stream))) {
                 if (stream != null) {
                     while ((line = reader.readLine()) != null) {
                         if (line.contains("#") || line.isEmpty()) {
                             continue;
                         }
-                        
+
                         //Parse variables
                         String[] lineData = line.split(",", -1);
                         String name = lineData[0];
@@ -112,9 +113,9 @@ public class SpriteSheet {
                         int y = Integer.parseInt(lineData[2]);
                         int width = Integer.parseInt(lineData[3]);
                         int height = Integer.parseInt(lineData[4]);
-                        
+
                         sprites.put(name, getSpriteFromImage(x, y, width, height));
-                        
+
                     }
                     stream.close();
                 }

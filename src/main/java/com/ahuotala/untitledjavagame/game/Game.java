@@ -135,7 +135,7 @@ public class Game extends JFrame implements Runnable, Tickable {
     /**
      * SpriteSheet
      */
-    public static SpriteSheet spriteSheet = new SpriteSheet("spriteSheet.png");
+    public static SpriteSheet spriteSheet = new SpriteSheet("sprites/spriteSheet.png");
 
     /**
      * Current font
@@ -165,7 +165,7 @@ public class Game extends JFrame implements Runnable, Tickable {
     /**
      * Map
      */
-    public Map map = new Map("map3");
+    public Map map = new Map("map");
 
     /**
      * Player
@@ -243,7 +243,7 @@ public class Game extends JFrame implements Runnable, Tickable {
      */
     public Game() {
         this.start();
-        
+
         renderer = new Renderer(WINDOW_WIDTH, WINDOW_HEIGHT, pixels);
 
         //Default time is 12:00
@@ -348,6 +348,10 @@ public class Game extends JFrame implements Runnable, Tickable {
     }
 
     public void save() {
+        
+        File saveDir = new File("saves");
+        saveDir.mkdir();
+        
         File saveFile = new File(saveFileName);
         //If the file doesn't exist, create it
         if (!saveFile.exists() && playing) {

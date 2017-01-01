@@ -43,13 +43,11 @@ public final class Animation implements Tickable {
      * Current frame index
      */
     private int index = 0;
-    
+
     /**
      * Logger
      */
     private static final Logger LOG = Logger.getLogger(Animation.class.getName());
-    
-    
 
     /**
      * Animation constructor
@@ -112,7 +110,7 @@ public final class Animation implements Tickable {
         frames = new ArrayList<>();
         String line = "";
         try {
-            InputStream stream = getClass().getResourceAsStream(name + ".ani");
+            InputStream stream = Thread.currentThread().getContextClassLoader().getResourceAsStream("animations/" + name + ".ani");
             BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
             int frameCount = 0;
             if (stream != null) {

@@ -11,6 +11,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.io.File;
+import java.net.InetAddress;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 import javax.swing.JButton;
@@ -225,16 +226,14 @@ public class Menu extends JPanel implements ActionListener {
 //    public boolean clicked() {
 //        return false;
 //    }
-
     @Override
     public void actionPerformed(ActionEvent action) {
         if (action.getSource() == exitButton) {
             //EXIT
-            if (Game.isConnectedToServer) {
+            if (game.getMp().isConnected()) {
                 //Close the server
                 Game.frame.dispatchEvent(new WindowEvent(Game.frame, WindowEvent.WINDOW_CLOSING));
             }
-            game.save();
             System.exit(1);
         } else if (action.getSource() == spButton) {
             loadMenuState(MenuState.SINGLEPLAYER);
@@ -243,14 +242,13 @@ public class Menu extends JPanel implements ActionListener {
 //            loadMenuState(MenuState.MULTIPLAYER);
 //            Game.menuState = MenuState.MULTIPLAYER;
             //Connection prompt
-            if (!Game.isConnectedToServer) {
+            if (!game.getMp().isConnected()) {
                 String data = JOptionPane.showInputDialog(game, "Please enter the IP address and the port of the host to connect to\r\nFor example, localhost:9876");
                 if (data != null) {
                     String[] tmpData = data.split(":");
                     if (tmpData.length == 2) {
                         try {
-                            game.connectToServer(tmpData[0].trim(), Integer.parseInt(tmpData[1].trim()));
-                            Game.isConnectedToServer = true;
+                            game.getMp().connect(InetAddress.getByName(tmpData[0].trim()), Integer.parseInt(tmpData[1].trim()));
                             Game.menuState = MenuState.NONE;
                         } catch (NumberFormatException | UnknownHostException | SocketException e) {
                             JOptionPane.showMessageDialog(game, "Error connecting to server: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
@@ -275,7 +273,7 @@ public class Menu extends JPanel implements ActionListener {
             int returnValue = fc.showOpenDialog(game);
             if (returnValue == JFileChooser.APPROVE_OPTION) {
                 File tmpFile = fc.getSelectedFile();
-                game.loadSaveFile(tmpFile);
+                game.getSp().loadSaveFile(tmpFile);
                 Game.menuState = MenuState.NONE;
                 Game.playing = true;
             }
@@ -284,7 +282,7 @@ public class Menu extends JPanel implements ActionListener {
             String tmpName = JOptionPane.showInputDialog(game, "Please give your save a name.");
             if (tmpName != null) {
                 if (!tmpName.isEmpty()) {
-                    game.newGame(tmpName);
+                    game.getSp().newGame(tmpName);
                     Game.menuState = MenuState.NONE;
                     Game.playing = true;
                 } else {
@@ -295,7 +293,7 @@ public class Menu extends JPanel implements ActionListener {
                 Game.menuState = MenuState.SINGLEPLAYER;
             }
         } else if (action.getSource() == saveButton) {
-            game.save();
+            game.getSp().save();
         }
 
         validate();

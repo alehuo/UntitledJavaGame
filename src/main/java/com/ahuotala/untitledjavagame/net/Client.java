@@ -2,6 +2,7 @@ package com.ahuotala.untitledjavagame.net;
 
 import com.ahuotala.untitledjavagame.entities.Player;
 import com.ahuotala.untitledjavagame.game.Game;
+import com.ahuotala.untitledjavagame.game.Multiplayer;
 import com.ahuotala.untitledjavagame.game.Tickable;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -31,17 +32,26 @@ public final class Client extends Thread implements Tickable {
     private PlayerList playerList;
     private static final Logger LOG = Logger.getLogger(Client.class.getName());
     private final Game game;
+    private final TcpClient tcpClient;
 
-    public Client(Game game, Player player, String host, int port) throws SocketException, UnknownHostException {
+    /**
+     *
+     * @param m Multiplayer object
+     * @throws SocketException
+     * @throws UnknownHostException
+     */
+    public Client(Multiplayer m) throws SocketException, UnknownHostException {
 
-        this.player = player;
+        this.player = m.getPlayer();
         this.socket = new DatagramSocket();
-        this.host = InetAddress.getByName(host);
-        this.port = port;
-        this.game = game;
+        this.host = InetAddress.getByName(m.getHost().toString());
+        this.port = m.getPort();
+        this.game = m.getGame();
+        this.tcpClient = m.getTcpClient();
+
         playerList = new PlayerList();
         uuid = UUID.randomUUID().toString();
-        LOG.log(Level.INFO, "Connecting to " + host + ":" + port + " with player UUID " + uuid);
+        LOG.log(Level.INFO, "Connecting to {0}:{1} with player UUID {2}", new Object[]{host, port, uuid});
     }
 
     @Override
@@ -49,13 +59,16 @@ public final class Client extends Thread implements Tickable {
 
         new Thread(new TcpClient(game, host, port)).start();
 
-        while (TcpClient.connected) {
+        /**
+         * While we are connected
+         */
+        while (tcpClient.isConnected()) {
             byte[] dataArray = new byte[4096];
             DatagramPacket packet = new DatagramPacket(dataArray, dataArray.length);
             try {
                 socket.receive(packet);
             } catch (IOException ex) {
-                JOptionPane.showMessageDialog(game, "Network error: " + ex.toString(), "Error", JOptionPane.ERROR_MESSAGE);
+//                JOptionPane.showMessageDialog(game, "Network error: " + ex.toString(), "Error", JOptionPane.ERROR_MESSAGE);
                 ex.printStackTrace();
                 System.exit(0);
             }
@@ -67,15 +80,13 @@ public final class Client extends Thread implements Tickable {
                 try {
                     ObjectInputStream oos = new ObjectInputStream(baos);
                     playerList = (PlayerList) oos.readObject();
-                } catch (IOException ex) {
-                    JOptionPane.showMessageDialog(game, "Error: " + ex.toString(), "Error", JOptionPane.ERROR_MESSAGE);
-                    Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
-                    System.exit(0);
-                } catch (ClassNotFoundException ex) {
-                    JOptionPane.showMessageDialog(game, "Error: " + ex.toString(), "Error", JOptionPane.ERROR_MESSAGE);
+                } catch (IOException | ClassNotFoundException ex) {
+//                    JOptionPane.showMessageDialog(game, "Error: " + ex.toString(), "Error", JOptionPane.ERROR_MESSAGE);
                     Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
                     System.exit(0);
                 }
+//                    JOptionPane.showMessageDialog(game, "Error: " + ex.toString(), "Error", JOptionPane.ERROR_MESSAGE);
+
             }
 //            System.out.println("SERVER [" + packet.getAddress().getHostAddress() + ":" + packet.getPort() + "] " + message.trim());
 
@@ -90,9 +101,13 @@ public final class Client extends Thread implements Tickable {
         return connected;
     }
 
+    /**
+     * Tick method
+     */
     @Override
     public void tick() {
-        if (connected) {
+        if (tcpClient.isConnected() && isConnected()) {
+            //Update player position every time
             //CLIENT_POSUPD;UUID;X;Y;DIRECTION
             send(ClientStatus.CLIENT_POSUPD.toString() + ";" + uuid + ";" + player.getX() + ";" + player.getY() + ";" + player.getDirection());
         }
@@ -101,9 +116,7 @@ public final class Client extends Thread implements Tickable {
     /**
      * Send a packet
      *
-     * @param dataArray
-     * @param ip
-     * @param port
+     * @param cmd
      */
     public void send(String cmd) {
         byte[] dataArray = cmd.getBytes();

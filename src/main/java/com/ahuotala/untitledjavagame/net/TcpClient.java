@@ -11,42 +11,57 @@ import java.net.InetAddress;
 import java.net.Socket;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.JOptionPane;
 
 /**
  *
  * @author alehuo
  */
 public class TcpClient implements Runnable {
-    
-    public static boolean connected = false;
-    
+
+    public boolean connected = false;
+
+    private boolean running = true;
+
     private Socket clientSocket;
-    private final Game g;
+    private Game g;
     private final InetAddress host;
     private final int port;
 
     //Interval of heartbeat
     private final int rate = 5;
-    
+
     public TcpClient(Game g, InetAddress host, int port) {
         this.g = g;
         this.host = host;
         this.port = port;
-        
+
         try {
             clientSocket = new Socket(host.getHostAddress(), port);
             clientSocket.close();
             connected = true;
         } catch (IOException ex) {
             Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
-            JOptionPane.showMessageDialog(g, "Error: " + ex.toString(), "Error", JOptionPane.ERROR_MESSAGE);
+//            JOptionPane.showMessageDialog(g, "Error: " + ex.toString(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
-    
+
+    public TcpClient(InetAddress host, int port) {
+        this.host = host;
+        this.port = port;
+
+        try {
+            clientSocket = new Socket(host.getHostAddress(), port);
+            clientSocket.close();
+            connected = true;
+        } catch (IOException ex) {
+            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+//            JOptionPane.showMessageDialog(g, "Error: " + ex.toString(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
     @Override
     public void run() {
-        while (true) {
+        while (running) {
             try {
                 //Sleep
                 Thread.sleep(rate * 1000);
@@ -60,15 +75,24 @@ public class TcpClient implements Runnable {
                 clientSocket.close();
             } catch (IOException ex) {
                 Logger.getLogger(TcpClient.class.getName()).log(Level.SEVERE, null, ex);
-                JOptionPane.showMessageDialog(g, "Error: " + ex.toString(), "Error", JOptionPane.ERROR_MESSAGE);
+//                JOptionPane.showMessageDialog(g, "Error: " + ex.toString(), "Error", JOptionPane.ERROR_MESSAGE);
                 connected = false;
-                System.exit(1);
             }
         }
     }
-    
+
+    /**
+     * Return the connection state
+     *
+     * @return Connection state
+     */
     public boolean isConnected() {
         return connected;
     }
     
+    public void disconnect(){
+        running = false;
+        connected = false;
+    }
+
 }

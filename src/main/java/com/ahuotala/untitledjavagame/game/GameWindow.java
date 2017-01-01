@@ -388,7 +388,7 @@ public class GameWindow extends Canvas implements Runnable, Tickable {
                     g.drawString("tileY " + map.getCurrentTileY(), 5, 79);
                     g.drawString("windowWidth " + Game.WINDOW_WIDTH, 5, 95);
                     g.drawString("windowHeight " + Game.WINDOW_HEIGHT, 5, 111);
-                    g.drawString("gameTime (0 - 2359) " + gameTime.getGametime() + ", " + String.format("%.5f", gameTime.getFactor()), 5, 127);
+                    g.drawString("gameTime (0 - 2359) " + gameTime.getTime() + ", " + String.format("%.5f", gameTime.getFactor()), 5, 127);
                 }
             }
 

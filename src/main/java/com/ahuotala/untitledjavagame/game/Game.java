@@ -24,6 +24,7 @@ import com.ahuotala.untitledjavagame.map.Map;
 import com.ahuotala.untitledjavagame.net.Client;
 import com.ahuotala.untitledjavagame.net.ClientStatus;
 import com.ahuotala.untitledjavagame.net.PlayerList;
+import java.net.InetAddress;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 import javax.swing.JOptionPane;
@@ -158,11 +159,6 @@ public class Game extends JFrame implements Runnable, Tickable {
     private final Animation playerLowHealth;
 
     /**
-     * Save object
-     */
-    private SaveGame save;
-
-    /**
      * Map
      */
     public Map map = new Map("map");
@@ -198,17 +194,6 @@ public class Game extends JFrame implements Runnable, Tickable {
     private final MouseHandler mouseHandler = new MouseHandler(inventory);
 
     /**
-     * Client
-     */
-    private Client client;
-
-    /**
-     * Connection state Note: Multiplayer functionality is not currently
-     * implemented.
-     */
-    public static boolean isConnectedToServer = false;
-
-    /**
      * Menu
      */
     private Menu menu;
@@ -236,7 +221,11 @@ public class Game extends JFrame implements Runnable, Tickable {
     /**
      * GameTime
      */
-    private static final GameTime gameTime = new GameTime();
+    private static final GameTime gt = new GameTime();
+
+    private Multiplayer mp;
+
+    private Singleplayer sp;
 
     /**
      * Constructor
@@ -247,7 +236,7 @@ public class Game extends JFrame implements Runnable, Tickable {
         renderer = new Renderer(WINDOW_WIDTH, WINDOW_HEIGHT, pixels);
 
         //Default time is 12:00
-        gameTime.setGametime(1200);
+        gt.setTime(1200);
 
         super.setMinimumSize(new Dimension(WINDOW_WIDTH * SCALE, WINDOW_HEIGHT * SCALE));
         super.setMaximumSize(new Dimension(WINDOW_WIDTH * SCALE, WINDOW_HEIGHT * SCALE));
@@ -297,12 +286,10 @@ public class Game extends JFrame implements Runnable, Tickable {
         frame.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
-                if (isConnectedToServer) {
-                    isConnectedToServer = false;
-                    client.send(ClientStatus.CLIENT_DISCONNECTED.toString() + ";" + client.getUuid());
-                    client.disconnect();
+                if (mp.isConnected()) {
+                    mp.disconnect();
                 }
-                save();
+                //save();
             }
         });
         frame.addMouseListener(mouseHandler);
@@ -316,6 +303,14 @@ public class Game extends JFrame implements Runnable, Tickable {
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
         frame.requestFocusInWindow();
+
+        //Menu
+        menu = new Menu(this);
+
+        //Multiplayer
+        mp = new Multiplayer(this, player);
+        //Singleplayer
+        sp = new Singleplayer(this, player);
     }
 
     /**
@@ -327,10 +322,13 @@ public class Game extends JFrame implements Runnable, Tickable {
      * @throws java.net.UnknownHostException
      */
     public void connectToServer(String host, int port) throws SocketException, UnknownHostException {
-        client = new Client(this, player, host, port);
-        client.start();
-        client.send(ClientStatus.CLIENT_CONNECTED.toString() + ";" + client.getUuid());
-        newGame("multiplayer.sav");
+        if (mp.connect(InetAddress.getByName(host), port)) {
+            LOG.log(Level.INFO, "Successfully connected to {0}:{1}", new Object[]{host, port});
+            //Set game to render etc.
+        } else {
+            LOG.log(Level.SEVERE, "Error connecting to {0}:{1}", new Object[]{host, port});
+            //Back to main menu
+        }
     }
 
     public void init() {
@@ -338,7 +336,6 @@ public class Game extends JFrame implements Runnable, Tickable {
         itemRegistry.registerItem(ItemId.POTIONOFHEALING_20LP).setName("Potion of healing").setEffect(Effect.HEAL_20LP, "Heals the player for 20 lifepoints").setInteractable(true);
         itemRegistry.registerItem(ItemId.POTIONOFHEALING_60LP).setName("Grand potion of healing").setEffect(Effect.HEAL_60LP, "Heals the player for 60 lifepoints").setInteractable(true);
         itemRegistry.registerItem(ItemId.FOOD).setName("Raw beef").setEffect(Effect.HEAL_40LP, "Heals the player for 40 lifepoints").setInteractable(false);
-        menu = new Menu(this);
         //Init anims
         player.initAnimations();
     }
@@ -347,90 +344,27 @@ public class Game extends JFrame implements Runnable, Tickable {
         return frame;
     }
 
-    public String getSaveFileName() {
-        return saveFileName;
+    public Multiplayer getMp() {
+        return mp;
     }
 
-    public void setSaveFileName(String saveFileName) {
-        this.saveFileName = saveFileName;
+    public void setMp(Multiplayer mp) {
+        this.mp = mp;
     }
 
-    public void save() {
-
-        File saveDir = new File("saves");
-        saveDir.mkdir();
-
-        File saveFile = new File(saveFileName);
-        //If the file doesn't exist, create it
-        if (!saveFile.exists() && playing) {
-            try {
-                LOG.log(Level.INFO, "Save file doesn't exist; Creating a new file..");
-                saveFile.createNewFile();
-            } catch (IOException ex) {
-                JOptionPane.showMessageDialog(this, "Error saving game: " + ex.toString(), "Error", JOptionPane.ERROR_MESSAGE);
-                LOG.log(Level.SEVERE, null, ex);
-                System.exit(0);
-            }
-        }
-        try {
-            if (save != null && playing) {
-                //Save the game
-                LOG.log(Level.INFO, "Saving game..");
-                save.saveState(player.getX(), player.getY(), player.getHealth(), player.getXp(), player.getDirection(), gameTime.getGametime(), inventory.getInventory());
-                try (FileOutputStream fileOutput = new FileOutputStream(saveFileName); ObjectOutputStream out = new ObjectOutputStream(fileOutput)) {
-                    out.writeObject(save);
-                }
-            }
-        } catch (IOException ex) {
-            JOptionPane.showMessageDialog(this, "Error saving game: " + ex.toString(), "Error", JOptionPane.ERROR_MESSAGE);
-            LOG.log(Level.SEVERE, null, ex);
-        }
+    public Singleplayer getSp() {
+        return sp;
     }
 
-    public void loadSaveFile(File file) {
-        /**
-         * Load from save
-         */
-        try {
-            File saveFile = file;
-            saveFileName = saveFile.getAbsolutePath();
-            FileInputStream fileInput = new FileInputStream(saveFileName);
-            ObjectInputStream in = new ObjectInputStream(fileInput);
-            save = (SaveGame) in.readObject();
-            in.close();
-            fileInput.close();
-
-        } catch (IOException | ClassNotFoundException e) {
-            LOG.log(Level.SEVERE, null, e);
-        }
-        //Set player x, y, health, xp and direction
-        player.setX(save.getX());
-        player.setY(save.getY());
-        player.setHealth(save.getHealth());
-        player.setXp(save.getXp());
-        player.setDirection(save.getDirection());
-        //Set game time
-        gameTime.setGametime(save.getCurrentGameTime());
-        //Set player inventory
-        inventory.setInventory(save.getInventory());
+    public void setSp(Singleplayer sp) {
+        this.sp = sp;
     }
 
-    public void newGame(String saveFileName) {
-        this.saveFileName = saveFileName;
-        if (!saveFileName.trim().endsWith(".sav")) {
-            this.saveFileName += ".sav";
-        }
-        save = new SaveGame();
-        //Set player x, y, health, xp and direction
-        player.setX(save.getX());
-        player.setY(save.getY());
-        player.setHealth(save.getHealth());
-        player.setXp(save.getXp());
-        player.setDirection(save.getDirection());
-        //Set player inventory
-        inventory.setInventory(save.getInventory());
+    public GameTime getGameTime() {
+        return gt;
     }
 
+    /*##############################################*/
     private synchronized void start() {
         running = true;
         new Thread(this).start();
@@ -440,6 +374,9 @@ public class Game extends JFrame implements Runnable, Tickable {
         running = false;
     }
 
+    /**
+     * Run method Tick and render
+     */
     @Override
     public void run() {
         long lastTime = System.nanoTime();
@@ -458,15 +395,20 @@ public class Game extends JFrame implements Runnable, Tickable {
             long now = System.nanoTime();
             delta += (now - lastTime) / nsPerTick;
             lastTime = now;
+
             //Use false to limit fps to the number of ticks
             boolean shouldRender = false;
+
+            //Tick
             while (delta >= 1) {
-                //Tick
                 ticks++;
                 tick();
                 delta -= 1;
+                //Render after we have ticked
                 shouldRender = true;
             }
+
+            //Sleep for 1 millisecond
             if (shouldRender) {
                 try {
                     Thread.sleep(1);
@@ -475,8 +417,8 @@ public class Game extends JFrame implements Runnable, Tickable {
                 }
             }
 
+            //Render a new frame
             if (shouldRender) {
-                //Render a new frame
                 frames++;
                 render();
             }
@@ -501,12 +443,13 @@ public class Game extends JFrame implements Runnable, Tickable {
             player.tick();
             //Tick tick..
             if (tickCount % 40 == 0) {
-                gameTime.tick();
+                gt.tick();
             }
         }
-        //Tick the server if we are connected
-        if (isConnectedToServer) {
-            client.tick();
+
+        //Tick the UDP client if we are connected
+        if (mp.isConnected()) {
+            mp.getUdpClient().tick();
         }
     }
 
@@ -536,7 +479,7 @@ public class Game extends JFrame implements Runnable, Tickable {
                 //If the game is running, render map & npcs
 
                 //Apply darken filter
-                renderer.setFilters(new DarkenFilter(gameTime.getFactor()));
+                renderer.setFilters(new DarkenFilter(gt.getFactor()));
 
                 //Map
                 map.renderMap(g, renderer, player);
@@ -548,11 +491,11 @@ public class Game extends JFrame implements Runnable, Tickable {
                 player.render(renderer, g, map);
 
                 //Render MP players
-                if (isConnectedToServer) {
-                    PlayerList pList = client.getPlayerList();
+                if (mp.isConnected()) {
+                    PlayerList pList = mp.getUdpClient().getPlayerList();
                     for (MpPlayer plr : pList.getPlayerList().values()) {
                         try {
-                            if (plr.getUuid().equals(client.getUuid())) {
+                            if (plr.getUuid().equals(mp.getUdpClient().getUuid())) {
                                 continue;
                             }
                             plr.renderMpPlayer(g, renderer, player);
@@ -608,7 +551,7 @@ public class Game extends JFrame implements Runnable, Tickable {
                     g.drawString("tileY " + map.getCurrentTileY(), 5, 79);
                     g.drawString("windowWidth " + Game.WINDOW_WIDTH, 5, 95);
                     g.drawString("windowHeight " + Game.WINDOW_HEIGHT, 5, 111);
-                    g.drawString("gameTime (0 - 2359) " + gameTime.getGametime() + ", " + String.format("%.5f", gameTime.getFactor()), 5, 127);
+                    g.drawString("gameTime (0 - 2359) " + gt.getTime() + ", " + String.format("%.5f", gt.getFactor()), 5, 127);
                 }
             }
 

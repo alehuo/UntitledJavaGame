@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.ahuotala</groupId>
     <artifactId>untitledjavagame</artifactId>
-    <version>0.1-ALPHA</version>
+    <version>DEV</version>
     <packaging>jar</packaging>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

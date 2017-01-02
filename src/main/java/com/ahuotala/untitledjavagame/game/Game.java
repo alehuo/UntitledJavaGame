@@ -43,7 +43,6 @@ public class Game extends JFrame implements Runnable, Tickable {
     public static boolean DEBUG_PLAYER = false;
 
     //Graphics device
-
     /**
      *
      */
@@ -84,24 +83,20 @@ public class Game extends JFrame implements Runnable, Tickable {
      */
     public static final String NAME = "Untitled Game";
 
-
     /**
      * JFrame
      */
     public static JFrame frame;
-
 
     /**
      * Tick rate
      */
     public static double tickrate = 60D;
 
-
     /**
      * SpriteSheet
      */
     public static SpriteSheet spriteSheet = new SpriteSheet("sprites/spriteSheet.png");
-
 
     /**
      * Animation ticker
@@ -113,12 +108,10 @@ public class Game extends JFrame implements Runnable, Tickable {
      */
     public static final NpcTicker npcTicker = new NpcTicker();
 
-
     /**
      * Player
      */
     public static final Player player = new Player();
-
 
     /**
      * Inventory
@@ -134,7 +127,6 @@ public class Game extends JFrame implements Runnable, Tickable {
      * ItemRegistry
      */
     public static ItemRegistry itemRegistry = new ItemRegistry();
-
 
     /**
      * Menu state
@@ -221,7 +213,14 @@ public class Game extends JFrame implements Runnable, Tickable {
      * Constructor
      */
     public Game() {
-        this.start();
+
+        //Menu
+        menu = new Menu(this);
+
+        //Multiplayer
+        mp = new Multiplayer(this, player);
+        //Singleplayer
+        sp = new Singleplayer(this, player);
 
         renderer = new Renderer(WINDOW_WIDTH, WINDOW_HEIGHT, pixels);
 
@@ -294,13 +293,7 @@ public class Game extends JFrame implements Runnable, Tickable {
         frame.setVisible(true);
         frame.requestFocusInWindow();
 
-        //Menu
-        menu = new Menu(this);
-
-        //Multiplayer
-        mp = new Multiplayer(this, player);
-        //Singleplayer
-        sp = new Singleplayer(this, player);
+        this.start();
     }
 
     /**

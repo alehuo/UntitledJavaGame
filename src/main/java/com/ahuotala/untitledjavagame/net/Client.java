@@ -39,8 +39,6 @@ public class Client extends Thread implements Tickable {
     /**
      *
      * @param m Multiplayer object
-     * @throws SocketException
-     * @throws UnknownHostException
      */
     public Client(Multiplayer m) {
 
@@ -95,9 +93,10 @@ public class Client extends Thread implements Tickable {
                     ObjectInputStream oos = new ObjectInputStream(baos);
                     playerList = (PlayerList) oos.readObject();
                 } catch (IOException | ClassNotFoundException ex) {
+                    Logger.getLogger(Client.class.getName()).log(Level.WARNING, "Malformed player list");
 //                    JOptionPane.showMessageDialog(game, "Error: " + ex.toString(), "Error", JOptionPane.ERROR_MESSAGE);
-                    Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
-                    System.exit(0);
+//                    Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+//                    System.exit(0);
                 }
 //                    JOptionPane.showMessageDialog(game, "Error: " + ex.toString(), "Error", JOptionPane.ERROR_MESSAGE);
 

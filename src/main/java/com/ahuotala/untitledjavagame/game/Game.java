@@ -1,25 +1,33 @@
 package com.ahuotala.untitledjavagame.game;
 
-import com.ahuotala.untitledjavagame.entities.MpPlayer;
+import com.ahuotala.untitledjavagame.game.item.Effect;
+import com.ahuotala.untitledjavagame.game.item.Inventory;
+import com.ahuotala.untitledjavagame.game.item.ItemRegistry;
+import com.ahuotala.untitledjavagame.game.item.ItemId;
+import com.ahuotala.untitledjavagame.menu.MenuState;
+import com.ahuotala.untitledjavagame.menu.Menu;
+import com.ahuotala.untitledjavagame.game.handler.MouseHandler;
+import com.ahuotala.untitledjavagame.game.handler.PlayerInputHandler;
+import com.ahuotala.untitledjavagame.game.singleplayer.Singleplayer;
+import com.ahuotala.untitledjavagame.net.Multiplayer;
 import com.ahuotala.untitledjavagame.entities.NpcTicker;
 import com.ahuotala.untitledjavagame.entities.Player;
-import com.ahuotala.untitledjavagame.game.postprocess.filters.DarkenFilter;
 import com.ahuotala.untitledjavagame.graphics.SpriteSheet;
 import com.ahuotala.untitledjavagame.graphics.animation.Animation;
 import com.ahuotala.untitledjavagame.graphics.animation.AnimationTicker;
 import com.ahuotala.untitledjavagame.map.Map;
-import com.ahuotala.untitledjavagame.net.PlayerList;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.awt.image.*;
+import java.awt.image.BufferStrategy;
+import java.awt.image.BufferedImage;
+import java.awt.image.DataBufferInt;
 import java.net.InetAddress;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFrame;
-import javax.swing.JOptionPane;
 
 /**
  *
@@ -41,6 +49,11 @@ public class Game extends JFrame implements Runnable, Tickable {
      * Player debug mode
      */
     public static boolean DEBUG_PLAYER = false;
+
+    /**
+     * Collision detection
+     */
+    public static boolean COLLISIONDECECTION = true;
 
     //Graphics device
     /**
@@ -101,22 +114,22 @@ public class Game extends JFrame implements Runnable, Tickable {
     /**
      * Animation ticker
      */
-    public static final AnimationTicker animationTicker = new AnimationTicker();
+    public static final AnimationTicker ANIMATIONTICKER = new AnimationTicker();
 
     /**
      * NPC ticker
      */
-    public static final NpcTicker npcTicker = new NpcTicker();
+    public static final NpcTicker NPCTICKER = new NpcTicker();
 
     /**
      * Player
      */
-    public static final Player player = new Player();
+    public static final Player PLAYER = new Player();
 
     /**
      * Inventory
      */
-    public static final Inventory inventory = new Inventory();
+    public static final Inventory INVENTORY = new Inventory();
 
     /**
      * Inventory state
@@ -151,7 +164,71 @@ public class Game extends JFrame implements Runnable, Tickable {
     /**
      * GameTime
      */
-    private static final GameTime gt = new GameTime();
+    private static final GameTime GT = new GameTime();
+
+    /**
+     *
+     * @return
+     */
+    public static GraphicsDevice getGd() {
+        return gd;
+    }
+
+    /**
+     *
+     * @param gd
+     */
+    public static void setGd(GraphicsDevice gd) {
+        Game.gd = gd;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public static SpriteSheet getSpriteSheet() {
+        return spriteSheet;
+    }
+
+    /**
+     *
+     * @param spriteSheet
+     */
+    public static void setSpriteSheet(SpriteSheet spriteSheet) {
+        Game.spriteSheet = spriteSheet;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public static MenuState getMenuState() {
+        return menuState;
+    }
+
+    /**
+     *
+     * @param menuState
+     */
+    public static void setMenuState(MenuState menuState) {
+        Game.menuState = menuState;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public static boolean isPlaying() {
+        return playing;
+    }
+
+    /**
+     *
+     * @param playing
+     */
+    public static void setPlaying(boolean playing) {
+        Game.playing = playing;
+    }
     /**
      * Save file name
      */
@@ -164,18 +241,7 @@ public class Game extends JFrame implements Runnable, Tickable {
      * Tick count
      */
     public int tickCount = 0;
-    /**
-     * Image data
-     */
-    private final BufferedImage image = new BufferedImage(WINDOW_WIDTH, WINDOW_HEIGHT, BufferedImage.TYPE_INT_RGB);
-    /**
-     * Pixel array
-     */
-    private int[] pixels = ((DataBufferInt) image.getRaster().getDataBuffer()).getData();
-    /**
-     * Renderer
-     */
-    private Renderer renderer;
+
     /**
      * Graphics object
      */
@@ -185,7 +251,7 @@ public class Game extends JFrame implements Runnable, Tickable {
      */
     private Font currentFont;
     /**
-     * Animation for player low health
+     * Animation for PLAYER low health
      */
     private final Animation playerLowHealth;
     /**
@@ -195,37 +261,57 @@ public class Game extends JFrame implements Runnable, Tickable {
     /**
      * Input handler
      */
-    private final PlayerInputHandler inputHandler = new PlayerInputHandler(player, map, this);
+    private final PlayerInputHandler inputHandler = new PlayerInputHandler(PLAYER, map, this);
     /**
      * MouseHandler
      */
-    private final MouseHandler mouseHandler = new MouseHandler(inventory);
+    private final MouseHandler mouseHandler = new MouseHandler(INVENTORY);
+
     /**
      * Menu
      */
-    private Menu menu;
+    private final Menu menu;
 
+    /**
+     * Multiplayer
+     */
     private Multiplayer mp;
 
+    /**
+     * Singleplayer
+     */
     private Singleplayer sp;
+
+    private GameFrame gameFrame;
+
+    /**
+     * Image data
+     */
+    private final BufferedImage image = new BufferedImage(WINDOW_WIDTH, WINDOW_HEIGHT, BufferedImage.TYPE_INT_RGB);
+
+    /**
+     * Pixel array
+     */
+    private final int[] pixels = ((DataBufferInt) image.getRaster().getDataBuffer()).getData();
 
     /**
      * Constructor
      */
     public Game() {
 
+        gameFrame = new GameFrame(this);
+        gameFrame.setVisible(false);
+
         //Menu
         menu = new Menu(this);
 
         //Multiplayer
-        mp = new Multiplayer(this, player);
+        mp = new Multiplayer(this, PLAYER);
         //Singleplayer
-        sp = new Singleplayer(this, player);
-
-        renderer = new Renderer(WINDOW_WIDTH, WINDOW_HEIGHT, pixels);
+        sp = new Singleplayer(this, PLAYER);
 
         //Default time is 12:00
-        gt.setTime(1200);
+        GT.setTime(1200);
 
         super.setMinimumSize(new Dimension(WINDOW_WIDTH * SCALE, WINDOW_HEIGHT * SCALE));
         super.setMaximumSize(new Dimension(WINDOW_WIDTH * SCALE, WINDOW_HEIGHT * SCALE));
@@ -265,7 +351,7 @@ public class Game extends JFrame implements Runnable, Tickable {
         //Animations
         playerLowHealth = new Animation("PlayerLowHealth", 30);
         //Register animations to be tickable
-        animationTicker.register(playerLowHealth);
+        ANIMATIONTICKER.register(playerLowHealth);
 
         //Initialize our JFrame
         frame = new JFrame(NAME);
@@ -285,8 +371,15 @@ public class Game extends JFrame implements Runnable, Tickable {
         frame.addMouseMotionListener(mouseHandler);
 
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
         frame.setLayout(new BorderLayout());
-        frame.add(new Menu(this), BorderLayout.CENTER);
+
+        //Add game frame
+        frame.add(gameFrame, BorderLayout.CENTER);
+
+        //Add menu
+        frame.add(menu, BorderLayout.CENTER);
+
         frame.pack();
         frame.setResizable(false);
         frame.setLocationRelativeTo(null);
@@ -294,6 +387,15 @@ public class Game extends JFrame implements Runnable, Tickable {
         frame.requestFocusInWindow();
 
         this.start();
+
+    }
+
+    public BufferedImage getImage() {
+        return image;
+    }
+
+    public int[] getPixels() {
+        return pixels;
     }
 
     /**
@@ -323,7 +425,7 @@ public class Game extends JFrame implements Runnable, Tickable {
         itemRegistry.registerItem(ItemId.POTIONOFHEALING_60LP).setName("Grand potion of healing").setEffect(Effect.HEAL_60LP, "Heals the player for 60 lifepoints").setInteractable(true);
         itemRegistry.registerItem(ItemId.FOOD).setName("Raw beef").setEffect(Effect.HEAL_40LP, "Heals the player for 40 lifepoints").setInteractable(false);
         //Init anims
-        player.initAnimations();
+        PLAYER.initAnimations();
     }
 
     /**
@@ -371,7 +473,79 @@ public class Game extends JFrame implements Runnable, Tickable {
      * @return
      */
     public GameTime getGameTime() {
-        return gt;
+        return GT;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public boolean isRunning() {
+        return running;
+    }
+
+    /**
+     *
+     * @param running
+     */
+    public void setRunning(boolean running) {
+        this.running = running;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public Graphics getG() {
+        return g;
+    }
+
+    /**
+     *
+     * @param g
+     */
+    public void setG(Graphics g) {
+        this.g = g;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public Font getCurrentFont() {
+        return currentFont;
+    }
+
+    /**
+     *
+     * @param currentFont
+     */
+    public void setCurrentFont(Font currentFont) {
+        this.currentFont = currentFont;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public Map getMap() {
+        return map;
+    }
+
+    /**
+     *
+     * @param map
+     */
+    public void setMap(Map map) {
+        this.map = map;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public Animation getPlayerLowHealth() {
+        return playerLowHealth;
     }
 
     /*##############################################*/
@@ -430,7 +604,7 @@ public class Game extends JFrame implements Runnable, Tickable {
             //Render a new frame
             if (shouldRender) {
                 frames++;
-                render();
+                gameFrame.render();
             }
 
             if (System.currentTimeMillis() - lastTimer >= 1000) {
@@ -448,15 +622,15 @@ public class Game extends JFrame implements Runnable, Tickable {
     @Override
     public void tick() {
         tickCount++;
-        //Tick animations, input, npcs and player
+        //Tick animations, input, npcs and PLAYER
         if (Game.menuState != MenuState.PAUSED) {
-            animationTicker.tick();
+            ANIMATIONTICKER.tick();
             inputHandler.tick();
-            npcTicker.tick();
-            player.tick();
+            NPCTICKER.tick();
+            PLAYER.tick();
             //Tick tick..
-            if (tickCount % 40 == 0) {
-                gt.tick();
+            if (Game.menuState == MenuState.SINGLEPLAYER_PLAYING && tickCount % 40 == 0) {
+                GT.tick();
             }
         }
 
@@ -469,114 +643,32 @@ public class Game extends JFrame implements Runnable, Tickable {
     /**
      *
      */
-    public void render() {
-        BufferStrategy bs = getBufferStrategy();
-        if (bs == null) {
-            //Triple buffering
-            createBufferStrategy(3);
-            return;
-        }
-        try {
-            //Get draw graphics
-            g = bs.getDrawGraphics();
-            //Clear
-            renderer.clear();
-            //Render base image
-            renderer.render();
-
-            //Font
-            currentFont = g.getFont();
-            g.setFont(new Font(currentFont.getName(), Font.BOLD, (int) Math.floor(18 * FONTSCALE)));
-            if (Game.menuState != MenuState.NONE) {
-                //Image
-                g.drawImage(image, 0, 0, getWidth(), getHeight(), null);
-//                menu.render(g);
-            } else {
-                //If the game is running, render map & npcs
-
-                //Apply darken filter
-                renderer.setFilters(new DarkenFilter(gt.getFactor()));
-
-                //Map
-                map.renderMap(g, renderer, player);
-                //Other objects
-                map.renderObjects(g, renderer, player);
-                map.detectCollision(player);
-
-                //NPCs here
-                player.render(renderer, g, map);
-
-                //Render MP players
-                if (mp.isConnected()) {
-                    PlayerList pList = mp.getUdpClient().getPlayerList();
-                    for (MpPlayer plr : pList.getPlayerList().values()) {
-                        try {
-                            if (plr.getUuid().equals(mp.getUdpClient().getUuid())) {
-                                continue;
-                            }
-                            plr.renderMpPlayer(g, renderer, player);
-                        } catch (Exception e) {
-                            JOptionPane.showMessageDialog(this, "Error rendering player(s): " + e.toString(), "Error", JOptionPane.ERROR_MESSAGE);
-                        }
-
-                    }
-                }
-
-                //Reset filter
-                renderer.resetFilter();
-
-                //Player health system
-                int playerFullHearts = (int) Math.floor(player.getHealth() / 20);
-                int playerHalfHearts = (int) Math.floor((player.getHealth() - playerFullHearts * 20) / 10);
-                int heartX = CENTERX - 256;
-                int heartY = 5;
-                g.drawString(player.getHealth() + " / " + player.getMaxHealth() + " LP", heartX - 78, heartY + 22);
-                g.drawString(player.getXp() + " xp", heartX - 78, heartY + 44);
-                if (playerFullHearts == 0 && playerHalfHearts == 0 && player.getHealth() > 0) {
-                    playerLowHealth.nextFrame(renderer, heartX, heartY);
-                } else if (player.getHealth() == 0) {
-                    g.setColor(Color.red);
-                    //Black background
-                    g.drawImage(image, 0, 0, getWidth(), getHeight(), null);
-                    g.drawString("YOU DIED", CENTERX - 48, CENTERY);
-                } else {
-                    for (int hearts = 0; hearts < playerFullHearts; hearts++) {
-                        spriteSheet.paint(renderer, "full_heart", heartX, heartY);
-                        heartX += 26;
-                    }
-                    if (playerHalfHearts > 0) {
-                        spriteSheet.paint(renderer, "half_a_heart", heartX, heartY);
-                    }
-                }
-
-                if (SHOW_INVENTORY) {
-                    inventory.renderInventory(g, renderer);
-                }
-
-                //Final image
-                g.drawImage(image, 0, 0, getWidth(), getHeight(), null);
-
-                //Debug for player
-                g.setColor(Color.white);
-
-                if (DEBUG_PLAYER) {
-                    g.drawString("x " + player.getX(), 5, 15);
-                    g.drawString("y " + player.getY(), 5, 31);
-                    g.drawString("tileCount " + map.getRenderedTileCount(), 5, 47);
-                    g.drawString("tileX " + map.getCurrentTileX(), 5, 63);
-                    g.drawString("tileY " + map.getCurrentTileY(), 5, 79);
-                    g.drawString("windowWidth " + Game.WINDOW_WIDTH, 5, 95);
-                    g.drawString("windowHeight " + Game.WINDOW_HEIGHT, 5, 111);
-                    g.drawString("gameTime (0 - 2359) " + gt.getTime() + ", " + String.format("%.5f", gt.getFactor()), 5, 127);
-                }
-            }
-
-        } finally {
-            //Empty buffer
-            g.dispose();
-        }
-
-        //Show frame
-        bs.show();
+    public void loadSp() {
+        menu.setVisible(false);
+        gameFrame.setVisible(true);
+        super.revalidate();
+        super.repaint();
+        Game.menuState = MenuState.SINGLEPLAYER_PLAYING;
     }
+
+    /**
+     *
+     */
+    public void loadMenu() {
+        menu.setVisible(true);
+        gameFrame.setVisible(false);
+        super.revalidate();
+        super.repaint();
+        Game.menuState = MenuState.PAUSED;
+    }
+
+    /**
+     *
+     */
+    public void loadMp() {
+        /*
+        Todo
+         */
+    }
+
 }

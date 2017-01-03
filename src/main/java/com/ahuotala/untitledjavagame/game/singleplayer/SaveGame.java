@@ -1,7 +1,9 @@
-package com.ahuotala.untitledjavagame.game;
+package com.ahuotala.untitledjavagame.game.singleplayer;
 
 import com.ahuotala.untitledjavagame.entities.Direction;
 import com.ahuotala.untitledjavagame.entities.Player;
+import com.ahuotala.untitledjavagame.game.item.Inventory;
+import com.ahuotala.untitledjavagame.game.item.ItemStack;
 
 /**
  * Game save class used to load&save the game state

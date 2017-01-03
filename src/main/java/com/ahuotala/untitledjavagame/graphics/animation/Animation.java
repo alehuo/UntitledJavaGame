@@ -1,7 +1,7 @@
 package com.ahuotala.untitledjavagame.graphics.animation;
 
 import com.ahuotala.untitledjavagame.game.Game;
-import com.ahuotala.untitledjavagame.game.Renderer;
+import com.ahuotala.untitledjavagame.graphics.Renderer;
 import com.ahuotala.untitledjavagame.game.Tickable;
 import com.ahuotala.untitledjavagame.graphics.Sprite;
 import java.io.BufferedReader;
@@ -17,7 +17,7 @@ import java.util.logging.Logger;
  *
  * @author Aleksi Huotala
  */
-public class Animation implements Tickable {
+public final class Animation implements Tickable {
     /**
      * Logger
      */

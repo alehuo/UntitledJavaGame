@@ -3,8 +3,7 @@ package com.ahuotala.untitledjavagame.map;
 import com.ahuotala.untitledjavagame.entities.GameObject;
 import com.ahuotala.untitledjavagame.entities.Player;
 import com.ahuotala.untitledjavagame.game.Game;
-import com.ahuotala.untitledjavagame.game.Renderer;
-import com.ahuotala.untitledjavagame.game.Tile;
+import com.ahuotala.untitledjavagame.graphics.Renderer;
 import com.ahuotala.untitledjavagame.graphics.Sprite;
 import com.ahuotala.untitledjavagame.graphics.animation.Animation;
 import java.awt.Color;
@@ -24,6 +23,7 @@ import java.util.logging.Logger;
  * @author Aleksi Huotala
  */
 public class Map {
+
     private static final Logger LOG = Logger.getLogger(Map.class.getName());
 
     private ArrayList<String> lines;
@@ -41,6 +41,8 @@ public class Map {
     private int currentTileX = Integer.MIN_VALUE;
     private int currentTileY = Integer.MIN_VALUE;
     private int tileCount;
+
+    private boolean optimizeTileRendering = false;
 
     /**
      *
@@ -142,7 +144,7 @@ public class Map {
                     //Add into animations
                     animations.put(animationName, new Animation(animationFileName, interval));
                     //Register it to be tickable
-                    Game.animationTicker.register(animations.get(animationName));
+                    Game.ANIMATIONTICKER.register(animations.get(animationName));
 
                     LOG.log(Level.INFO, "Loaded animated tile: " + animationName);
                 }
@@ -291,7 +293,6 @@ public class Map {
         int playerY = player.getY();
         int xArea = 16;
         int yArea = 14;
-
         //Parse the map file line by line
         tileCount = 0;
         for (Tile tile : tileEntities) {
@@ -300,13 +301,13 @@ public class Map {
             int x = tile.getX();
             int y = tile.getY();
             //Performance optimization: don't load tiles we don't need
-            int radiusX = (int) Math.ceil(0.72 * Game.WINDOW_WIDTH);
-            int radiusY = (int) Math.ceil(0.72 * Game.WINDOW_HEIGHT);
-            if (x < playerX - radiusX || x > playerX + radiusX || y < playerY - radiusY || y > playerY + radiusY) {
+            int radiusX = (int) Math.ceil(0.9 * Game.WINDOW_WIDTH);
+            int radiusY = (int) Math.ceil(0.9 * Game.WINDOW_HEIGHT);
+            if ((x < playerX - radiusX || x > playerX + radiusX || y < playerY - radiusY || y > playerY + radiusY) && optimizeTileRendering) {
                 continue;
             }
             if (tile.collidesWithPlayer(player)) {
-                LOG.log(Level.INFO, "Collisiin");
+                LOG.log(Level.INFO, "Collision");
             }
             tileTypes.add(tile.getTypeBottom());
             tileTypes.add(tile.getTypeMask());
@@ -351,7 +352,7 @@ public class Map {
                 if ((player.getRealX() >= x + offsetX && player.getRealX() <= x + offsetX + 32 && player.getRealY() >= y + offsetY - 8 && player.getRealY() <= y + offsetY + 24)) {
                     currentTileX = x;
                     currentTileY = y;
-                    //Set current tile for player
+                    //Set current tile for PLAYER
                     player.setCurrentTile(tileType);
                     if (Game.DEBUG) {
                         if (animations.containsKey(tileType)) {

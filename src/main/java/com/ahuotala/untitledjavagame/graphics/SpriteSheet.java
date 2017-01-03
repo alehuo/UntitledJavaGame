@@ -1,7 +1,6 @@
 package com.ahuotala.untitledjavagame.graphics;
 
-import com.ahuotala.untitledjavagame.game.ItemId;
-import com.ahuotala.untitledjavagame.game.Renderer;
+import com.ahuotala.untitledjavagame.game.item.ItemId;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
@@ -18,7 +17,7 @@ import javax.imageio.ImageIO;
  *
  * @author Aleksi Huotala
  */
-public final class SpriteSheet {
+public class SpriteSheet {
     /**
      * Logger
      */

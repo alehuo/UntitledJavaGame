@@ -3,10 +3,10 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.ahuotala.untitledjavagame.game;
+package com.ahuotala.untitledjavagame.game.singleplayer;
 
 import com.ahuotala.untitledjavagame.entities.Player;
-import static com.ahuotala.untitledjavagame.game.Game.inventory;
+import com.ahuotala.untitledjavagame.game.Game;
 import static com.ahuotala.untitledjavagame.game.Game.playing;
 import java.io.File;
 import java.io.FileInputStream;
@@ -17,6 +17,7 @@ import java.io.ObjectOutputStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
+import static com.ahuotala.untitledjavagame.game.Game.INVENTORY;
 
 /**
  * Singleplayer class
@@ -24,6 +25,7 @@ import javax.swing.JOptionPane;
  * @author alehuo
  */
 public class Singleplayer {
+
     private static final Logger LOG = Logger.getLogger(Singleplayer.class.getName());
 
     private final Player player;
@@ -64,11 +66,9 @@ public class Singleplayer {
     }
 
     /*##############################################*/
-
     /**
      *
      */
-
     public void save() {
 
         File saveDir = new File("saves");
@@ -90,7 +90,7 @@ public class Singleplayer {
             if (save != null && playing) {
                 //Save the game
                 LOG.log(Level.INFO, "Saving game..");
-                save.saveState(player.getX(), player.getY(), player.getHealth(), player.getXp(), player.getDirection(), game.getGameTime().getTime(), inventory.getInventory());
+                save.saveState(player.getX(), player.getY(), player.getHealth(), player.getXp(), player.getDirection(), game.getGameTime().getTime(), INVENTORY.getInventory());
                 try (FileOutputStream fileOutput = new FileOutputStream(saveFileName); ObjectOutputStream out = new ObjectOutputStream(fileOutput)) {
                     out.writeObject(save);
                     LOG.log(Level.INFO, "Game saved successfully.");
@@ -122,7 +122,7 @@ public class Singleplayer {
         } catch (IOException | ClassNotFoundException e) {
             LOG.log(Level.SEVERE, null, e);
         }
-        //Set player x, y, health, xp and direction
+        //Set PLAYER x, y, health, xp and direction
         player.setX(save.getX());
         player.setY(save.getY());
         player.setHealth(save.getHealth());
@@ -130,8 +130,8 @@ public class Singleplayer {
         player.setDirection(save.getDirection());
         //Set game time
         game.getGameTime().setTime(save.getCurrentGameTime());
-        //Set player inventory
-        inventory.setInventory(save.getInventory());
+        //Set PLAYER INVENTORY
+        INVENTORY.setInventory(save.getInventory());
     }
 
     /**
@@ -143,16 +143,17 @@ public class Singleplayer {
         if (!saveFileName.trim().endsWith(".sav")) {
             this.saveFileName += ".sav";
         }
-        LOG.log(Level.INFO, "Player started a new game: ''{0}''", saveFileName);
         save = new SaveGame();
-        //Set player x, y, health, xp and direction
+        LOG.log(Level.INFO, "Player started a new game: ''{0}''", saveFileName);
+        LOG.log(Level.INFO, "Player starting from coordinate ({0},{1})", new Object[]{save.getX(), save.getY()});
+        //Set PLAYER x, y, health, xp and direction
         player.setX(save.getX());
         player.setY(save.getY());
         player.setHealth(save.getHealth());
         player.setXp(save.getXp());
         player.setDirection(save.getDirection());
-        //Set player inventory
-        inventory.setInventory(save.getInventory());
+        //Set PLAYER INVENTORY
+        INVENTORY.setInventory(save.getInventory());
     }
 
 }

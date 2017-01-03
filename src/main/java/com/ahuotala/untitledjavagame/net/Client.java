@@ -2,7 +2,6 @@ package com.ahuotala.untitledjavagame.net;
 
 import com.ahuotala.untitledjavagame.entities.Player;
 import com.ahuotala.untitledjavagame.game.Game;
-import com.ahuotala.untitledjavagame.game.Multiplayer;
 import com.ahuotala.untitledjavagame.game.Tickable;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -11,7 +10,6 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
-import java.net.UnknownHostException;
 import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;

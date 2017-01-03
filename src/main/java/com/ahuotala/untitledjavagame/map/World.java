@@ -1,10 +1,9 @@
-package com.ahuotala.untitledjavagame.game;
+package com.ahuotala.untitledjavagame.map;
 
 import com.ahuotala.untitledjavagame.entities.GameObject;
 import com.ahuotala.untitledjavagame.entities.InteractableGameObject;
 import com.ahuotala.untitledjavagame.entities.InteractableNpc;
 import com.ahuotala.untitledjavagame.entities.Npc;
-import com.ahuotala.untitledjavagame.map.Map;
 import java.util.ArrayList;
 
 /**
@@ -19,25 +18,48 @@ public class World {
     private ArrayList<InteractableGameObject> interactableGameObjects;
     private Map map;
 
+    /**
+     *
+     */
     public World() {
     }
 
+    /**
+     *
+     * @param map
+     */
     public void loadMap(Map map) {
         this.map = map;
     }
 
+    /**
+     *
+     * @param npc
+     */
     public void registerNpc(Npc npc) {
         npcs.add(npc);
     }
 
+    /**
+     *
+     * @param npc
+     */
     public void registerNpc(InteractableNpc npc) {
         interactableNpcs.add(npc);
     }
 
+    /**
+     *
+     * @param obj
+     */
     public void registerObject(GameObject obj) {
         gameObjects.add(obj);
     }
 
+    /**
+     *
+     * @param obj
+     */
     public void registerObject(InteractableGameObject obj) {
         interactableGameObjects.add(obj);
     }

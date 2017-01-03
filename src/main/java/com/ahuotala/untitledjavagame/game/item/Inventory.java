@@ -1,5 +1,9 @@
-package com.ahuotala.untitledjavagame.game;
+package com.ahuotala.untitledjavagame.game.item;
 
+import com.ahuotala.untitledjavagame.game.Game;
+import com.ahuotala.untitledjavagame.game.item.ItemStack;
+import com.ahuotala.untitledjavagame.game.handler.MouseHandler;
+import com.ahuotala.untitledjavagame.graphics.Renderer;
 import com.ahuotala.untitledjavagame.graphics.Sprite;
 import java.awt.Color;
 import java.awt.Graphics;
@@ -57,7 +61,7 @@ public class Inventory {
      * Constructor
      */
     public Inventory() {
-        //Initialize the inventory, an array of ItemStacks
+        //Initialize the INVENTORY, an array of ItemStacks
         inventory = new ItemStack[COLS * ROWS];
     }
 
@@ -71,7 +75,7 @@ public class Inventory {
     }
 
     /**
-     * Sets the inventory object
+     * Sets the INVENTORY object
      *
      * @param inventory Inventory
      */
@@ -80,7 +84,7 @@ public class Inventory {
     }
 
     /**
-     * Add an itemStack to inventory. Stacks combine automatically if there are
+     * Add an itemStack to INVENTORY. Stacks combine automatically if there are
      * stacks that are not full.
      *
      * @param stack
@@ -94,7 +98,7 @@ public class Inventory {
                 int inventoryMaxAmount = inventory[i].getMaxSize();
                 //Amount if items in stack
                 int stackAmount = stack.getAmount();
-                //Available space in inventory (current stack)
+                //Available space in INVENTORY (current stack)
                 int availableSpace = inventoryMaxAmount - inventoryAmount;
                 //Leftover; amount of items that don't fit
                 int leftoverSpace = stackAmount - availableSpace;
@@ -148,7 +152,7 @@ public class Inventory {
     }
 
     /**
-     * Remove stack from inventory
+     * Remove stack from INVENTORY
      *
      * @param stackId Inventory slot ID
      */
@@ -184,7 +188,7 @@ public class Inventory {
     }
 
     /**
-     * Renders the inventory
+     * Renders the INVENTORY
      *
      * @param g
      * @param r
@@ -196,14 +200,14 @@ public class Inventory {
         //X and Y coordinate
         int x = (int) Math.floor((Game.WINDOW_WIDTH - inventorySprite.getWidth()) / 2);
         int y = (int) Math.floor((Game.WINDOW_HEIGHT - inventorySprite.getHeight()) / 2);
-        //Draw the inventory background
+        //Draw the INVENTORY background
 //        g.drawImage(inventoryImage, x, y, null);
         r.renderSprite(inventorySprite, x, y);
         //Tooltip
         g.setColor(Color.white);
         g.drawString("[F] Use     [R] Drop         " + this.getStackCount() + " / " + slots + " inventory slots in use", x + 8, y + inventorySprite.getHeight() + 16);
         //Item stacks
-        //Each inventory slot is 41x41 pixels
+        //Each INVENTORY slot is 41x41 pixels
         //First inv slot has an x-offset of 4 and an y-offset of 4.
         //X-offset of 80 afterwards.
         //1: (4,4) , 2: (84,4), 3: (164,4), ...
@@ -258,7 +262,7 @@ public class Inventory {
                     //Item icon
                     //TODO
                     r.renderSprite(Game.spriteSheet.getItemIcon(inventory[slot].getItemId()), slotX, slotY);
-//                    g.drawImage(Game.spriteSheet.getItemIcon(inventory[slot].getItemId()), slotX, slotY, 72, 72, null);
+//                    g.drawImage(Game.spriteSheet.getItemIcon(INVENTORY[slot].getItemId()), slotX, slotY, 72, 72, null);
                     g.setColor(Color.YELLOW);
                     int fontOffsetX = 2;
                     int fontOffsetY = 68;

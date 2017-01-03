@@ -1,7 +1,9 @@
-package com.ahuotala.untitledjavagame.game;
+package com.ahuotala.untitledjavagame.game.handler;
 
 import com.ahuotala.untitledjavagame.entities.Direction;
 import com.ahuotala.untitledjavagame.entities.Player;
+import com.ahuotala.untitledjavagame.game.Game;
+import com.ahuotala.untitledjavagame.game.Tickable;
 import com.ahuotala.untitledjavagame.map.Map;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -16,8 +18,30 @@ public class PlayerInputHandler implements KeyListener, Tickable {
     private final Map map;
     private final Game game;
     private String prompt = "";
-    public boolean up = false, down = false, left = false, right = false;
 
+    /**
+     *
+     */
+    public boolean up = false,
+            /**
+             *
+             */
+            down = false,
+            /**
+             *
+             */
+            left = false,
+            /**
+             *
+             */
+            right = false;
+
+    /**
+     *
+     * @param player
+     * @param map
+     * @param game
+     */
     public PlayerInputHandler(Player player, Map map, Game game) {
         this.player = player;
         this.map = map;
@@ -77,15 +101,11 @@ public class PlayerInputHandler implements KeyListener, Tickable {
             case KeyEvent.VK_I:
                 Game.SHOW_INVENTORY = !Game.SHOW_INVENTORY;
                 if (Game.DEBUG) {
-                    System.out.println(Game.inventory);
+                    System.out.println(Game.INVENTORY);
                 }
                 break;
             case KeyEvent.VK_ESCAPE:
-                if (Game.menuState == MenuState.PAUSED) {
-                    Game.menuState = MenuState.NONE;
-                } else if (Game.menuState == MenuState.NONE) {
-                    Game.menuState = MenuState.PAUSED;
-                }
+                    game.loadMenu();
                 break;
             default:
                 break;

@@ -1,5 +1,6 @@
-package com.ahuotala.untitledjavagame.game;
+package com.ahuotala.untitledjavagame.game.item;
 
+import com.ahuotala.untitledjavagame.game.item.ItemId;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 

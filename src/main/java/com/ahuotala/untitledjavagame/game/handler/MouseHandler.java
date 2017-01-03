@@ -1,5 +1,7 @@
-package com.ahuotala.untitledjavagame.game;
+package com.ahuotala.untitledjavagame.game.handler;
 
+import com.ahuotala.untitledjavagame.game.Game;
+import com.ahuotala.untitledjavagame.game.item.Inventory;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;

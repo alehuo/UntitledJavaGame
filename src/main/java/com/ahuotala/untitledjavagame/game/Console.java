@@ -1,5 +1,8 @@
 package com.ahuotala.untitledjavagame.game;
 
+import com.ahuotala.untitledjavagame.game.item.Item;
+import com.ahuotala.untitledjavagame.game.item.ItemStack;
+import com.ahuotala.untitledjavagame.game.item.ItemId;
 import java.util.Scanner;
 
 /**
@@ -35,7 +38,7 @@ public class Console implements Runnable {
                     int amount = Integer.parseInt(cmdArray[2]);
 
                     //Add stack of items
-                    Game.inventory.addStack(new ItemStack(new Item(itemId), amount));
+                    Game.INVENTORY.addStack(new ItemStack(new Item(itemId), amount));
                     System.out.println("Added a new stack of item " + itemId + ", amount: " + amount);
                 }
             } else if (command.startsWith("removestack")) {
@@ -43,7 +46,7 @@ public class Console implements Runnable {
                 String[] cmdArray = command.split(" ");
                 if (cmdArray.length == 2) {
                     int stackId = Integer.parseInt(cmdArray[1]);
-                    Game.inventory.removeStack(stackId);
+                    Game.INVENTORY.removeStack(stackId);
                     System.out.println("Removed itemStack from inventory slot " + stackId);
                 } else {
                     System.out.println("Invalid arguments for command 'removestack'");
@@ -53,10 +56,10 @@ public class Console implements Runnable {
                 String[] cmdArray = command.split(" ");
                 if (cmdArray.length == 2) {
                     int health = Integer.parseInt(cmdArray[1]);
-                    if (health >= 0 && health <= Game.player.getMaxHealth()) {
-                        Game.player.setHealth(health);
+                    if (health >= 0 && health <= Game.PLAYER.getMaxHealth()) {
+                        Game.PLAYER.setHealth(health);
                     } else {
-                        System.out.println("Health must be between 0 and " + Game.player.getMaxHealth());
+                        System.out.println("Health must be between 0 and " + Game.PLAYER.getMaxHealth());
                     }
                 } else {
                     System.out.println("Invalid arguments for command 'sethealth'");
@@ -66,7 +69,7 @@ public class Console implements Runnable {
                 if (cmdArray.length == 2) {
                     double xp = Double.parseDouble(cmdArray[1]);
                     if (xp >= 0) {
-                        Game.player.setXp(xp);
+                        Game.PLAYER.setXp(xp);
                     } else {
                         System.out.println("Xp must be positive!");
                     }

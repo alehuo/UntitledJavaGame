@@ -1,15 +1,15 @@
 package com.ahuotala.untitledjavagame.entities;
 
 import com.ahuotala.untitledjavagame.game.Game;
-import static com.ahuotala.untitledjavagame.game.Game.animationTicker;
 import static com.ahuotala.untitledjavagame.game.Game.spriteSheet;
-import com.ahuotala.untitledjavagame.game.Renderer;
+import com.ahuotala.untitledjavagame.graphics.Renderer;
 import com.ahuotala.untitledjavagame.game.Tickable;
 import com.ahuotala.untitledjavagame.graphics.animation.Animation;
 import java.awt.Graphics;
 import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import static com.ahuotala.untitledjavagame.game.Game.ANIMATIONTICKER;
 
 /**
  * Basic NPC
@@ -64,10 +64,10 @@ public class Npc extends Entity implements Tickable {
         playerWalkingDown = new Animation("PlayerWalkingDown", 10);
         playerWalkingLeft = new Animation("PlayerWalkingLeft", 10);
         playerWalkingRight = new Animation("PlayerWalkingRight", 10);
-        animationTicker.register(playerWalkingUp);
-        animationTicker.register(playerWalkingDown);
-        animationTicker.register(playerWalkingLeft);
-        animationTicker.register(playerWalkingRight);
+        ANIMATIONTICKER.register(playerWalkingUp);
+        ANIMATIONTICKER.register(playerWalkingDown);
+        ANIMATIONTICKER.register(playerWalkingLeft);
+        ANIMATIONTICKER.register(playerWalkingRight);
     }
 
     /**

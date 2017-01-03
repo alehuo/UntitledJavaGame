@@ -1,6 +1,7 @@
 package com.ahuotala.untitledjavagame.entities;
 
-import com.ahuotala.untitledjavagame.game.Renderer;
+import com.ahuotala.untitledjavagame.game.Game;
+import com.ahuotala.untitledjavagame.graphics.Renderer;
 import com.ahuotala.untitledjavagame.graphics.Sprite;
 import java.awt.Color;
 import java.awt.Graphics;
@@ -37,6 +38,9 @@ public class GameObject extends Entity {
      * @return
      */
     public boolean collidesWithPlayer(Player player) {
+        if (!Game.COLLISIONDECECTION) {
+            return false;
+        }
         if (bounds.intersects(player.getBounds())) {
             player.setX(player.getLastX());
             player.setY(player.getLastY());

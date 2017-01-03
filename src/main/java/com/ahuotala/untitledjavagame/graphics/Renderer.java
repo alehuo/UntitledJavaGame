@@ -1,4 +1,4 @@
-package com.ahuotala.untitledjavagame.game;
+package com.ahuotala.untitledjavagame.graphics;
 
 import com.ahuotala.untitledjavagame.game.postprocess.filters.NormalFilter;
 import com.ahuotala.untitledjavagame.game.postprocess.filters.PostProcessFilter;

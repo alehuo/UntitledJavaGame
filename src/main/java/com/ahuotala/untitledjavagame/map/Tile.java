@@ -1,4 +1,4 @@
-package com.ahuotala.untitledjavagame.game;
+package com.ahuotala.untitledjavagame.map;
 
 import com.ahuotala.untitledjavagame.entities.Player;
 import java.awt.Rectangle;

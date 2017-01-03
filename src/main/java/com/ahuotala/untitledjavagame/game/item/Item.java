@@ -1,4 +1,6 @@
-package com.ahuotala.untitledjavagame.game;
+package com.ahuotala.untitledjavagame.game.item;
+
+import com.ahuotala.untitledjavagame.game.item.ItemId;
 
 /**
  *

@@ -1,5 +1,12 @@
 package com.ahuotala.untitledjavagame.game;
 
+import com.ahuotala.untitledjavagame.game.item.Inventory;
+import com.ahuotala.untitledjavagame.game.item.ItemRegistry;
+import com.ahuotala.untitledjavagame.menu.MenuState;
+import com.ahuotala.untitledjavagame.menu.Menu;
+import com.ahuotala.untitledjavagame.game.handler.MouseHandler;
+import com.ahuotala.untitledjavagame.graphics.Renderer;
+import com.ahuotala.untitledjavagame.game.singleplayer.SaveGame;
 import com.ahuotala.untitledjavagame.entities.MpPlayer;
 import com.ahuotala.untitledjavagame.entities.NpcTicker;
 import com.ahuotala.untitledjavagame.entities.Player;
@@ -127,7 +134,7 @@ public class GameWindow extends Canvas implements Runnable, Tickable {
 
 
     /**
-     * Animation for player low health
+     * Animation for PLAYER low health
      */
     private final Animation playerLowHealth;
 
@@ -272,7 +279,7 @@ public class GameWindow extends Canvas implements Runnable, Tickable {
     @Override
     public void tick() {
         tickCount++;
-        //Tick animations, input, npcs and player
+        //Tick animations, input, npcs and PLAYER
         if (Game.menuState != MenuState.PAUSED) {
             animationTicker.tick();
             npcTicker.tick();
@@ -378,7 +385,7 @@ public class GameWindow extends Canvas implements Runnable, Tickable {
                 //Final image
                 g.drawImage(image, 0, 0, getWidth(), getHeight(), null);
 
-                //Debug for player
+                //Debug for PLAYER
                 g.setColor(Color.white);
 
                 if (DEBUG_PLAYER) {

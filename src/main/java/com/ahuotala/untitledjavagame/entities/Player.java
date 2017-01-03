@@ -1,13 +1,15 @@
 package com.ahuotala.untitledjavagame.entities;
 
 import com.ahuotala.untitledjavagame.game.Game;
-import com.ahuotala.untitledjavagame.game.Renderer;
+import com.ahuotala.untitledjavagame.graphics.Renderer;
 import com.ahuotala.untitledjavagame.game.Tickable;
 import com.ahuotala.untitledjavagame.graphics.animation.Animation;
 import com.ahuotala.untitledjavagame.map.Map;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Rectangle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -87,6 +89,9 @@ public class Player extends Entity implements Tickable {
     private final Rectangle bounds;
     private final int width = 16;
     private final int height = 16;
+    
+    
+    private static final Logger LOG = Logger.getLogger(Player.class.getName());
 
     /**
      *
@@ -116,14 +121,14 @@ public class Player extends Entity implements Tickable {
         playerSwimmingDown = new Animation("PlayerSwimmingDown", 10);
         playerSwimmingLeft = new Animation("PlayerSwimmingLeft", 10);
         playerSwimmingRight = new Animation("PlayerSwimmingRight", 10);
-        Game.animationTicker.register(playerWalkingUp);
-        Game.animationTicker.register(playerWalkingDown);
-        Game.animationTicker.register(playerWalkingLeft);
-        Game.animationTicker.register(playerWalkingRight);
-        Game.animationTicker.register(playerSwimmingUp);
-        Game.animationTicker.register(playerSwimmingDown);
-        Game.animationTicker.register(playerSwimmingLeft);
-        Game.animationTicker.register(playerSwimmingRight);
+        Game.ANIMATIONTICKER.register(playerWalkingUp);
+        Game.ANIMATIONTICKER.register(playerWalkingDown);
+        Game.ANIMATIONTICKER.register(playerWalkingLeft);
+        Game.ANIMATIONTICKER.register(playerWalkingRight);
+        Game.ANIMATIONTICKER.register(playerSwimmingUp);
+        Game.ANIMATIONTICKER.register(playerSwimmingDown);
+        Game.ANIMATIONTICKER.register(playerSwimmingLeft);
+        Game.ANIMATIONTICKER.register(playerSwimmingRight);
     }
 
     /**
@@ -472,7 +477,7 @@ public class Player extends Entity implements Tickable {
      */
     @Override
     public void tick() {
-        //Slow the player down if we are walking on a sand
+        //Slow the PLAYER down if we are walking on a sand
         switch (currentTile) {
             case "sand":
                 swimming = false;

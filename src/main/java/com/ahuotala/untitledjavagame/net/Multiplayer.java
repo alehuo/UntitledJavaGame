@@ -1,12 +1,11 @@
-package com.ahuotala.untitledjavagame.game;
+package com.ahuotala.untitledjavagame.net;
 
 import com.ahuotala.untitledjavagame.entities.Player;
+import com.ahuotala.untitledjavagame.game.Game;
 import com.ahuotala.untitledjavagame.net.Client;
 import com.ahuotala.untitledjavagame.net.ClientStatus;
 import com.ahuotala.untitledjavagame.net.TcpClient;
 import java.net.InetAddress;
-import java.net.SocketException;
-import java.net.UnknownHostException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 

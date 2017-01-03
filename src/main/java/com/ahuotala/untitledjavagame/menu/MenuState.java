@@ -1,4 +1,4 @@
-package com.ahuotala.untitledjavagame.game;
+package com.ahuotala.untitledjavagame.menu;
 
 /**
  *

@@ -1,4 +1,4 @@
-package com.ahuotala.untitledjavagame.game.handler;
+package com.ahuotala.untitledjavagame.game.input;
 
 import com.ahuotala.untitledjavagame.game.Game;
 import com.ahuotala.untitledjavagame.game.item.Inventory;

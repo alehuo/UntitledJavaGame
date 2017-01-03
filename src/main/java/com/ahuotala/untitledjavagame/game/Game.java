@@ -6,8 +6,8 @@ import com.ahuotala.untitledjavagame.game.item.ItemRegistry;
 import com.ahuotala.untitledjavagame.game.item.ItemId;
 import com.ahuotala.untitledjavagame.menu.MenuState;
 import com.ahuotala.untitledjavagame.menu.Menu;
-import com.ahuotala.untitledjavagame.game.handler.MouseHandler;
-import com.ahuotala.untitledjavagame.game.handler.PlayerInputHandler;
+import com.ahuotala.untitledjavagame.game.input.MouseHandler;
+import com.ahuotala.untitledjavagame.game.input.PlayerInputHandler;
 import com.ahuotala.untitledjavagame.game.singleplayer.Singleplayer;
 import com.ahuotala.untitledjavagame.net.Multiplayer;
 import com.ahuotala.untitledjavagame.entities.NpcTicker;
@@ -15,11 +15,10 @@ import com.ahuotala.untitledjavagame.entities.Player;
 import com.ahuotala.untitledjavagame.graphics.SpriteSheet;
 import com.ahuotala.untitledjavagame.graphics.animation.Animation;
 import com.ahuotala.untitledjavagame.graphics.animation.AnimationTicker;
-import com.ahuotala.untitledjavagame.map.Map;
+import com.ahuotala.untitledjavagame.map.GameMap;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
 import java.net.InetAddress;
@@ -53,7 +52,12 @@ public class Game extends JFrame implements Runnable, Tickable {
     /**
      * Collision detection
      */
-    public static boolean COLLISIONDECECTION = true;
+    public static boolean COLLISIONDECECTION = false;
+
+    /**
+     * Enable console
+     */
+    public static boolean ENABLECONSOLE = false;
 
     //Graphics device
     /**
@@ -170,38 +174,6 @@ public class Game extends JFrame implements Runnable, Tickable {
      *
      * @return
      */
-    public static GraphicsDevice getGd() {
-        return gd;
-    }
-
-    /**
-     *
-     * @param gd
-     */
-    public static void setGd(GraphicsDevice gd) {
-        Game.gd = gd;
-    }
-
-    /**
-     *
-     * @return
-     */
-    public static SpriteSheet getSpriteSheet() {
-        return spriteSheet;
-    }
-
-    /**
-     *
-     * @param spriteSheet
-     */
-    public static void setSpriteSheet(SpriteSheet spriteSheet) {
-        Game.spriteSheet = spriteSheet;
-    }
-
-    /**
-     *
-     * @return
-     */
     public static MenuState getMenuState() {
         return menuState;
     }
@@ -255,9 +227,9 @@ public class Game extends JFrame implements Runnable, Tickable {
      */
     private final Animation playerLowHealth;
     /**
-     * Map
+     * GameMap
      */
-    public Map map = new Map("map");
+    public GameMap map = new GameMap("map");
     /**
      * Input handler
      */
@@ -282,7 +254,10 @@ public class Game extends JFrame implements Runnable, Tickable {
      */
     private Singleplayer sp;
 
-    private GameFrame gameFrame;
+    /**
+     * Game frame
+     */
+    private final GameFrame gameFrame;
 
     /**
      * Image data
@@ -390,14 +365,6 @@ public class Game extends JFrame implements Runnable, Tickable {
 
     }
 
-    public BufferedImage getImage() {
-        return image;
-    }
-
-    public int[] getPixels() {
-        return pixels;
-    }
-
     /**
      * Establish a new connection
      *
@@ -496,54 +463,6 @@ public class Game extends JFrame implements Runnable, Tickable {
      *
      * @return
      */
-    public Graphics getG() {
-        return g;
-    }
-
-    /**
-     *
-     * @param g
-     */
-    public void setG(Graphics g) {
-        this.g = g;
-    }
-
-    /**
-     *
-     * @return
-     */
-    public Font getCurrentFont() {
-        return currentFont;
-    }
-
-    /**
-     *
-     * @param currentFont
-     */
-    public void setCurrentFont(Font currentFont) {
-        this.currentFont = currentFont;
-    }
-
-    /**
-     *
-     * @return
-     */
-    public Map getMap() {
-        return map;
-    }
-
-    /**
-     *
-     * @param map
-     */
-    public void setMap(Map map) {
-        this.map = map;
-    }
-
-    /**
-     *
-     * @return
-     */
     public Animation getPlayerLowHealth() {
         return playerLowHealth;
     }
@@ -556,6 +475,15 @@ public class Game extends JFrame implements Runnable, Tickable {
 
     private synchronized void stop() {
         running = false;
+    }
+
+    /**
+     * Returns the map
+     *
+     * @return GameMap
+     */
+    public GameMap getGameMap() {
+        return map;
     }
 
     /**
@@ -581,7 +509,7 @@ public class Game extends JFrame implements Runnable, Tickable {
             lastTime = now;
 
             //Use false to limit fps to the number of ticks
-            boolean shouldRender = false;
+            boolean shouldRender = true;
 
             //Tick
             while (delta >= 1) {

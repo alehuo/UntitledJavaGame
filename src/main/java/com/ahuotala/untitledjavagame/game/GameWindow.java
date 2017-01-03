@@ -4,7 +4,7 @@ import com.ahuotala.untitledjavagame.game.item.Inventory;
 import com.ahuotala.untitledjavagame.game.item.ItemRegistry;
 import com.ahuotala.untitledjavagame.menu.MenuState;
 import com.ahuotala.untitledjavagame.menu.Menu;
-import com.ahuotala.untitledjavagame.game.handler.MouseHandler;
+import com.ahuotala.untitledjavagame.game.input.MouseHandler;
 import com.ahuotala.untitledjavagame.graphics.Renderer;
 import com.ahuotala.untitledjavagame.game.singleplayer.SaveGame;
 import com.ahuotala.untitledjavagame.entities.MpPlayer;
@@ -23,7 +23,7 @@ import com.ahuotala.untitledjavagame.game.postprocess.filters.DarkenFilter;
 import com.ahuotala.untitledjavagame.graphics.SpriteSheet;
 import com.ahuotala.untitledjavagame.graphics.animation.Animation;
 import com.ahuotala.untitledjavagame.graphics.animation.AnimationTicker;
-import com.ahuotala.untitledjavagame.map.Map;
+import com.ahuotala.untitledjavagame.map.GameMap;
 import com.ahuotala.untitledjavagame.net.Client;
 import com.ahuotala.untitledjavagame.net.PlayerList;
 import java.awt.*;
@@ -144,9 +144,9 @@ public class GameWindow extends Canvas implements Runnable, Tickable {
     private SaveGame save;
 
     /**
-     * Map
+     * GameMap
      */
-    public Map map = new Map("map3");
+    public GameMap map = new GameMap("map3");
 
 
     /**

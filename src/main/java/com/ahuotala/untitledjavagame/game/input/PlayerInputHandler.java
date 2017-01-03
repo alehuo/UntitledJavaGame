@@ -1,10 +1,10 @@
-package com.ahuotala.untitledjavagame.game.handler;
+package com.ahuotala.untitledjavagame.game.input;
 
 import com.ahuotala.untitledjavagame.entities.Direction;
 import com.ahuotala.untitledjavagame.entities.Player;
 import com.ahuotala.untitledjavagame.game.Game;
 import com.ahuotala.untitledjavagame.game.Tickable;
-import com.ahuotala.untitledjavagame.map.Map;
+import com.ahuotala.untitledjavagame.map.GameMap;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
@@ -15,7 +15,7 @@ import java.awt.event.KeyListener;
 public class PlayerInputHandler implements KeyListener, Tickable {
 
     private final Player player;
-    private final Map map;
+    private final GameMap map;
     private final Game game;
     private String prompt = "";
 
@@ -42,7 +42,7 @@ public class PlayerInputHandler implements KeyListener, Tickable {
      * @param map
      * @param game
      */
-    public PlayerInputHandler(Player player, Map map, Game game) {
+    public PlayerInputHandler(Player player, GameMap map, Game game) {
         this.player = player;
         this.map = map;
         this.game = game;

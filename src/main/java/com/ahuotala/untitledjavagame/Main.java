@@ -5,6 +5,7 @@
  */
 package com.ahuotala.untitledjavagame;
 
+import com.ahuotala.untitledjavagame.game.Console;
 import com.ahuotala.untitledjavagame.game.Game;
 import javax.swing.SwingUtilities;
 
@@ -19,12 +20,12 @@ public class Main {
      * @param args
      */
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(new Runnable() {
-
-            @Override
-            public void run() {
-                new Game();
+        SwingUtilities.invokeLater(() -> {
+            new Game();
+            if (Game.ENABLECONSOLE) {
+                new Console();
             }
         });
+
     }
 }

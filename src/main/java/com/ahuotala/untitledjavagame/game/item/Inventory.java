@@ -2,7 +2,7 @@ package com.ahuotala.untitledjavagame.game.item;
 
 import com.ahuotala.untitledjavagame.game.Game;
 import com.ahuotala.untitledjavagame.game.item.ItemStack;
-import com.ahuotala.untitledjavagame.game.handler.MouseHandler;
+import com.ahuotala.untitledjavagame.game.input.MouseHandler;
 import com.ahuotala.untitledjavagame.graphics.Renderer;
 import com.ahuotala.untitledjavagame.graphics.Sprite;
 import java.awt.Color;

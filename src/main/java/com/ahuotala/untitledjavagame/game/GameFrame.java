@@ -17,7 +17,7 @@ import static com.ahuotala.untitledjavagame.game.Game.WINDOW_HEIGHT;
 import static com.ahuotala.untitledjavagame.game.Game.WINDOW_WIDTH;
 import static com.ahuotala.untitledjavagame.game.Game.spriteSheet;
 import com.ahuotala.untitledjavagame.game.postprocess.filters.DarkenFilter;
-import com.ahuotala.untitledjavagame.map.Map;
+import com.ahuotala.untitledjavagame.map.GameMap;
 import com.ahuotala.untitledjavagame.net.PlayerList;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -90,7 +90,7 @@ public class GameFrame extends Canvas {
             //Get draw graphics
             g = bs.getDrawGraphics();
             //Get map
-            Map map = game.getMap();
+            GameMap map = game.getGameMap();
             GameTime gt = game.getGameTime();
             //Clear
 //            renderer.clear();

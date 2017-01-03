@@ -4,7 +4,7 @@ import com.ahuotala.untitledjavagame.game.Game;
 import com.ahuotala.untitledjavagame.graphics.Renderer;
 import com.ahuotala.untitledjavagame.game.Tickable;
 import com.ahuotala.untitledjavagame.graphics.animation.Animation;
-import com.ahuotala.untitledjavagame.map.Map;
+import com.ahuotala.untitledjavagame.map.GameMap;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Rectangle;
@@ -138,7 +138,7 @@ public class Player extends Entity implements Tickable {
     @Override
     public void setX(int x) {
         super.setX(x);
-        offsetX = cX - super.getX();
+        offsetX = cX - x;
     }
 
     /**
@@ -148,7 +148,7 @@ public class Player extends Entity implements Tickable {
     @Override
     public void setY(int y) {
         super.setY(y);
-        offsetY = cY - super.getY();
+        offsetY = cY - y;
     }
 
     /**
@@ -200,8 +200,8 @@ public class Player extends Entity implements Tickable {
     }
 
     /**
-     *
-     * @param health
+     * Damage the player
+     * @param health Health
      */
     public void damagePlayer(int health) {
         if (this.health - health >= 0) {
@@ -210,50 +210,50 @@ public class Player extends Entity implements Tickable {
     }
 
     /**
-     *
-     * @param health
+     * Increase the health of the player
+     * @param health Health
      */
     public void increaseHealth(int health) {
         setHealth(getHealth() + health);
     }
 
     /**
-     *
-     * @return
+     * Returns the health of the player
+     * @return Health
      */
     public int getHealth() {
         return health;
     }
 
     /**
-     *
+     * Go up
      */
     public void goUp() {
-        super.incrementY(-step);
+        super.incrementY(step);
         offsetY += step;
     }
 
     /**
-     *
+     * Go down
      */
     public void goDown() {
-        super.incrementY(step);
+        super.incrementY(-step);
         offsetY -= step;
     }
 
     /**
-     *
+     * Go left
      */
     public void goLeft() {
-        super.incrementX(-step);
+        super.incrementX(step);
         offsetX += step;
     }
 
     /**
-     *
+     * Go right
      */
     public void goRight() {
-        super.incrementX(step);
+        super.incrementX(-step);
         offsetX -= step;
     }
 
@@ -401,7 +401,7 @@ public class Player extends Entity implements Tickable {
      * @param g
      * @param map
      */
-    public void render(Renderer r, Graphics g, Map map) {
+    public void render(Renderer r, Graphics g, GameMap map) {
         int playerX = super.getX();
         int playerY = super.getY();
         //Debug

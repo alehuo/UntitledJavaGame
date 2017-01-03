@@ -16,7 +16,7 @@ public class World {
     private ArrayList<InteractableNpc> interactableNpcs;
     private ArrayList<GameObject> gameObjects;
     private ArrayList<InteractableGameObject> interactableGameObjects;
-    private Map map;
+    private GameMap map;
 
     /**
      *
@@ -28,7 +28,7 @@ public class World {
      *
      * @param map
      */
-    public void loadMap(Map map) {
+    public void loadMap(GameMap map) {
         this.map = map;
     }
 

@@ -1,6 +1,5 @@
 package com.ahuotala.untitledjavagame.entities;
 
-import com.ahuotala.untitledjavagame.game.Debug;
 import com.ahuotala.untitledjavagame.game.Game;
 import static com.ahuotala.untitledjavagame.game.Game.WINDOW_HEIGHT;
 import static com.ahuotala.untitledjavagame.game.Game.spriteSheet;
@@ -150,7 +149,7 @@ public class InteractableNpc extends Entity implements Interactable, Tickable {
                                 isWalking = true;
                                 y -= step;
                             } else {
-                                Debug.log("NPC boundary (tried to move up)");
+//                                Debug.log("NPC boundary (tried to move up)");
                             }
                             break;
                         //Down
@@ -160,7 +159,7 @@ public class InteractableNpc extends Entity implements Interactable, Tickable {
                                 y += step;
                                 isWalking = true;
                             } else {
-                                Debug.log("NPC boundary (tried to move down)");
+//                                Debug.log("NPC boundary (tried to move down)");
                             }
                             break;
                         //Left
@@ -170,7 +169,7 @@ public class InteractableNpc extends Entity implements Interactable, Tickable {
                                 x -= step;
                                 isWalking = true;
                             } else {
-                                Debug.log("NPC boundary (tried to move left)");
+//                                Debug.log("NPC boundary (tried to move left)");
                             }
                             break;
                         //Right
@@ -180,7 +179,7 @@ public class InteractableNpc extends Entity implements Interactable, Tickable {
                                 x += step;
                                 isWalking = true;
                             } else {
-                                Debug.log("NPC boundary (tried to move right)");
+//                                Debug.log("NPC boundary (tried to move right)");
                             }
                             break;
                         //Up and left
@@ -191,7 +190,7 @@ public class InteractableNpc extends Entity implements Interactable, Tickable {
                                 y -= step;
                                 isWalking = true;
                             } else {
-                                Debug.log("NPC boundary (tried to move up and left)");
+//                                Debug.log("NPC boundary (tried to move up and left)");
                             }
                             break;
                         //Up and right
@@ -202,7 +201,7 @@ public class InteractableNpc extends Entity implements Interactable, Tickable {
                                 y -= step;
                                 isWalking = true;
                             } else {
-                                Debug.log("NPC boundary (tried to move up and right)");
+//                                Debug.log("NPC boundary (tried to move up and right)");
                             }
                             break;
                         //Down and left
@@ -213,7 +212,7 @@ public class InteractableNpc extends Entity implements Interactable, Tickable {
                                 y += step;
                                 isWalking = true;
                             } else {
-                                Debug.log("NPC boundary (tried to move down and left)");
+//                                Debug.log("NPC boundary (tried to move down and left)");
                             }
                             break;
                         //Down and right
@@ -224,11 +223,11 @@ public class InteractableNpc extends Entity implements Interactable, Tickable {
                                 y += step;
                                 isWalking = true;
                             } else {
-                                Debug.log("NPC boundary (tried to move down and left)");
+//                                Debug.log("NPC boundary (tried to move down and left)");
                             }
                             break;
                         default:
-                            Debug.log("Unknown direction: " + randomDirection);
+//                            Debug.log("Unknown direction: " + randomDirection);
                             break;
                     }
                     moveAmount--;
@@ -243,8 +242,8 @@ public class InteractableNpc extends Entity implements Interactable, Tickable {
                     randomDirection = random.nextInt(7);
                     moveAmount = random.nextInt(15) + 19;
                     moveTicks = true;
-                    Debug.log("New interval:" + interval);
-                    Debug.log("NPC tick");
+//                    Debug.log("New interval:" + interval);
+//                    Debug.log("NPC tick");
                     count = 0;
                 }
                 count++;

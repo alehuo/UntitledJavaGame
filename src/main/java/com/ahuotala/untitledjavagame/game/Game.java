@@ -68,7 +68,7 @@ public class Game extends JFrame implements Runnable, Tickable {
     /**
      * Window width
      */
-    public static final int WINDOW_WIDTH = (int) Math.floor(gd.getDisplayMode().getWidth() * 0.24);
+    public static final int WINDOW_WIDTH = (int) Math.floor(gd.getDisplayMode().getWidth() * 0.28);
 
     /**
      * Window height
@@ -98,7 +98,7 @@ public class Game extends JFrame implements Runnable, Tickable {
     /**
      * Game title
      */
-    public static final String NAME = "Untitled Game";
+    public static final String NAME = "Untitled Game (" + WINDOW_WIDTH + " x " + WINDOW_HEIGHT + ")";
 
     /**
      * JFrame
@@ -355,6 +355,8 @@ public class Game extends JFrame implements Runnable, Tickable {
         //Add menu
         frame.add(menu, BorderLayout.CENTER);
 
+//        frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+//        frame.setUndecorated(true);
         frame.pack();
         frame.setResizable(false);
         frame.setLocationRelativeTo(null);
@@ -597,6 +599,12 @@ public class Game extends JFrame implements Runnable, Tickable {
         /*
         Todo
          */
+        menu.loadMenuState(MenuState.PAUSED);
+        menu.setVisible(true);
+        gameFrame.setVisible(false);
+        super.revalidate();
+        super.repaint();
+        Game.menuState = MenuState.PAUSED;
     }
 
 }

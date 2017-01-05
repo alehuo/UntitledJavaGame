@@ -6,7 +6,6 @@ import static com.ahuotala.untitledjavagame.game.Game.WINDOW_HEIGHT;
 import static com.ahuotala.untitledjavagame.game.Game.WINDOW_WIDTH;
 import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -14,6 +13,8 @@ import java.awt.event.WindowEvent;
 import java.io.File;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
@@ -44,7 +45,7 @@ public class Menu extends JPanel implements ActionListener {
      */
     public Menu(Game game) {
         this.game = game;
-        super.setLayout(new FlowLayout());
+        super.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         super.setMinimumSize(new Dimension(WINDOW_WIDTH * SCALE, WINDOW_HEIGHT * SCALE));
         super.setMaximumSize(new Dimension(WINDOW_WIDTH * SCALE, WINDOW_HEIGHT * SCALE));
         super.setPreferredSize(new Dimension(WINDOW_WIDTH * SCALE, WINDOW_HEIGHT * SCALE));
@@ -90,8 +91,11 @@ public class Menu extends JPanel implements ActionListener {
         saveButton.addActionListener(this);
         continueButton.addActionListener(this);
 
+        super.add(Box.createRigidArea(new Dimension(0, 5)));
         super.add(spButton);
+        super.add(Box.createRigidArea(new Dimension(0, 5)));
         super.add(mpButton);
+        super.add(Box.createRigidArea(new Dimension(0, 5)));
         super.add(exitButton);
     }
 
@@ -182,27 +186,37 @@ public class Menu extends JPanel implements ActionListener {
                 case SINGLEPLAYER:
                     //SINGLEPLAYER
                     super.removeAll();
+                    super.add(Box.createRigidArea(new Dimension(0, 5)));
                     super.add(ngButton);
+                    super.add(Box.createRigidArea(new Dimension(0, 5)));
                     super.add(lgButton);
+                    super.add(Box.createRigidArea(new Dimension(0, 5)));
                     super.add(bButton);
                     break;
                 case MULTIPLAYER:
                     //MULTIPLAYER
                     super.removeAll();
+                    super.add(Box.createRigidArea(new Dimension(0, 5)));
                     super.add(bButton);
                     break;
                 case MAINMENU:
                     //MAIN MENU
                     super.removeAll();
+                    super.add(Box.createRigidArea(new Dimension(0, 5)));
                     super.add(spButton);
+                    super.add(Box.createRigidArea(new Dimension(0, 5)));
                     super.add(mpButton);
+                    super.add(Box.createRigidArea(new Dimension(0, 5)));
                     super.add(exitButton);
                     break;
                 case PAUSED:
                     //PAUSED
                     super.removeAll();
+                    super.add(Box.createRigidArea(new Dimension(0, 5)));
                     super.add(continueButton);
+                    super.add(Box.createRigidArea(new Dimension(0, 5)));
                     super.add(saveButton);
+                    super.add(Box.createRigidArea(new Dimension(0, 5)));
                     super.add(exitButton);
                     break;
                 case NONE:

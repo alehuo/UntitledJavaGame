@@ -582,7 +582,7 @@ public class Game extends JFrame implements Runnable, Tickable {
     public void loadSp() {
         menu.setVisible(false);
         gameFrame.setVisible(true);
-//        super.requestFocusInWindow();
+        frame.requestFocusInWindow();
         super.revalidate();
         super.repaint();
         

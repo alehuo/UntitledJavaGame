@@ -1,7 +1,7 @@
 package com.ahuotala.untitledjavagame.net;
 
 import com.ahuotala.untitledjavagame.entities.Player;
-import com.ahuotala.untitledjavagame.game.Game;
+import com.ahuotala.untitledjavagame.Game;
 import com.ahuotala.untitledjavagame.net.Client;
 import com.ahuotala.untitledjavagame.net.ClientStatus;
 import com.ahuotala.untitledjavagame.net.TcpClient;

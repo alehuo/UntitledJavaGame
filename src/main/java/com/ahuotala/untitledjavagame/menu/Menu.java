@@ -1,9 +1,9 @@
 package com.ahuotala.untitledjavagame.menu;
 
-import com.ahuotala.untitledjavagame.game.Game;
-import static com.ahuotala.untitledjavagame.game.Game.SCALE;
-import static com.ahuotala.untitledjavagame.game.Game.WINDOW_HEIGHT;
-import static com.ahuotala.untitledjavagame.game.Game.WINDOW_WIDTH;
+import com.ahuotala.untitledjavagame.Game;
+import static com.ahuotala.untitledjavagame.Game.SCALE;
+import static com.ahuotala.untitledjavagame.Game.WINDOW_HEIGHT;
+import static com.ahuotala.untitledjavagame.Game.WINDOW_WIDTH;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Insets;
@@ -26,9 +26,7 @@ import javax.swing.JPanel;
  */
 public class Menu extends JPanel implements ActionListener {
 
-    //Game object
     private final Game game;
-    //File choose
     private final JFileChooser fc = new JFileChooser();
     private final JButton spButton;
     private final JButton mpButton;
@@ -111,7 +109,7 @@ public class Menu extends JPanel implements ActionListener {
             System.exit(1);
         } else if (action.getSource() == spButton) {
             loadMenuState(MenuState.SINGLEPLAYER);
-            Game.menuState = MenuState.SINGLEPLAYER;
+            game.setMenuState(MenuState.SINGLEPLAYER);
         } else if (action.getSource() == mpButton) {
             //Connection prompt
             if (!game.getMp().isConnected()) {
@@ -121,35 +119,35 @@ public class Menu extends JPanel implements ActionListener {
                     if (tmpData.length == 2) {
                         try {
                             game.getMp().connect(InetAddress.getByName(tmpData[0].trim()), Integer.parseInt(tmpData[1].trim()));
-                            Game.menuState = MenuState.NONE;
+                            game.setMenuState(MenuState.NONE);
                         } catch (NumberFormatException | UnknownHostException e) {
                             JOptionPane.showMessageDialog(game, "Error connecting to server: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-                            Game.menuState = MenuState.MAINMENU;
+                            game.setMenuState(MenuState.MAINMENU);
                         }
                     } else {
                         JOptionPane.showMessageDialog(game, "Error connecting to server: malformed server address", "Error", JOptionPane.ERROR_MESSAGE);
-                        Game.menuState = MenuState.MAINMENU;
+                        game.setMenuState(MenuState.MAINMENU);
                     }
                 } else {
                     JOptionPane.showMessageDialog(game, "Error connecting to server: server address can't be null", "Error", JOptionPane.ERROR_MESSAGE);
-                    Game.menuState = MenuState.MAINMENU;
+                    game.setMenuState(MenuState.MAINMENU);
                 }
             }
         } else if (action.getSource() == bButton) {
             loadMenuState(MenuState.MAINMENU);
-            Game.menuState = MenuState.MAINMENU;
+            game.setMenuState(MenuState.MAINMENU);
         } else if (action.getSource() == lgButton) {
             //LOAD GAME
-            Game.menuState = MenuState.SINGLEPLAYER_LOADLEVEL;
+            game.setMenuState(MenuState.SINGLEPLAYER_LOADLEVEL);
             //Load game
             int returnValue = fc.showOpenDialog(game);
             if (returnValue == JFileChooser.APPROVE_OPTION) {
                 File tmpFile = fc.getSelectedFile();
                 game.getSp().loadSaveFile(tmpFile);
-                Game.menuState = MenuState.NONE;
+                game.setMenuState(MenuState.NONE);
                 //Load singleplayer
                 game.loadSp();
-                Game.playing = true;
+                game.setPlaying(true);
             }
         } else if (action.getSource() == ngButton) {
             //NEW GAME
@@ -157,19 +155,21 @@ public class Menu extends JPanel implements ActionListener {
             if (tmpName != null) {
                 if (!tmpName.isEmpty()) {
                     game.getSp().newGame(tmpName);
-                    Game.menuState = MenuState.NONE;
-                    Game.playing = true;
+                    game.setMenuState(MenuState.NONE);
+                    game.setPlaying(true);
                     //Load singleplayer
                     game.loadSp();
                 } else {
-                    Game.menuState = MenuState.SINGLEPLAYER;
+                    game.setMenuState(MenuState.SINGLEPLAYER);
                 }
 
             } else {
-                Game.menuState = MenuState.SINGLEPLAYER;
+                game.setMenuState(MenuState.SINGLEPLAYER);
             }
         } else if (action.getSource() == saveButton) {
             game.getSp().save();
+        } else if (action.getSource() == continueButton) {
+            game.loadSp();
         }
 
         validate();

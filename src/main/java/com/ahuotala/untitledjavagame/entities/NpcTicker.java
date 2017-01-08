@@ -1,6 +1,6 @@
 package com.ahuotala.untitledjavagame.entities;
 
-import com.ahuotala.untitledjavagame.game.Tickable;
+import com.ahuotala.untitledjavagame.Tickable;
 import java.util.ArrayList;
 
 /**

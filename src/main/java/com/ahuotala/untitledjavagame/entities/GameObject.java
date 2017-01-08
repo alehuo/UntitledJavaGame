@@ -1,6 +1,6 @@
 package com.ahuotala.untitledjavagame.entities;
 
-import com.ahuotala.untitledjavagame.game.Game;
+import com.ahuotala.untitledjavagame.Game;
 import com.ahuotala.untitledjavagame.graphics.Renderer;
 import com.ahuotala.untitledjavagame.graphics.Sprite;
 import java.awt.Color;

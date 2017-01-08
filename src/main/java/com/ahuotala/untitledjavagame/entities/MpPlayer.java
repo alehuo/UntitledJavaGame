@@ -5,7 +5,7 @@
  */
 package com.ahuotala.untitledjavagame.entities;
 
-import static com.ahuotala.untitledjavagame.game.Game.spriteSheet;
+import static com.ahuotala.untitledjavagame.Game.spriteSheet;
 import com.ahuotala.untitledjavagame.graphics.Renderer;
 import java.awt.Graphics;
 

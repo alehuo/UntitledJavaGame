@@ -1,6 +1,6 @@
 package com.ahuotala.untitledjavagame.graphics;
 
-import com.ahuotala.untitledjavagame.game.Game;
+import com.ahuotala.untitledjavagame.Game;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.io.IOException;

@@ -1,4 +1,4 @@
-package ahuotala.tools;
+package com.ahuotala.untitledjavagame.tools;
 
 import java.io.FileWriter;
 import java.io.IOException;

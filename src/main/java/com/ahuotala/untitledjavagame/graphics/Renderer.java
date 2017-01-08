@@ -1,7 +1,7 @@
 package com.ahuotala.untitledjavagame.graphics;
 
-import com.ahuotala.untitledjavagame.game.postprocess.filters.NormalFilter;
-import com.ahuotala.untitledjavagame.game.postprocess.filters.PostProcessFilter;
+import com.ahuotala.untitledjavagame.postprocess.filters.NormalFilter;
+import com.ahuotala.untitledjavagame.postprocess.filters.PostProcessFilter;
 import com.ahuotala.untitledjavagame.graphics.Sprite;
 import java.util.logging.Level;
 import java.util.logging.Logger;

@@ -1,15 +1,15 @@
 package com.ahuotala.untitledjavagame.entities;
 
-import com.ahuotala.untitledjavagame.game.Game;
-import static com.ahuotala.untitledjavagame.game.Game.WINDOW_HEIGHT;
-import static com.ahuotala.untitledjavagame.game.Game.spriteSheet;
+import com.ahuotala.untitledjavagame.Game;
+import static com.ahuotala.untitledjavagame.Game.WINDOW_HEIGHT;
+import static com.ahuotala.untitledjavagame.Game.spriteSheet;
 import com.ahuotala.untitledjavagame.graphics.Renderer;
-import com.ahuotala.untitledjavagame.game.Tickable;
+import com.ahuotala.untitledjavagame.Tickable;
 import com.ahuotala.untitledjavagame.graphics.animation.Animation;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.util.Random;
-import static com.ahuotala.untitledjavagame.game.Game.ANIMATIONTICKER;
+import static com.ahuotala.untitledjavagame.Game.ANIMATIONTICKER;
 
 /**
  *

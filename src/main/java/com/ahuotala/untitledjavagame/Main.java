@@ -5,9 +5,7 @@
  */
 package com.ahuotala.untitledjavagame;
 
-import com.ahuotala.untitledjavagame.game.Console;
-import com.ahuotala.untitledjavagame.game.Game;
-import java.util.Arrays;
+import com.ahuotala.untitledjavagame.console.Console;
 import javax.swing.SwingUtilities;
 
 /**
@@ -23,20 +21,28 @@ public class Main {
     public static void main(String[] args) {
 
         SwingUtilities.invokeLater(() -> {
-            
+
             //New instance of Game
             new Game();
 
-            //Iterate through args
-            for (int i = 0; i < args.length; i++) {
-                //Open console if we want to
-                if (Game.ENABLECONSOLE || args[i].equalsIgnoreCase("-console")) {
+            if (args.length == 0) {
+                if (Game.ENABLECONSOLE) {
                     //New instance of Console
                     new Console();
-                    //Break out from loop
-                    break;
+                }
+            } else {
+                //Iterate through args
+                for (int i = 0; i < args.length; i++) {
+                    //Open console if we want to
+                    if (args[i].equalsIgnoreCase("-console")) {
+                        //New instance of Console
+                        new Console();
+                        //Break out from loop
+                        break;
+                    }
                 }
             }
+
         });
 
     }

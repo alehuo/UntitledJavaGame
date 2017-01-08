@@ -5,7 +5,7 @@
  */
 package com.ahuotala.untitledjavagame.net;
 
-import com.ahuotala.untitledjavagame.game.Game;
+import com.ahuotala.untitledjavagame.Game;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.Socket;

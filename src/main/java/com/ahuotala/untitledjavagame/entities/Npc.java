@@ -1,15 +1,15 @@
 package com.ahuotala.untitledjavagame.entities;
 
-import com.ahuotala.untitledjavagame.game.Game;
-import static com.ahuotala.untitledjavagame.game.Game.spriteSheet;
+import com.ahuotala.untitledjavagame.Game;
+import static com.ahuotala.untitledjavagame.Game.spriteSheet;
 import com.ahuotala.untitledjavagame.graphics.Renderer;
-import com.ahuotala.untitledjavagame.game.Tickable;
+import com.ahuotala.untitledjavagame.Tickable;
 import com.ahuotala.untitledjavagame.graphics.animation.Animation;
 import java.awt.Graphics;
 import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import static com.ahuotala.untitledjavagame.game.Game.ANIMATIONTICKER;
+import static com.ahuotala.untitledjavagame.Game.ANIMATIONTICKER;
 
 /**
  * Basic NPC

@@ -2,7 +2,7 @@ package com.ahuotala.untitledjavagame.map;
 
 import com.ahuotala.untitledjavagame.entities.GameObject;
 import com.ahuotala.untitledjavagame.entities.Player;
-import com.ahuotala.untitledjavagame.game.Game;
+import com.ahuotala.untitledjavagame.Game;
 import com.ahuotala.untitledjavagame.graphics.Renderer;
 import com.ahuotala.untitledjavagame.graphics.Sprite;
 import com.ahuotala.untitledjavagame.graphics.animation.Animation;

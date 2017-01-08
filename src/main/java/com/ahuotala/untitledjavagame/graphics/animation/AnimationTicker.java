@@ -1,6 +1,6 @@
 package com.ahuotala.untitledjavagame.graphics.animation;
 
-import com.ahuotala.untitledjavagame.game.Tickable;
+import com.ahuotala.untitledjavagame.Tickable;
 import java.util.ArrayList;
 
 /**

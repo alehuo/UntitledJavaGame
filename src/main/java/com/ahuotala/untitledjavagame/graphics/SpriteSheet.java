@@ -1,6 +1,6 @@
 package com.ahuotala.untitledjavagame.graphics;
 
-import com.ahuotala.untitledjavagame.game.item.ItemId;
+import com.ahuotala.untitledjavagame.item.ItemId;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;

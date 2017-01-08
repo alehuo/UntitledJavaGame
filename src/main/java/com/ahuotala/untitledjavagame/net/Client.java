@@ -1,8 +1,8 @@
 package com.ahuotala.untitledjavagame.net;
 
 import com.ahuotala.untitledjavagame.entities.Player;
-import com.ahuotala.untitledjavagame.game.Game;
-import com.ahuotala.untitledjavagame.game.Tickable;
+import com.ahuotala.untitledjavagame.Game;
+import com.ahuotala.untitledjavagame.Tickable;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;

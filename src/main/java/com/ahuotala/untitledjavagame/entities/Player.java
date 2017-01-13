@@ -8,7 +8,6 @@ import com.ahuotala.untitledjavagame.map.GameMap;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Rectangle;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**

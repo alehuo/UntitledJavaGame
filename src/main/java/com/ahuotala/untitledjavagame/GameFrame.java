@@ -117,7 +117,7 @@ public class GameFrame extends Canvas {
             //Render MP players
             if (game.getMp().isConnected()) {
                 PlayerList pList = game.getMp().getUdpClient().getPlayerList();
-                for (MpPlayer plr : pList.getPlayerList().values()) {
+                for (MpPlayer plr : pList.getPlayers().values()) {
                     try {
                         if (plr.getUuid().equals(game.getMp().getUdpClient().getUuid())) {
                             continue;

@@ -19,6 +19,7 @@ public class MpPlayer extends Entity implements java.io.Serializable {
     private int y;
     private Direction direction;
     private String uuid;
+    private transient long lastUpdate;
 
     /**
      *
@@ -64,6 +65,14 @@ public class MpPlayer extends Entity implements java.io.Serializable {
      */
     public String getUuid() {
         return uuid;
+    }
+
+    public long getLastUpdate() {
+        return lastUpdate;
+    }
+
+    public void setLastUpdate(long lastUpdate) {
+        this.lastUpdate = lastUpdate;
     }
 
     /**

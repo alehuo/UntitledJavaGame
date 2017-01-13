@@ -6,6 +6,8 @@
 package com.ahuotala.untitledjavagame.net;
 
 import com.ahuotala.untitledjavagame.Game;
+import com.ahuotala.untitledjavagame.net.packets.ConnectionTestPacket;
+import com.ahuotala.untitledjavagame.net.packets.PingPacket;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.Socket;
@@ -30,7 +32,7 @@ public class TcpClient implements Runnable {
     private final InetAddress host;
     private final int port;
 
-    //Interval of heartbeat
+    //Interval of the ping packet
     private final int rate = 5;
 
     /**
@@ -65,7 +67,8 @@ public class TcpClient implements Runnable {
 
         try {
             clientSocket = new Socket(host.getHostAddress(), port);
-            clientSocket.getOutputStream().write("CONNECTION_TEST".getBytes());
+            ConnectionTestPacket conTestPacket = new ConnectionTestPacket();
+            clientSocket.getOutputStream().write(ObjectHandler.prepare(conTestPacket));
             clientSocket.close();
             connected = true;
         } catch (IOException ex) {
@@ -84,12 +87,13 @@ public class TcpClient implements Runnable {
                 Logger.getLogger(TcpClient.class.getName()).log(Level.SEVERE, null, ex);
             }
             try {
-                Logger.getLogger(TcpClient.class.getName()).log(Level.INFO, "Sending heartbeat packet to server");
+                Logger.getLogger(TcpClient.class.getName()).log(Level.FINEST, "Sending a ping packet to server");
                 clientSocket = new Socket(host.getHostAddress(), port);
-                clientSocket.getOutputStream().write("PING".getBytes());
+                PingPacket pingPacket = new PingPacket();
+                clientSocket.getOutputStream().write(ObjectHandler.prepare(pingPacket));
                 clientSocket.close();
             } catch (IOException ex) {
-                Logger.getLogger(TcpClient.class.getName()).log(Level.SEVERE, "Could not send heartbeat packet to server");
+                Logger.getLogger(TcpClient.class.getName()).log(Level.SEVERE, "Could not send a ping packet to server");
 //                JOptionPane.showMessageDialog(g, "Error: " + ex.toString(), "Error", JOptionPane.ERROR_MESSAGE);
                 connected = false;
             }

@@ -57,7 +57,7 @@ public class Game extends JFrame implements Runnable, Tickable {
     /**
      * Enable console
      */
-    public static boolean ENABLECONSOLE = true;
+    public static boolean ENABLECONSOLE = false;
 
     //Graphics device
     /**
@@ -571,9 +571,9 @@ public class Game extends JFrame implements Runnable, Tickable {
         }
 
         //Tick the UDP client if we are connected
-        if (mp.isConnected()) {
-            mp.getUdpClient().tick();
-        }
+//        if (mp.isConnected()) {
+//            mp.getUdpClient().tick();
+//        }
     }
 
     /**

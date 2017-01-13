@@ -3,9 +3,10 @@ package com.ahuotala.untitledjavagame.net;
 import com.ahuotala.untitledjavagame.entities.Player;
 import com.ahuotala.untitledjavagame.Game;
 import com.ahuotala.untitledjavagame.Tickable;
-import java.io.ByteArrayInputStream;
+import com.ahuotala.untitledjavagame.net.packets.PlayerConnectedPacket;
+import com.ahuotala.untitledjavagame.net.packets.PlayerListPacket;
+import com.ahuotala.untitledjavagame.net.packets.UpdatePositionPacket;
 import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
@@ -21,17 +22,50 @@ import javax.swing.JOptionPane;
  */
 public class Client extends Thread implements Tickable {
 
+    /**
+     * Logger
+     */
     private static final Logger LOG = Logger.getLogger(Client.class.getName());
 
+    /**
+     * Socket
+     */
     private DatagramSocket socket;
+    /**
+     * Host
+     */
     private InetAddress host;
+    /**
+     * Port
+     */
     private int port;
+    /**
+     * Connected
+     */
     private boolean connected = false;
+    /**
+     * Ready
+     */
     private boolean ready = false;
+    /**
+     * Player
+     */
     private Player player;
+    /**
+     * Uuid
+     */
     private String uuid;
+    /**
+     * Player list
+     */
     private PlayerList playerList;
+    /**
+     * Game
+     */
     private Game game;
+    /**
+     * TCP client
+     */
     private TcpClient tcpClient;
 
     /**
@@ -68,38 +102,43 @@ public class Client extends Thread implements Tickable {
         new Thread(new TcpClient(game, host, port)).start();
 
         /**
-         * While we are connected
+         * While we are connected, receive packets
          */
         while (tcpClient.isConnected()) {
-            byte[] dataArray = new byte[4096];
+            byte[] dataArray = new byte[8192];
             DatagramPacket packet = new DatagramPacket(dataArray, dataArray.length);
-            if (socket.isConnected()) {
+//            if (socket.isConnected()) {
+            try {
+                socket.receive(packet);
+                Object messageObj = ObjectHandler.receive(packet);
                 try {
-                    socket.receive(packet);
-                } catch (IOException ex) {
-//                JOptionPane.showMessageDialog(game, "Network error: " + ex.toString(), "Error", JOptionPane.ERROR_MESSAGE);
-                    System.exit(0);
-                }
-            }
 
-            String message = new String(packet.getData());
-            if (message.trim().equalsIgnoreCase(ServerStatus.PLAYER_CONNECTED.toString())) {
-                connected = true;
-            } else {
-                ByteArrayInputStream baos = new ByteArrayInputStream(dataArray);
-                try {
-                    ObjectInputStream oos = new ObjectInputStream(baos);
-                    playerList = (PlayerList) oos.readObject();
-                } catch (IOException | ClassNotFoundException ex) {
-                    Logger.getLogger(Client.class.getName()).log(Level.WARNING, "Malformed player list");
-//                    JOptionPane.showMessageDialog(game, "Error: " + ex.toString(), "Error", JOptionPane.ERROR_MESSAGE);
-//                    Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+                    //Confirmation of player successfully connected
+                    if (messageObj.getClass().equals(PlayerConnectedPacket.class)) {
+                        connected = true;
+                    } else if (messageObj.getClass().equals(PlayerListPacket.class)) {
+                        //Player list coming from the server
+                        PlayerListPacket plrList = (PlayerListPacket) messageObj;
+                        if (plrList != null) {
+                            playerList.setPlayers(plrList.getMpPlayers());
+                        } else {
+                            LOG.log(Level.WARNING, "Player list is null");
+                        }
+
+                    }
+
+                    LOG.log(Level.INFO, "SERVER [" + packet.getAddress().getHostAddress() + ":" + packet.getPort() + "] " + messageObj.getClass().toString());
+                } catch (NullPointerException ex) {
+                    LOG.log(Level.SEVERE, null, ex);
+                }
+            } catch (IOException ex) {
+//                    JOptionPane.showMessageDialog(game, "Network error: " + ex.toString(), "Error", JOptionPane.ERROR_MESSAGE);
 //                    System.exit(0);
-                }
-//                    JOptionPane.showMessageDialog(game, "Error: " + ex.toString(), "Error", JOptionPane.ERROR_MESSAGE);
-
+                LOG.log(Level.SEVERE, null, ex);
             }
-//            System.out.println("SERVER [" + packet.getAddress().getHostAddress() + ":" + packet.getPort() + "] " + message.trim());
+//            } else {
+//                LOG.log(Level.SEVERE, "No connection to the server");
+//            }
 
         }
     }
@@ -127,23 +166,29 @@ public class Client extends Thread implements Tickable {
         if (tcpClient.isConnected() && isConnected()) {
             //Update player position every time
             //CLIENT_POSUPD;UUID;X;Y;DIRECTION
-            send(ClientStatus.CLIENT_POSUPD.toString() + ";" + uuid + ";" + player.getX() + ";" + player.getY() + ";" + player.getDirection());
+            UpdatePositionPacket updatePos = new UpdatePositionPacket();
+            updatePos.setUuid(uuid);
+            updatePos.setX(player.getX());
+            updatePos.setY(player.getY());
+            updatePos.setDirection(player.getDirection());
+            send(updatePos);
+//            send(ClientStatus.CLIENT_POSUPD.toString() + ";" + uuid + ";" + player.getX() + ";" + player.getY() + ";" + player.getDirection());
         }
     }
 
     /**
      * Send a packet
      *
-     * @param cmd
+     * @param obj
      */
-    public synchronized void send(String cmd) {
-        byte[] dataArray = cmd.getBytes();
+    public synchronized void send(Object obj) {
+        byte[] dataArray = new byte[8192];
+        dataArray = ObjectHandler.prepare(obj);
         DatagramPacket packet = new DatagramPacket(dataArray, dataArray.length, host, port);
         try {
             socket.send(packet);
         } catch (IOException ex) {
             JOptionPane.showMessageDialog(game, "Network error: " + ex.toString(), "Error", JOptionPane.ERROR_MESSAGE);
-            ex.printStackTrace();
             System.exit(0);
         }
     }

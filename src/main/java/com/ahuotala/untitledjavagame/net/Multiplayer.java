@@ -2,9 +2,9 @@ package com.ahuotala.untitledjavagame.net;
 
 import com.ahuotala.untitledjavagame.entities.Player;
 import com.ahuotala.untitledjavagame.Game;
-import com.ahuotala.untitledjavagame.net.Client;
-import com.ahuotala.untitledjavagame.net.ClientStatus;
-import com.ahuotala.untitledjavagame.net.TcpClient;
+import com.ahuotala.untitledjavagame.net.packets.ConnectPacket;
+import com.ahuotala.untitledjavagame.net.packets.DisconnectPacket;
+import com.ahuotala.untitledjavagame.net.packets.UpdatePositionPacket;
 import java.net.InetAddress;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -59,6 +59,10 @@ public class Multiplayer {
         this.player = p;
     }
 
+    public Multiplayer() {
+        System.setProperty("java.util.logging.SimpleFormatter.format", "%1$tY-%1$tm-%1$td %1$tH:%1$tM:%1$tS %4$s %2$s %5$s%6$s%n");
+    }
+
     /**
      *
      * @param host
@@ -92,7 +96,9 @@ public class Multiplayer {
                 //Start the thread
                 LOG.info("Starting UDP Client thread");
                 udpClientThread.start();
-                udpClient.send(ClientStatus.CLIENT_CONNECTED.toString() + ";" + udpClient.getUuid());
+                ConnectPacket connectPacket = new ConnectPacket();
+                connectPacket.setUuid(udpClient.getUuid());
+                udpClient.send(connectPacket);
                 return true;
             } else {
                 LOG.log(Level.SEVERE, "Error initializing UDP client.");
@@ -100,8 +106,8 @@ public class Multiplayer {
             }
 
         } else {
-            udpClientThread.interrupt();
-            tcpClientThread.interrupt();
+//            udpClientThread.interrupt();
+//            tcpClientThread.interrupt();
             LOG.log(Level.SEVERE, "Error connecting to {0}:{1}. Server didn't respond to TCP Client's request.", new Object[]{host.getHostAddress(), port});
             return false;
         }
@@ -113,7 +119,9 @@ public class Multiplayer {
     public void disconnect() {
         //If TCP and UDP clients have a connection
         if (isConnected() && udpClient.isConnected()) {
-            udpClient.send(ClientStatus.CLIENT_DISCONNECTED.toString() + ";" + udpClient.getUuid());
+            DisconnectPacket disconnectPacket = new DisconnectPacket();
+            disconnectPacket.setUuid(udpClient.getUuid());
+            udpClient.send(disconnectPacket);
             udpClient.disconnect();
             tcpClient.disconnect();
         } else {
@@ -127,7 +135,7 @@ public class Multiplayer {
      * @return
      */
     public boolean isConnected() {
-        return (tcpClient != null) ? tcpClient.isConnected() : false;
+        return (tcpClient != null) ? (tcpClient.isConnected()) : false;
     }
 
     /**
@@ -141,6 +149,11 @@ public class Multiplayer {
             Thread.sleep(32);
             //1. receive data
             //2. send data
+            UpdatePositionPacket obj = new UpdatePositionPacket();
+            obj.setX(255);
+            obj.setY(255);
+            obj.setUuid(udpClient.getUuid());
+            udpClient.send(obj);
         }
     }
 

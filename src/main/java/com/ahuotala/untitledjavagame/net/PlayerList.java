@@ -6,6 +6,7 @@
 package com.ahuotala.untitledjavagame.net;
 
 import com.ahuotala.untitledjavagame.entities.MpPlayer;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
@@ -29,6 +30,9 @@ public class PlayerList implements java.io.Serializable {
      * @param mp
      */
     public void updatePlayer(String uuid, MpPlayer mp) {
+        if (mp != null) {
+            mp.setLastUpdate(System.currentTimeMillis());
+        }
         playerList.put(uuid, mp);
     }
 
@@ -44,8 +48,38 @@ public class PlayerList implements java.io.Serializable {
      *
      * @return
      */
-    public HashMap<String, MpPlayer> getPlayerList() {
+    public HashMap<String, MpPlayer> getPlayers() {
         return playerList;
+    }
+
+    public synchronized String[] getPlayerListFormatted() {
+
+        HashMap<String, MpPlayer> playersList = getPlayers();
+
+        String[] players = new String[playersList.size()];
+
+        int index = 0;
+
+        for (MpPlayer plr : playersList.values()) {
+            players[index] = plr.getUuid();
+            index++;
+        }
+
+        return players;
+    }
+
+    public synchronized void setPlayers(ArrayList<MpPlayer> players) {
+        if (playerList == null) {
+            playerList = new HashMap<>();
+        }
+        playerList.clear();
+        players.forEach((player) -> {
+            playerList.put(player.getUuid(), player);
+        });
+    }
+
+    public synchronized void setPlayers(HashMap<String, MpPlayer> players) {
+        playerList = players;
     }
 
 }

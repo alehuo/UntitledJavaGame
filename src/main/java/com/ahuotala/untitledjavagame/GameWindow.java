@@ -338,7 +338,7 @@ public class GameWindow extends Canvas implements Runnable, Tickable {
                 //Render MP players
                 if (isConnectedToServer) {
                     PlayerList pList = client.getPlayerList();
-                    for (MpPlayer plr : pList.getPlayerList().values()) {
+                    for (MpPlayer plr : pList.getPlayers().values()) {
                         try {
                             if (plr.getUuid().equals(client.getUuid())) {
                                 continue;

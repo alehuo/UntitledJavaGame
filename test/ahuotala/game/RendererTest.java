@@ -7,7 +7,7 @@ import static org.junit.Assert.*;
 /**
  * Renderer JUnit test class
  *
- * @author Aleksi Huotala
+ * @author alehuo
  */
 public class RendererTest {
 

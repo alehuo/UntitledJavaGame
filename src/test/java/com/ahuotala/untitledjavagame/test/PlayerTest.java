@@ -5,8 +5,8 @@
  */
 package com.ahuotala.untitledjavagame.test;
 
-import com.ahuotala.untitledjavagame.entities.Direction;
-import com.ahuotala.untitledjavagame.entities.Player;
+import com.alehuo.untitledjavagame.entities.Direction;
+import com.alehuo.untitledjavagame.entities.Player;
 import static org.junit.Assert.assertEquals;
 import org.junit.Before;
 import org.junit.Ignore;
